@@ -1,0 +1,5 @@
+# Dataset preparation
+
+M4 `tools/datasets/prepare_m4_fleurs.py` reuses verified cached shards without downloads. It creates 60 tuning clips (20/language) and 150 validation-holdout clips (50/language), globally grouped by sentence ID and excluding all M0 IDs. `manifests/fleurs_m4.summary.json` locks manifest hashes. This validation holdout is not the official test split and is not used for M4 configuration selection. The native measurement gate uses nine tuning recordings. See [M4 guide](../docs/m4-code.md).
+
+The M0 source is pinned Google FLEURS validation data for `en_us`, `cmn_hans_cn`, and `id_id`: ten selected recordings per language, split into exploratory and held-out acceptance cohorts. `tools/datasets/prepare_fleurs.py` acquires and verifies the shards, prepares 16 kHz mono PCM16 WAVs, and writes `manifests/fleurs_m0.jsonl` plus its summary. `raw` and `prepared` are ignored; manifests retain provenance/reference metadata. See [the M0 file and artifact guide](../docs/m0-code.md). Vendor smoke audio is diagnostic input and is not a FLEURS accuracy benchmark.

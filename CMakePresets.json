@@ -1,0 +1,15 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {"name": "dev-mock", "generator": "Ninja", "binaryDir": "${sourceDir}/build/dev-mock", "cacheVariables": {"CMAKE_BUILD_TYPE": "Debug", "ASR_ENABLE_QWEN_NATIVE": "OFF"}},
+    {"name": "release-cpu", "generator": "Ninja", "binaryDir": "${sourceDir}/build/release-cpu", "cacheVariables": {"CMAKE_BUILD_TYPE": "Release", "ASR_ENABLE_QWEN_NATIVE": "ON"}}
+  ],
+  "buildPresets": [
+    {"name": "dev-mock", "configurePreset": "dev-mock"},
+    {"name": "release-cpu", "configurePreset": "release-cpu", "jobs": 4}
+  ],
+  "testPresets": [
+    {"name": "dev-mock", "configurePreset": "dev-mock", "output": {"outputOnFailure": true}},
+    {"name": "release-cpu", "configurePreset": "release-cpu", "output": {"outputOnFailure": true}}
+  ]
+}

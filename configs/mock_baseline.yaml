@@ -1,0 +1,25 @@
+schema_version: 1
+experiment:
+  name: mock_baseline
+  seed: 42
+model:
+  runtime: mock
+  device: cpu
+audio:
+  source: synthetic
+  sample_rate_hz: 16000
+  channels: 1
+  chunk_ms: 200
+  duration_ms: 1250
+  queue_max_chunks: 8
+  queue_max_ms: 1000
+  queue_max_bytes: 32000
+  max_lag_ms: 1000
+  late_tolerance_ms: 5
+  realtime_pacing: false
+dataset:
+  language: en
+mock:
+  partial_every_ms: 400
+output:
+  directory: ../results
