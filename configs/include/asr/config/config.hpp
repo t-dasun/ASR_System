@@ -18,6 +18,10 @@ struct RunConfig {
     bool refine_final = true;
     bool resource_sampling = true;
     int sample_interval_ms = 200;
+    int worker_processes = 1, idle_timeout_ms = 30000, total_timeout_ms = 600000;
+    std::string scheduler = "least_active";
+    bool affinity_enabled = false;
+    std::vector<int> cpu_cores;
     nlohmann::json resolved;
 };
 // Strict M1 schema. Throws a descriptive error for unknown/duplicate/unsafe values.

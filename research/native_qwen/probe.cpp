@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
             for (int offset = 0; offset < count && !consumer_done.load();) {
                 const int n = std::min(chunk, count - offset);
                 const auto deadline = state.start + asr::audio_offset(offset + n, 16000);
-                std::this_thread::sleep_until(deadline); //deadline is the time when the next chunk should be sent (sampling rates sample pulse time)
+                std::this_thread::sleep_until(deadline); //deadline is the time when the next chunk should be sent (simulate 200 ms chunk interval)
                 if (consumer_done.load()) break;
                 max_send_lag_ms = std::max(max_send_lag_ms, std::chrono::duration<double, std::milli>(Clock::now() - deadline).count());
                 pthread_mutex_lock(&live.mutex);

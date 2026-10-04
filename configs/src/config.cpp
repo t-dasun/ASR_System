@@ -1,6 +1,7 @@
 #include <asr/config/config.hpp>
 #include <charconv>
 #include <fstream>
+#include <sched.h>
 #include <set>
 #include <stdexcept>
 #include <yaml-cpp/yaml.h>
@@ -34,6 +35,25 @@ void merge(Json &target, const YAML::Node &node, const std::string &path, unsign
                 invalid(path + "." + key, "unknown setting");
             merge(target[key], entry.second, path + "." + key, depth + 1);
         }
+        return;
+    }
+    if (target.is_array()) {
+        if (!node.IsSequence())
+            invalid(path, "expected a list of CPU indices");
+        Json result = Json::array();
+        for (const auto &item : node) {
+            check_tag(item, path);
+            if (!item.IsScalar())
+                invalid(path, "CPU indices must be decimal integers");
+            int number = -1;
+            const auto value = item.Scalar();
+            const auto parsed = std::from_chars(value.data(), value.data() + value.size(), number);
+            if (parsed.ec != std::errc{} || parsed.ptr != value.data() + value.size() || number < 0 ||
+                number >= 1024)
+                invalid(path, "invalid CPU index");
+            result.push_back(number);
+        }
+        target = std::move(result);
         return;
     }
     if (!node.IsScalar())
@@ -80,6 +100,15 @@ Json defaults() {
               {"late_tolerance_ms", 5},
               {"realtime_pacing", false}}},
             {"dataset", {{"language", "en"}}},
+            {"workers",
+             {{"processes", 1},
+              {"inference_slots_per_process", 1},
+              {"max_sessions_per_process", 1},
+              {"model_instances_per_process", 1},
+              {"scheduler", "least_active"},
+              {"idle_timeout_ms", 30000},
+              {"total_timeout_ms", 600000}}},
+            {"cpu", {{"affinity_enabled", false}, {"cores", Json::array()}}},
             {"metrics", {{"resource_sampling", true}, {"sample_interval_ms", 200}}},
             {"mock", {{"partial_every_ms", 400}}},
             {"output", {{"directory", "results"}}}};
@@ -122,7 +151,10 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
         if (target->is_object())
             invalid(path, "override must name a scalar setting");
         // Values are literal CLI strings, interpreted according to the schema.
-        merge(*target, YAML::Node(override_value.substr(separator + 1)), path);
+        if (target->is_array())
+            merge(*target, YAML::Load(override_value.substr(separator + 1)), path);
+        else
+            merge(*target, YAML::Node(override_value.substr(separator + 1)), path);
     }
     if (root["schema_version"] != 1)
         invalid("schema_version", "only version 1 is supported");
@@ -135,6 +167,35 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     range(root["model"]["decode_step_ms"], 1000, 8000, "model.decode_step_ms");
     range(root["model"]["max_new_tokens"], 1, 256, "model.max_new_tokens");
     range(root["model"]["timeout_ms"], 1000, 600000, "model.timeout_ms");
+    range(root["workers"]["processes"], 1, 4, "workers.processes");
+    for (const auto *key :
+         {"inference_slots_per_process", "max_sessions_per_process", "model_instances_per_process"})
+        if (root["workers"][key] != 1)
+            invalid(std::string("workers.") + key, "M5 requires one isolated slot/context per process");
+    range(root["workers"]["idle_timeout_ms"], 1, 600000, "workers.idle_timeout_ms");
+    range(root["workers"]["total_timeout_ms"], 1, 3600000, "workers.total_timeout_ms");
+    if (root["workers"]["total_timeout_ms"].get<int>() < root["workers"]["idle_timeout_ms"].get<int>())
+        invalid("workers", "total timeout must cover idle timeout");
+    const auto scheduler = root["workers"]["scheduler"].get<std::string>();
+    if (scheduler != "least_active" && scheduler != "round_robin")
+        invalid("workers.scheduler", "expected least_active or round_robin");
+    const auto cores = root["cpu"]["cores"].get<std::vector<int>>();
+    if (cores.size() > 32 || std::set<int>(cores.begin(), cores.end()).size() != cores.size())
+        invalid("cpu.cores", "at most 32 unique CPU indices required");
+    const auto affinity = root["cpu"]["affinity_enabled"].get<bool>();
+    if (affinity && (runtime != "qwen_native" ||
+                     cores.size() < static_cast<std::size_t>(root["model"]["threads"].get<int>())))
+        invalid("cpu", "native affinity needs at least model.threads CPU indices");
+    if (!affinity && !cores.empty())
+        invalid("cpu.cores", "set affinity_enabled=true when specifying cores");
+    if (affinity) {
+        cpu_set_t allowed;
+        if (::sched_getaffinity(0, sizeof(allowed), &allowed) != 0)
+            invalid("cpu.cores", "cannot read allowed CPU set");
+        for (const auto core : cores)
+            if (core >= CPU_SETSIZE || !CPU_ISSET(core, &allowed))
+                invalid("cpu.cores", "requested CPU is unavailable to this process");
+    }
     const auto model_path = root["model"]["path"].get<std::string>();
     if ((runtime == "mock" && !model_path.empty()) || (runtime == "qwen_native" && model_path.empty()))
         invalid("model.path", "mock requires no model path; qwen_native requires one");
@@ -173,6 +234,14 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     if (directory.empty() || directory.find('\0') != std::string::npos)
         invalid("output.directory", "invalid path");
     RunConfig config;
+    config.worker_processes = root["workers"]["processes"].get<int>();
+    config.idle_timeout_ms = root["workers"]["idle_timeout_ms"].get<int>();
+    config.total_timeout_ms = root["workers"]["total_timeout_ms"].get<int>();
+    config.scheduler = scheduler;
+    config.affinity_enabled = affinity;
+    config.cpu_cores = cores;
+    root["workers"]["executor"] = runtime == "qwen_native" ? "process" : "in_process";
+    root["workers"]["threads_per_process"] = root["model"]["threads"];
     range(root["metrics"]["sample_interval_ms"], 50, 5000, "metrics.sample_interval_ms");
     config.resource_sampling = root["metrics"]["resource_sampling"].get<bool>();
     config.sample_interval_ms = root["metrics"]["sample_interval_ms"].get<int>();

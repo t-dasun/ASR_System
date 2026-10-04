@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <mutex>
 #include <nlohmann/json.hpp>
 
 namespace asr {
@@ -35,6 +36,7 @@ class MemoryResultRepository final : public IResultRepository {
     void finish(const std::string &, const nlohmann::json &) override;
 };
 class FileResultRepository final : public IResultRepository {
+    mutable std::mutex mutex_;
     std::filesystem::path root_, directory_;
     std::ofstream events_, audio_timings_;
     std::map<std::string, std::ofstream> records_;

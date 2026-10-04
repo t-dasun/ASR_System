@@ -76,13 +76,22 @@ nlohmann::json run_baseline(const RunConfig &config, IASREngine &engine, IAudioS
                                                    : "simulated clock; host samples not meaningful"}};
         }
         summary["measurements"] = measurements.summary();
-        repository.append_record("calls", {{"run_id", run_id},
-                                           {"call_id", run_id + "_call_0"},
-                                           {"language", config.language},
-                                           {"status", summary.at("status")},
-                                           {"measurements", summary["measurements"]}});
+        if (config.resolved.contains("load") && config.resolved["load"].contains("mode")) {
+            summary["mode"] = config.resolved["load"]["mode"];
+            if (summary["mode"] == "network")
+                summary["measurements"]["publication_boundary"] =
+                    "load-client sink receipt after WebSocket transport; includes network latency, no UI";
+        }
+        repository.append_record(
+            "calls", {{"run_id", run_id},
+                      {"call_id", run_id + "_call_0"},
+                      {"worker_id", measurements.events.empty() ? "" : measurements.events.front().worker_id},
+                      {"language", config.language},
+                      {"status", summary.at("status")},
+                      {"measurements", summary["measurements"]}});
         for (const auto &item : measurements.runtime)
-            if (item.stage == "worker_usage" || item.stage == "worker_started")
+            if (item.stage == "worker_usage" || item.stage == "worker_started" ||
+                item.stage == "worker_assigned")
                 repository.append_record("workers", observation_json(item));
     };
     try {
@@ -166,6 +175,7 @@ nlohmann::json run_baseline(const RunConfig &config, IASREngine &engine, IAudioS
             {"status", "COMPLETE"},
             {"is_mock", engine.capabilities().is_mock},
             {"engine", engine.capabilities().engine_id},
+            {"worker_id", snapshot.worker_id},
             {"clock_domain", clock.domain()},
             {"audio_samples", stats.delivered_samples},
             {"audio_seconds", static_cast<double>(stats.delivered_samples) / 16000},
@@ -182,7 +192,7 @@ nlohmann::json run_baseline(const RunConfig &config, IASREngine &engine, IAudioS
             {"elapsed_clock_ns", clock.now_ns() - started},
             {"note", engine.capabilities().is_mock
                          ? "MOCK transcript; excludes ASR accuracy and capacity claims"
-                         : "Measured native single call; offline evaluator adds human-reference accuracy"}};
+                         : "Measured native call; offline evaluator adds human-reference accuracy"}};
         persist_measurements(summary);
         if (resources && !summary["resources"]["measurement_valid"].get<bool>()) {
             summary["status"] = "FAILED";

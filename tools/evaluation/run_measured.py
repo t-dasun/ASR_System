@@ -105,7 +105,8 @@ def run(args):
         "schema_version": 1, "manifest": str(args.manifest), "manifest_sha256": digest(args.manifest),
         "cli": str(args.cli), "cli_sha256": digest(args.cli),
         "worker_sha256": digest(args.cli.parent / "asr-native-worker"),
-        "config_sha256": digest(args.config), "model_acquisition": revision,
+        "config_sha256": digest(args.config), "overrides": args.overrides,
+        "model_acquisition": revision,
         "python": platform.python_version(), "jiwer": importlib.metadata.version("jiwer"),
         "host": {"platform": platform.platform(), "affinity": sorted(os.sched_getaffinity(0)),
                  "cpu_info": optional_text("/proc/cpuinfo"), "memory": optional_text("/proc/meminfo"),
@@ -129,6 +130,8 @@ def run(args):
                        "--set", f"output.directory={call_root}",
                        "--set", f"metrics.resource_sampling={'true' if args.resource_sampling else 'false'}",
                        "--set", f"metrics.sample_interval_ms={args.sample_interval_ms}"]
+            for override in args.overrides:
+                command.extend(("--set", override))
             started = time.monotonic_ns()
             error, exit_code = "", None
             try:
@@ -199,6 +202,8 @@ if __name__ == "__main__":
     parser.add_argument("--manifest", type=Path, default=ROOT / "datasets/manifests/fleurs_m4_tuning.jsonl")
     parser.add_argument("--cli", type=Path, default=ROOT / "build/release-cpu/asr-cli")
     parser.add_argument("--config", type=Path, default=ROOT / "configs/qwen_native_single.yaml")
+    parser.add_argument("--set", dest="overrides", action="append", default=[],
+                        help="Additional C++ config override; may be repeated")
     parser.add_argument("--model", type=Path, default=ROOT / "models/qwen3-asr-0.6b")
     parser.add_argument("--per-language", type=int, default=0, help="0 = all balanced manifest rows")
     parser.add_argument("--resource-sampling", action=argparse.BooleanOptionalAction, default=True)

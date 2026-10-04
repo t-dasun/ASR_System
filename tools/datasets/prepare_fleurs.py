@@ -8,6 +8,7 @@ from pathlib import Path
 import urllib.request
 
 CONFIGS = {"en": "en_us", "zh": "cmn_hans_cn", "id": "id_id"}
+PIN = json.loads((Path(__file__).resolve().parents[2] / "third_party/revisions.lock").read_text())["fleurs"]
 
 
 def sha256(path):
@@ -35,9 +36,10 @@ def acquire(raw):
     lock = raw / "source.json"
     if lock.exists():
         metadata = json.loads(lock.read_text())
+        if metadata.get("dataset") != "google/fleurs" or metadata.get("revision") != PIN["revision"]:
+            raise ValueError("Existing FLEURS source is not at the pinned revision")
     else:
-        info = fetch_json("https://huggingface.co/api/datasets/google/fleurs")
-        revision = info["sha"]
+        revision = PIN["revision"]
         files = {}
         for language, config in CONFIGS.items():
             entries = fetch_json(f"https://huggingface.co/api/datasets/google/fleurs/tree/{revision}/parquet-data/{config}")

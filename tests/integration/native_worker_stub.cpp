@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
         return 19;
     const auto *mode = std::getenv("ASR_NATIVE_STUB_MODE");
     const std::string behavior = mode ? mode : "normal";
+    const std::string language = argv[2];
     send_json({{"type", "ready"}, {"produced_ns", now_ns()}});
     std::uint64_t sequence = 0;
     std::int64_t samples = 0;
@@ -63,7 +64,7 @@ int main(int argc, char **argv) {
             if (behavior == "hang")
                 std::this_thread::sleep_for(std::chrono::seconds(3));
             send_json({{"type", "final"},
-                       {"text", "stub final"},
+                       {"text", "stub final " + language},
                        {"produced_ns", now_ns()},
                        {"consumed_samples", samples}});
             return 0;
@@ -78,7 +79,7 @@ int main(int argc, char **argv) {
         if (behavior == "crash")
             return 17;
         send_json({{"type", "partial"},
-                   {"text", "stub partial " + std::to_string(samples)},
+                   {"text", "stub partial " + language + " " + std::to_string(samples)},
                    {"produced_ns", now_ns()},
                    {"consumed_samples", samples},
                    {"before_eof", true}});

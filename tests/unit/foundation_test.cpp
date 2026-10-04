@@ -134,6 +134,21 @@ void configurations(const std::filesystem::path &directory) {
             "unsupported native thread count accepted");
     rejects([] { (void)resolve_config({}, {"model.decode_step_ms=500"}); },
             "unsupported native decode step accepted");
+    const auto managed = resolve_config({}, {"workers.processes=2", "workers.scheduler=round_robin"});
+    check(managed.worker_processes == 2 && managed.scheduler == "round_robin" &&
+              managed.resolved["workers"]["executor"] == "in_process" &&
+              managed.resolved["workers"]["threads_per_process"] == managed.native_threads,
+          "M5 worker layout did not resolve");
+    rejects([] { (void)resolve_config({}, {"workers.inference_slots_per_process=2"}); },
+            "unproven shared runtime accepted");
+    rejects([] { (void)resolve_config({}, {"workers.processes=5"}); },
+            "unsafe provisional process count accepted");
+    rejects([] { (void)resolve_config({}, {"workers.scheduler=unknown"}); },
+            "unsupported scheduler accepted");
+    rejects([] { (void)resolve_config({}, {"cpu.cores=[0,0]"}); },
+            "duplicate affinity CPU accepted");
+    rejects([] { (void)resolve_config({}, {"cpu.affinity_enabled=true", "cpu.cores=[0,1]"}); },
+            "mock affinity accepted");
 }
 void runners_and_repositories(const std::filesystem::path &directory) {
     auto config = resolve_config({}, {"audio.duration_ms=1250"});

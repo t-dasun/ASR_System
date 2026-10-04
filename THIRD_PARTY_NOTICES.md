@@ -10,4 +10,19 @@ The acquired official Qwen3-ASR-0.6B model card declares Apache-2.0. Model weigh
 
 The upstream sample recordings are used locally for smoke diagnostics only. They are not copied into this project's fixtures or presented as a newly licensed dataset.
 
+The M8 frontend's exact direct package versions and transitive tarball
+integrities are recorded in `frontend/package-lock.json` and installed with
+`npm ci`. Direct packages at the current lock are React/React DOM 19.3.0
+(MIT), Vite 8.3.2 (MIT), Vitest 5.0.3 (MIT), TypeScript 7.0.2
+(Apache-2.0), Playwright Core 1.63.0 (Apache-2.0), and `@types/react` /
+`@types/react-dom` 19.3.0 (MIT). These license labels come from the locked
+package metadata. Before redistributing the frontend bundle or a container,
+generate and review a complete transitive license inventory and include any
+required notices; this file is not a completed software bill of materials.
+
+OpenSSL is linked by the C++ transport for cryptographic helpers in the local
+build; a production redistribution must also include the notices applicable
+to the exact OpenSSL and OpenBLAS binaries packaged on the target host. Neither
+system library is vendored by this repository.
+
 The development recordings and transcriptions are from Google FLEURS, [`google/fleurs`](https://huggingface.co/datasets/google/fleurs), revision `70bb2e84b976b7e960aa89f1c648e09c59f894dd`, licensed CC-BY-4.0. The original data and derived 16 kHz PCM16 WAV files remain local and are not committed. Cite the FLEURS dataset when publishing results and preserve its attribution and license on any redistribution. The exact source shard URLs/hashes and selected recording IDs are recorded in `datasets/raw/fleurs_m0/source.json` and `datasets/manifests/fleurs_m0.jsonl`.

@@ -61,6 +61,7 @@ nlohmann::json event_json(const RecognitionEvent &event) {
         {"run_id", event.run_id},
         {"call_id", event.call_id},
         {"producer_id", event.producer_id},
+        {"worker_id", event.worker_id},
         {"sequence", event.sequence},
         {"revision", event.revision},
         {"produced_ns", event.produced_ns},
@@ -137,6 +138,7 @@ void FileResultRepository::write_status(const std::string &status) {
 }
 void FileResultRepository::begin(const std::string &id, const nlohmann::json &cfg,
                                  const nlohmann::json &env) {
+    std::lock_guard lock(mutex_);
     if (started_)
         throw std::logic_error("repository already started");
     if (id.empty() || id.size() > 128 ||
@@ -164,6 +166,7 @@ void FileResultRepository::begin(const std::string &id, const nlohmann::json &cf
     }
 }
 void FileResultRepository::append(const RecognitionEvent &event) {
+    std::lock_guard lock(mutex_);
     active(started_, sealed_);
     if (event.run_id != run_id_)
         throw std::invalid_argument("event run ID mismatch");
@@ -171,17 +174,20 @@ void FileResultRepository::append(const RecognitionEvent &event) {
     events_.flush();
 }
 void FileResultRepository::append_audio(const nlohmann::json &timing) {
+    std::lock_guard lock(mutex_);
     active(started_, sealed_);
     audio_timings_ << timing.dump() << '\n';
     audio_timings_.flush();
 }
 void FileResultRepository::append_record(const std::string &stream, const nlohmann::json &record) {
+    std::lock_guard lock(mutex_);
     active(started_, sealed_);
     if (!records_.contains(stream))
         throw std::invalid_argument("unknown artifact stream: " + stream);
     records_.at(stream) << record.dump() << '\n';
 }
 void FileResultRepository::finish(const std::string &status, const nlohmann::json &summary) {
+    std::lock_guard lock(mutex_);
     active(started_, sealed_);
     events_.flush();
     audio_timings_.flush();

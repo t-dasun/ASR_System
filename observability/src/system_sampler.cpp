@@ -1,5 +1,6 @@
 #include <asr/core/clock.hpp>
 #include <asr/observability/system_sampler.hpp>
+#include <filesystem>
 #include <fstream>
 #include <set>
 #include <sstream>
@@ -116,10 +117,16 @@ Json LinuxSystemSampler::sample() {
                         sysconf(_SC_CLK_TCK) / (elapsed / 1e9);
         }
         result["processes"].push_back(std::move(item));
-        std::istringstream children(
-            read("/proc/" + std::to_string(pid) + "/task/" + std::to_string(pid) + "/children"));
-        for (int child; children >> child;)
-            pending.push_back(child);
+        // A worker forked by a runner thread belongs to that TID, not necessarily
+        // to the process leader. Traverse every task's children to retain it.
+        std::error_code error;
+        const auto tasks = "/proc/" + std::to_string(pid) + "/task";
+        for (const auto &task : std::filesystem::directory_iterator(
+                 tasks, std::filesystem::directory_options::skip_permission_denied, error)) {
+            std::istringstream children(read(task.path().string() + "/children"));
+            for (int child; children >> child;)
+                pending.push_back(child);
+        }
     }
     if (result["cpu"].empty() || result["processes"].empty() || result["host_memory_bytes"].empty())
         throw std::runtime_error("required /proc telemetry unavailable");

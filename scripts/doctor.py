@@ -18,6 +18,13 @@ def command(args):
         return {"error": str(error)}
 
 
+def optional_text(path):
+    try:
+        return pathlib.Path(path).read_text().strip()
+    except OSError:
+        return None
+
+
 def capture():
     return {
         "schema_version": 1,
@@ -30,7 +37,7 @@ def capture():
         "compiler": command(["g++", "--version"]),
         "cmake": command(["cmake", "--version"]),
         "native_revision": command(["git", "-C", "third_party/qwen-asr", "rev-parse", "HEAD"]),
-        "governor": pathlib.Path("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").read_text().strip(),
+        "governor": optional_text("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"),
         "note": "Preflight snapshot; not a benchmark result or complete experiment environment capture.",
     }
 

@@ -26,7 +26,7 @@ template <class T> struct Result {
     T value{};
     explicit operator bool() const { return static_cast<bool>(status); }
 };
-enum class SessionState { ready, streaming, completed, stopped, failed };
+enum class SessionState { creating, ready, streaming, finalizing, completed, stopped, failed };
 enum class EventKind { partial, final, stopped, failed };
 enum class CancelReason { user_request, deadline, shutdown };
 using PcmBuffer = std::shared_ptr<const std::vector<std::int16_t>>;
@@ -44,6 +44,7 @@ struct AudioChunk {
 struct RecognitionEvent {
     int schema_version = 1;
     std::string run_id, call_id, producer_id = "mock";
+    std::string worker_id;
     std::uint64_t sequence = 0, revision = 0;
     std::int64_t produced_ns = 0, consumed_samples = 0;
     std::optional<std::int64_t> published_ns;
@@ -57,6 +58,7 @@ struct RecognitionEvent {
 // Runtime observations are independent of vendor types. Missing boundaries stay absent.
 struct RuntimeObservation {
     std::string stage;
+    std::string worker_id;
     std::int64_t timestamp_ns = 0;
     std::optional<std::int64_t> duration_ns, sequence, buffered_samples, cpu_ns, peak_rss_bytes;
     int process_id = 0;
@@ -70,6 +72,7 @@ struct SessionConfig {
 };
 struct SessionSnapshot {
     SessionState state = SessionState::ready;
+    std::string worker_id;
     std::int64_t consumed_samples = 0;
     std::uint64_t revision = 0;
     std::string text;

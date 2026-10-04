@@ -3,6 +3,7 @@
 /reports/temp/
 /results/*
 !/results/README.md
+/tmp/pdfs/
 /models/*/
 /datasets/raw/*
 /datasets/prepared/*
@@ -23,3 +24,4 @@ node_modules/
 /frontend/dist/
 .env
 *.bak
+*.pdf

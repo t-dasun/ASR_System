@@ -14,6 +14,7 @@ extern "C" {
 #include <memory>
 #include <mutex>
 #include <nlohmann/json.hpp>
+#include <sched.h>
 #include <signal.h>
 #include <stdexcept>
 #include <string>
@@ -247,6 +248,23 @@ int main(int argc, char **argv) {
         const int parent_pid = parse(argv[8], 1, INT_MAX);
         if (::prctl(PR_SET_PDEATHSIG, SIGKILL) != 0 || ::getppid() != parent_pid)
             throw std::runtime_error("worker parent ownership changed");
+        if (const auto *affinity = std::getenv("ASR_WORKER_CPU_CORES")) {
+            cpu_set_t requested;
+            CPU_ZERO(&requested);
+            const std::string cores(affinity);
+            std::size_t start = 0;
+            while (start < cores.size()) {
+                const auto end = cores.find(',', start);
+                const auto part = cores.substr(start, end == std::string::npos ? end : end - start);
+                const auto core = parse(part.c_str(), 0, CPU_SETSIZE - 1);
+                CPU_SET(core, &requested);
+                if (end == std::string::npos)
+                    break;
+                start = end + 1;
+            }
+            if (cores.empty() || ::sched_setaffinity(0, sizeof(requested), &requested) != 0)
+                throw std::runtime_error("worker CPU affinity rejected");
+        }
         const int threads = parse(argv[3], 1, 16);
         const int step = parse(argv[4], 1000, 8000);
         const int tokens = parse(argv[5], 1, 256);

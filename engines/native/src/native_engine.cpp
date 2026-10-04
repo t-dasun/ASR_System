@@ -255,13 +255,23 @@ class NativeSession final : public IASRSession {
         for (auto **entry = environ; *entry; ++entry) {
             const std::string value(*entry);
             if (!value.starts_with("OMP_NUM_THREADS=") && !value.starts_with("OPENBLAS_NUM_THREADS=") &&
-                !value.starts_with("OMP_DYNAMIC=") && !value.starts_with("QWEN_BF16_CACHE_MB="))
+                !value.starts_with("OMP_DYNAMIC=") && !value.starts_with("QWEN_BF16_CACHE_MB=") &&
+                !value.starts_with("ASR_WORKER_CPU_CORES="))
                 environment.push_back(value);
         }
         environment.push_back("OMP_NUM_THREADS=" + threads);
         environment.push_back("OPENBLAS_NUM_THREADS=" + threads);
         environment.push_back("OMP_DYNAMIC=FALSE");
         environment.push_back("QWEN_BF16_CACHE_MB=0");
+        if (!options_.cpu_cores.empty()) {
+            std::string cores;
+            for (const auto core : options_.cpu_cores) {
+                if (!cores.empty())
+                    cores += ',';
+                cores += std::to_string(core);
+            }
+            environment.push_back("ASR_WORKER_CPU_CORES=" + cores);
+        }
         std::vector<char *> environment_pointers;
         for (auto &entry : environment)
             environment_pointers.push_back(entry.data());

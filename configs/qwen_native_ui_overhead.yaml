@@ -1,0 +1,40 @@
+schema_version: 1
+experiment:
+  name: qwen_native_ui_overhead
+  seed: 42
+model:
+  runtime: qwen_native
+  device: cpu
+  path: ../models/qwen3-asr-0.6b
+  threads: 4
+  decode_step_ms: 2000
+  max_new_tokens: 32
+  timeout_ms: 45000
+  refine_final: true
+workers:
+  processes: 1
+  inference_slots_per_process: 1
+  max_sessions_per_process: 1
+  model_instances_per_process: 1
+  scheduler: least_active
+  idle_timeout_ms: 30000
+  total_timeout_ms: 600000
+cpu:
+  affinity_enabled: false
+  cores: []
+audio:
+  source: wav
+  path: ../tests/fixtures/m8_jfk_1p2s.wav
+  sample_rate_hz: 16000
+  channels: 1
+  chunk_ms: 200
+  queue_max_chunks: 8
+  queue_max_ms: 1000
+  queue_max_bytes: 32000
+  max_lag_ms: 1000
+  late_tolerance_ms: 5
+  realtime_pacing: true
+dataset:
+  language: en
+output:
+  directory: ../results

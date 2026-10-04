@@ -1,8 +1,12 @@
 #include <asr/observability/metrics.hpp>
 #include <asr/observability/system_sampler.hpp>
+#include <atomic>
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
+#include <sys/wait.h>
+#include <thread>
+#include <unistd.h>
 
 void check(bool value, const char *message) {
     if (!value)
@@ -72,6 +76,38 @@ int main() {
         const auto sample = sampler.sample();
         check(!sample["processes"].empty() && sample["cpu"].contains("cpu"), "Linux sampling");
         check(sample["processes"][0]["cpu_core_equivalents"].is_null(), "first CPU delta must be null");
+        int control[2];
+        check(pipe(control) == 0, "fixture pipe failed");
+        std::atomic<pid_t> child_pid{-2};
+        std::atomic<bool> release{false};
+        std::thread owner([&] {
+            const auto pid = fork();
+            if (pid == 0) {
+                close(control[1]);
+                char marker;
+                (void)read(control[0], &marker, 1);
+                _exit(0);
+            }
+            child_pid.store(pid);
+            while (!release.load())
+                std::this_thread::yield();
+            const char marker = 'x';
+            (void)write(control[1], &marker, 1);
+            int status = 0;
+            (void)waitpid(pid, &status, 0);
+        });
+        while (child_pid.load() == -2)
+            std::this_thread::yield();
+        const auto threaded = child_pid.load() < 0 ? nlohmann::json() : sampler.sample();
+        bool found = false;
+        if (!threaded.is_null())
+            for (const auto &item : threaded["processes"])
+                found |= item["pid"] == child_pid.load();
+        release.store(true);
+        owner.join();
+        close(control[0]);
+        close(control[1]);
+        check(found, "sampler missed a child forked from a runner thread");
         asr::ResourceMonitor fixture(std::make_unique<FixtureSampler>(false), 200);
         fixture.stop();
         check(fixture.summary()["sampled_peak_tree_rss_bytes"] == 100 &&

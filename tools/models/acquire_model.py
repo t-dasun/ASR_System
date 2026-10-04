@@ -12,6 +12,7 @@ import urllib.request
 MODEL = "Qwen/Qwen3-ASR-0.6B"
 REQUIRED = {"config.json", "generation_config.json", "model.safetensors", "vocab.json", "merges.txt"}
 OPTIONAL = {"preprocessor_config.json", "processor_config.json", "tokenizer_config.json", "tokenizer.json", "chat_template.json", "README.md"}
+PIN = json.loads((Path(__file__).resolve().parents[2] / "third_party/revisions.lock").read_text())["qwen3_asr_0_6b"]
 
 
 def digest(path):
@@ -24,6 +25,8 @@ def acquire(destination, metadata_only=False):
     lock = destination / "acquisition.json"
     if lock.exists():
         manifest = json.loads(lock.read_text())
+        if manifest.get("model") != MODEL or manifest.get("revision") != PIN["revision"]:
+            raise RuntimeError("Existing model acquisition is not at the pinned revision")
         missing = (REQUIRED | OPTIONAL) - {item["name"] for item in manifest["files"]}
         if missing:
             with urllib.request.urlopen(f"https://huggingface.co/api/models/{MODEL}/revision/{manifest['revision']}?blobs=true", timeout=60) as response:
@@ -38,13 +41,17 @@ def acquire(destination, metadata_only=False):
             manifest["status"] = "metadata_only"
             lock.write_text(json.dumps(manifest, indent=2) + "\n")
     else:
-        with urllib.request.urlopen(f"https://huggingface.co/api/models/{MODEL}?blobs=true", timeout=60) as response:
+        with urllib.request.urlopen(
+                f"https://huggingface.co/api/models/{MODEL}/revision/{PIN['revision']}?blobs=true",
+                timeout=60) as response:
             info = json.load(response)
+        if info.get("sha") != PIN["revision"]:
+            raise RuntimeError("Model metadata does not match pinned revision")
         available = {item["rfilename"]: item for item in info["siblings"]}
         if not REQUIRED <= available.keys():
             raise RuntimeError("Required native checkpoint files are missing")
         manifest = {
-            "model": MODEL, "revision": info["sha"], "status": "metadata_only",
+            "model": MODEL, "revision": PIN["revision"], "status": "metadata_only",
             "files": [{"name": name, "expected_size": available[name].get("size"),
                        "expected_sha256": available[name].get("lfs", {}).get("sha256")}
                       for name in sorted((REQUIRED | OPTIONAL) & available.keys())],
@@ -71,10 +78,15 @@ def acquire(destination, metadata_only=False):
                     output.write(block)
             if item["expected_size"] is not None and temporary.stat().st_size != item["expected_size"]:
                 raise RuntimeError(f"Size mismatch: {temporary}")
-            if item["expected_sha256"] and digest(temporary) != item["expected_sha256"]:
+            downloaded_sha256 = digest(temporary)
+            if item["expected_sha256"] and downloaded_sha256 != item["expected_sha256"]:
                 raise RuntimeError(f"Hash mismatch: {temporary}")
+            if item["name"] == "model.safetensors" and downloaded_sha256 != PIN["weights_sha256"]:
+                raise RuntimeError("Downloaded model weights differ from repository pin")
             temporary.rename(target)
         item["sha256"] = digest(target)
+        if item["name"] == "model.safetensors" and item["sha256"] != PIN["weights_sha256"]:
+            raise RuntimeError("Model weights differ from repository pin")
         # Checkpoint acquisition state only; these are not sealed experiment results.
         lock.write_text(json.dumps(manifest, indent=2) + "\n")
     manifest["status"] = "verified"

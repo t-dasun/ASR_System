@@ -33,8 +33,10 @@ Json distribution(std::vector<double> values, const std::string &population, con
     return result;
 }
 Json observation_json(const RuntimeObservation &value) {
-    Json result{
-        {"stage", value.stage}, {"timestamp_ns", value.timestamp_ns}, {"process_id", value.process_id}};
+    Json result{{"stage", value.stage},
+                {"worker_id", value.worker_id},
+                {"timestamp_ns", value.timestamp_ns},
+                {"process_id", value.process_id}};
     auto optional = [&](const char *key, auto item) { result[key] = item ? Json(*item) : Json(nullptr); };
     optional("duration_ns", value.duration_ns);
     optional("sequence", value.sequence);

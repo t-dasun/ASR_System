@@ -7,6 +7,7 @@ struct NativeQwenOptions {
     std::filesystem::path worker_executable, model_directory;
     int threads = 4, decode_step_ms = 2000, max_new_tokens = 32, timeout_ms = 45000;
     bool refine_final = true;
+    std::vector<int> cpu_cores;
 };
 // One isolated worker process per session. No vendor header crosses this boundary.
 class NativeQwenEngine final : public IASREngine {
