@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "purpose": "concurrent_complete_audio_only",
+  "incremental_pcm_same_request_tested": false,
+  "server": "http://127.0.0.1:8766",
+  "model": "models/qwen3-asr-0.6b-gguf/Qwen3-ASR-0.6B-Q8_0.gguf",
+  "wav": "tests/fixtures/m8_jfk_1p2s.wav",
+  "wav_sha256": "aa641aab086aea649ada42d7d5704225a4ef7e478e36d39b56ef2d5ed560f91c",
+  "wav_info": {
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "sample_width_bytes": 2,
+    "frames": 19200
+  },
+  "language": "English",
+  "concurrency": 2,
+  "calls": [
+    {
+      "call_id": 0,
+      "started_monotonic_s": 4283.924157579,
+      "first_text_ms": 451.8193659996541,
+      "status": "complete",
+      "text": "language English<asr_text>And so my.",
+      "error": null,
+      "finished_monotonic_s": 4284.49165688,
+      "total_ms": 567.4993009997706
+    },
+    {
+      "call_id": 1,
+      "started_monotonic_s": 4283.925117133,
+      "first_text_ms": 451.16660600069736,
+      "status": "complete",
+      "text": "language English<asr_text>And so my.",
+      "error": null,
+      "finished_monotonic_s": 4284.491792233,
+      "total_ms": 566.675099999884
+    }
+  ],
+  "all_complete": true
+}

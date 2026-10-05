@@ -220,6 +220,8 @@ The C++ layer would then need a long-lived worker that routes interleaved PCM/co
 
 A runtime switch is another experiment, and it need not change the **model**: current [llama.cpp multimodal documentation](https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md) lists a Qwen3-ASR-0.6B GGUF, while its [server documentation](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md) describes parallel slots and continuous batching. Those server features do not establish incremental PCM ingestion, pre-EOF partial transcripts, or CPU call capacity for Qwen3-ASR; they need a same-protocol test. [whisper.cpp](https://github.com/ggml-org/whisper.cpp) instead runs the **Whisper model family** and can use separate inference states, but its [stream example](https://github.com/ggml-org/whisper.cpp/blob/master/examples/stream/README.md) repeatedly transcribes audio windows. That is a different ASR behavior and must be benchmarked and labelled accordingly.
 
+The first `time-multiplexing` branch gate confirmed two concurrent **complete-WAV** llama.cpp/Qwen requests on the 1.2-second fixture. Its tested audio API requires a complete audio object per request, so this does not prove an ongoing call can deliver sequential PCM and receive text before EOF. See the [probe and raw result](../tools/multiplexing/README.md). The native live path remains the reference until a candidate passes that causal-input gate.
+
 ## 8. Deliverables, reproducibility, and remaining gaps
 
 ### Q33. Where are the requested code, instructions, report, sizing, architecture, and alternatives?

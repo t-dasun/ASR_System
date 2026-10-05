@@ -8,6 +8,8 @@ The existing host OpenBLAS runtime is dynamically linked. The local development 
 
 The acquired official Qwen3-ASR-0.6B model card declares Apache-2.0. Model weights are not committed. The model revision and artifact hashes are recorded in its acquisition manifest. The offline reference implementation is `QwenLM/Qwen3-ASR` at commit `7c6daf77a2421100f5fb066495372c00129d39ff`, under Apache-2.0; its license is retained in the local checkout at `third_party/qwen-reference/LICENSE`.
 
+The optional time-multiplexing experiment uses `ggml-org/llama.cpp` at commit `806eee9841de5f2c20f9d43914117f157d2baacc` under MIT and a Q8 GGUF conversion of Qwen3-ASR-0.6B from `ggml-org/Qwen3-ASR-0.6B-GGUF` at revision `928ab958557df9aa2ef1c93e0e83c7ad0933fae2`. Its source, binary, GGUF model, and projector are local ignored artifacts; `third_party/revisions.lock` records their identities and hashes. Check the converted model's own terms and preserve the llama.cpp MIT notice before redistributing any experimental artifacts. This runtime is not yet integrated into the ASR service or its measured baseline.
+
 The upstream sample recordings are used locally for smoke diagnostics only. They are not copied into this project's fixtures or presented as a newly licensed dataset.
 
 The M8 frontend's exact direct package versions and transitive tarball

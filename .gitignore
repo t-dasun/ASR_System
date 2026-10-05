@@ -8,6 +8,7 @@
 /datasets/raw/*
 /datasets/prepared/*
 /third_party/qwen-asr/
+/third_party/llama.cpp/
 /third_party/openblas-sdk/
 /third_party/packages/
 /third_party/.cache/
