@@ -72,6 +72,28 @@ int main() {
         eof.timestamp_ns = 1220000000;
         m.runtime.push_back(eof);
         check(m.summary()["finalization_ns"] == 280000000, "worker EOF boundary");
+        auto shared = m;
+        shared.audio_samples = 16000;
+        const auto observe = [&](const char *stage, std::int64_t duration) {
+            asr::RuntimeObservation value;
+            value.stage = stage;
+            value.duration_ns = duration;
+            shared.runtime.push_back(value);
+        };
+        observe("shared_model_load", 750000000);
+        observe("prefix_decode", 400000000);
+        observe("eof_refinement", 800000000);
+        observe("prefix_decode_queue_wait", 2000000);
+        observe("eof_decode_queue_wait", 3000000);
+        const auto shared_metrics = shared.summary();
+        check(shared_metrics["model_load_ns"].is_null() && shared_metrics["shared_model_load_ns"] == 750000000 &&
+              shared_metrics["startup_ns"] == 100000000,
+              "reused context load was counted as per-call startup");
+        check(shared_metrics["runtime_queue_wait_ns"] == 5000000 &&
+              shared_metrics["offline_decode_wall_ns"] == 1200000000 &&
+              std::abs(shared_metrics["offline_decode_wall_rtf"].get<double>() - 1.2) < 1e-12 &&
+              shared_metrics["inference_compute_rtf"].is_null(),
+              "shared decode wall, scheduling wait, and active-compute definitions conflated");
         asr::LinuxSystemSampler sampler;
         const auto sample = sampler.sample();
         check(!sample["processes"].empty() && sample["cpu"].contains("cpu"), "Linux sampling");

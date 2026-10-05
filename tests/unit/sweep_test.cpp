@@ -47,6 +47,15 @@ int main(int argc, char **argv) {
         spec.selected.clear();
         const auto scale = asr::plan_sweep(argv[1], base, spec, 3200, 4ULL * 1024 * 1024 * 1024);
         check(scale.cases.size() == 3, "scale levels missing");
+        auto shared_base = base;
+        for (const auto &item : std::vector<std::string>{"model.runtime=qwen_prefix", "model.path=missing-model",
+                 "workers.scheduler=round_robin", "workers.max_sessions_per_process=8",
+                 "audio.source=wav", "audio.path=missing.wav"}) shared_base.push_back(item);
+        const auto shared_scale = asr::plan_sweep({}, shared_base, spec, 3200, 6ULL * 1024 * 1024 * 1024);
+        for (const auto &item : shared_scale.cases)
+            check(item.config && item.config->worker_processes == 1 &&
+                  item.config->max_sessions_per_process == 8 && item.skip_reasons.empty(),
+                  "shared-model scale changed process count or model ownership");
         const auto result =
             asr::run_sweep(scale, root, [](const asr::RunConfig &config, const asr::LoadPlan &load) {
                 const int level = load.spec.concurrency;

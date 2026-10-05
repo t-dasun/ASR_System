@@ -25,6 +25,8 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const [job, setJob] = useState<JobStatus | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const sharedModel = capabilities?.engine === 'qwen_prefix_multiplex_experimental'
+  const activeLimit = sharedModel ? (capabilities?.max_sessions_per_process || 1) : 16
 
   useEffect(() => { setProcesses(capabilities?.worker_processes || 1) }, [capabilities?.worker_processes])
 
@@ -98,7 +100,9 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
     if (!job?.job_id) return
     try {
       await requestJson(base, `/v1/jobs/${job.job_id}/stop`, {})
-      log('warn', 'experiment', 'Stop requested; active native call may continue to its watchdog')
+      log('warn', 'experiment', capabilities?.hard_decode_watchdog
+        ? 'Stop requested; active native call may continue to its watchdog'
+        : 'Stop requested; active decode finishes before the next call is stopped')
     } catch (cause) { setError(String(cause)) }
   }
 
@@ -127,13 +131,13 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
         </select>
       </label>
       <label className="field">Worker processes
-        <input type="number" min="1" max="16" value={processes} onChange={event => setProcesses(Number(event.target.value))} />
+        <input type="number" min="1" max="16" value={processes} disabled={sharedModel} onChange={event => setProcesses(Number(event.target.value))} />
       </label>
       <label className="field">Calls per repetition
         <input type="number" min="1" max="1000" value={calls} onChange={event => setCalls(Number(event.target.value))} />
       </label>
       <label className="field">Concurrency
-        <input type="number" min="1" max="16" value={concurrency} onChange={event => setConcurrency(Number(event.target.value))} />
+        <input type="number" min="1" max={activeLimit} value={concurrency} onChange={event => setConcurrency(Number(event.target.value))} />
       </label>
       <label className="field">Warmups
         <input type="number" min="0" max="20" value={warmups} onChange={event => setWarmups(Number(event.target.value))} />
@@ -167,9 +171,9 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
           onChange={event => setAxisKey(event.target.value)}>
           {strategy === 'scale' ? <option value="concurrency">concurrency</option> : <>
             <option value="audio.chunk_ms">audio.chunk_ms</option>
-            <option value="model.threads" disabled={capabilities?.is_mock}>model.threads</option>
-            <option value="workers.processes">workers.processes</option>
-            <option value="model.decode_step_ms" disabled={capabilities?.is_mock}>model.decode_step_ms</option>
+            <option value="model.threads" disabled={capabilities?.is_mock || sharedModel}>model.threads</option>
+            <option value="workers.processes" disabled={sharedModel}>workers.processes</option>
+            <option value="model.decode_step_ms" disabled={capabilities?.is_mock || sharedModel}>model.decode_step_ms</option>
           </>}
         </select>
       </label><label className="field">Values
@@ -205,6 +209,6 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
         <div className="stat"><span>SLO qualified</span><strong>{textAt(result, 'slo', 'qualified') || (asRecord(result.slo).qualified === true ? 'yes' : 'no')}</strong></div>
       </div>}
     </div>}
-    <p className="fine-print">Mock results are structural only. Fewer than 20 measured calls cannot qualify a tail estimate. A job can be stopped between calls; a blocking native call is watchdog-bounded.</p>
+    <p className="fine-print">Mock results are structural only. Fewer than 20 measured calls cannot qualify a tail estimate. A job can be stopped between calls; {capabilities?.hard_decode_watchdog ? 'active native decoding is watchdog-bounded.' : 'an active decode must finish before stop completes.'}</p>
   </section>
 }

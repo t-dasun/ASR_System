@@ -12,10 +12,12 @@
 #include <csignal>
 #ifdef ASR_HAS_QWEN_NATIVE
 #include <asr/engines/native_engine.hpp>
+#include <asr/engines/prefix_engine.hpp>
 #endif
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <unistd.h>
 
 namespace {
 volatile std::sig_atomic_t stop_server = 0;
@@ -72,7 +74,14 @@ std::uint64_t strict_u64(const std::string &value) {
         throw std::invalid_argument("invalid nonnegative integer: " + value);
     return result;
 }
-std::unique_ptr<asr::SessionManager> make_manager(const asr::RunConfig &config) {
+std::unique_ptr<asr::IASREngine> make_engine(const asr::RunConfig &config) {
+#ifdef ASR_HAS_QWEN_NATIVE
+    if (config.runtime == "qwen_prefix")
+        return std::make_unique<asr::PrefixMultiplexEngine>(
+            config.model_path.string(), config.max_sessions_per_process,
+            config.prefix_preview_ms, config.native_threads, config.idle_timeout_ms,
+            config.total_timeout_ms, config.timeout_ms);
+#endif
     std::unique_ptr<asr::IWorkerExecutor> executor;
     if (config.runtime == "mock")
         executor = std::make_unique<asr::FactoryWorkerExecutor>(
@@ -109,9 +118,61 @@ std::unique_ptr<asr::SessionManager> make_manager(const asr::RunConfig &config) 
     layout.cpu_cores = config.cpu_cores;
     return std::make_unique<asr::SessionManager>(layout, std::move(executor), std::move(scheduler));
 }
+void drain_engine(asr::IASREngine &engine) {
+    if (auto *manager = dynamic_cast<asr::SessionManager *>(&engine))
+        manager->begin_draining();
+#ifdef ASR_HAS_QWEN_NATIVE
+    if (auto *prefix = dynamic_cast<asr::PrefixMultiplexEngine *>(&engine))
+        prefix->begin_draining();
+#endif
+}
+nlohmann::json workers_json(asr::IASREngine &engine) {
+    auto workers = nlohmann::json::array();
+    if (auto *manager = dynamic_cast<asr::SessionManager *>(&engine))
+        for (const auto &worker : manager->workers())
+            workers.push_back({{"worker_id", worker.worker_id}, {"call_id", worker.call_id},
+                               {"language", worker.language}, {"state", state_name(worker.state)},
+                               {"occupied", worker.occupied}, {"healthy", worker.healthy},
+                               {"active_sessions", worker.active_sessions},
+                               {"runtime_threads", worker.runtime_threads},
+                               {"process_id", worker.process_id}, {"failures", worker.failures},
+                               {"last_error", worker.last_error}, {"server_queue_depth", nullptr}});
+#ifdef ASR_HAS_QWEN_NATIVE
+    if (auto *prefix = dynamic_cast<asr::PrefixMultiplexEngine *>(&engine)) {
+        const auto status = prefix->worker_status();
+        auto calls = nlohmann::json::array();
+        bool busy = false;
+        for (const auto &call : status.calls) {
+            busy |= call.decoding;
+            calls.push_back({{"call_id", call.call_id}, {"language", call.language},
+                             {"state", state_name(call.state)}, {"buffered_samples", call.buffered_samples},
+                             {"decoding", call.decoding}});
+        }
+        workers.push_back({{"worker_id", "prefix_shared_0"}, {"call_id", ""}, {"language", "mixed"},
+                           {"state", busy ? "streaming" : "ready"}, {"occupied", !status.calls.empty()},
+                           {"healthy", true}, {"active_sessions", status.calls.size()},
+                           {"max_sessions", status.max_calls}, {"runtime_threads", status.runtime_threads},
+                           {"blas_threads", status.blas_threads},
+                           {"process_id", getpid()}, {"failures", status.failures}, {"last_error", status.last_error},
+                           {"server_queue_depth", status.queued_jobs}, {"draining", status.draining},
+                           {"calls", calls}});
+    }
+#endif
+    return workers;
+}
+void validate_shared_suite(const asr::RunConfig &startup, const asr::RunConfig &selected) {
+    if (startup.runtime != "qwen_prefix" && selected.runtime != "qwen_prefix") return;
+    if (startup.runtime != selected.runtime || startup.model_path != selected.model_path ||
+        startup.native_threads != selected.native_threads ||
+        startup.max_sessions_per_process != selected.max_sessions_per_process ||
+        startup.prefix_preview_ms != selected.prefix_preview_ms ||
+        startup.idle_timeout_ms != selected.idle_timeout_ms ||
+        startup.total_timeout_ms != selected.total_timeout_ms || startup.timeout_ms != selected.timeout_ms)
+        throw std::invalid_argument("shared-model API suites must retain startup runtime, model, threads, slots, and preview interval; use CLI sweeps for runtime changes");
+}
 void usage() {
     std::cout
-        << "Usage: asr-cli <validate|dry-run|run|load-dry-run|load|sweep-dry-run|sweep|serve> [--config "
+        << "Usage: asr-cli <validate|dry-run|run|load-dry-run|load|sweep-dry-run|sweep|serve|serve-prefix> [--config "
            "FILE] [--set "
            "section.key=value ...]\n"
            "CPU mock or pinned Qwen native engine; synthetic or WAV audio.\n"
@@ -136,7 +197,8 @@ int main(int argc, char **argv) {
         }
         const std::string action = argv[1];
         if (action != "validate" && action != "dry-run" && action != "run" && action != "load-dry-run" &&
-            action != "load" && action != "sweep-dry-run" && action != "sweep" && action != "serve")
+            action != "load" && action != "sweep-dry-run" && action != "sweep" && action != "serve" &&
+            action != "serve-prefix")
             throw std::invalid_argument("unknown command: " + action);
         std::filesystem::path config_path;
         std::vector<std::string> overrides;
@@ -146,6 +208,8 @@ int main(int argc, char **argv) {
         std::string preset;
         int endurance_seconds = 1800;
         int serve_port = 0;
+        int prefix_max_calls = 2;
+        int prefix_preview_ms = 4000;
         for (int i = 2; i < argc; ++i) {
             const std::string option = argv[i];
             if (i + 1 >= argc)
@@ -156,8 +220,12 @@ int main(int argc, char **argv) {
                 config_path = argv[++i];
             } else if (option == "--set")
                 overrides.emplace_back(argv[++i]);
-            else if (option == "--port" && action == "serve")
+            else if (option == "--port" && (action == "serve" || action == "serve-prefix"))
                 serve_port = strict_int(argv[++i]);
+            else if (option == "--max-calls" && action == "serve-prefix")
+                prefix_max_calls = strict_int(argv[++i]);
+            else if (option == "--preview-ms" && action == "serve-prefix")
+                prefix_preview_ms = strict_int(argv[++i]);
             else if (action == "load" || action == "load-dry-run" || action == "sweep" ||
                      action == "sweep-dry-run") {
                 const std::string value = argv[++i];
@@ -204,13 +272,19 @@ int main(int argc, char **argv) {
             } else
                 throw std::invalid_argument("unknown option: " + option);
         }
+        if (action == "serve-prefix") {
+            overrides.emplace_back("model.runtime=qwen_prefix");
+            overrides.emplace_back("workers.scheduler=round_robin");
+            overrides.emplace_back("workers.max_sessions_per_process=" + std::to_string(prefix_max_calls));
+            overrides.emplace_back("model.prefix_preview_ms=" + std::to_string(prefix_preview_ms));
+        }
         auto config = asr::resolve_config(config_path, overrides);
         if (load_spec.languages.empty())
             load_spec.languages.push_back(config.language);
         load_spec.seed = config.seed;
         sweep_spec.load = load_spec;
 #ifndef ASR_HAS_QWEN_NATIVE
-        if (config.runtime == "qwen_native")
+        if (config.runtime != "mock")
             throw std::invalid_argument("this build has no native Qwen worker; use release-cpu preset");
 #endif
         if (action == "validate") {
@@ -221,10 +295,10 @@ int main(int argc, char **argv) {
                       << '\n';
             return 0;
         }
-        if (action == "serve") {
+        if (action == "serve" || action == "serve-prefix") {
             if (serve_port < 0 || serve_port > 65535)
                 throw std::invalid_argument("serve port must be 0..65535");
-            auto manager = make_manager(config);
+            auto manager = make_engine(config);
             asr::ServiceAdmissionGate gate;
             asr::LinuxSystemSampler sampler;
             std::mutex sampler_mutex;
@@ -242,11 +316,16 @@ int main(int argc, char **argv) {
                  {"sample_rate_hz", 16000},
                  {"max_websocket_frame_bytes", 65536},
                  {"worker_processes", config.worker_processes},
+                 {"max_sessions_per_process", config.max_sessions_per_process},
+                 {"inference_slots_per_process", 1},
+                 {"process_isolated", config.runtime == "qwen_native"},
+                 {"hard_decode_watchdog", config.runtime == "qwen_native"},
+                 {"cooperative_cancellation", manager->capabilities().cooperative_cancellation},
                  {"routes",
                   {"/v1/capabilities", "/v1/config/resolve", "/v1/runtime", "/v1/jobs", "/v1/history",
                    "/v1/artifacts/{id}/{file}", "/v1/reports", "/v1/reports/{id}", "/v1/suites/dry-run",
                    "/v1/suites", "/v1/jobs/{id}", "/v1/jobs/{id}/stop", "/v1/asr", "/v1/observe"}}},
-                [config_path, overrides](const nlohmann::json &body, bool dry_run,
+                [config_path, overrides, config, &manager](const nlohmann::json &body, bool dry_run,
                                          const std::atomic<bool> &cancelled) {
                     if (!body.is_object())
                         throw std::invalid_argument("suite request must be a JSON object");
@@ -254,6 +333,8 @@ int main(int argc, char **argv) {
                     auto all = overrides;
                     all.insert(all.end(), extra.begin(), extra.end());
                     auto effective = asr::resolve_config(config_path, all);
+                    validate_shared_suite(config, effective);
+                    effective.shared_model_loaded = effective.runtime == "qwen_prefix";
                     auto spec = asr::LoadSpec{};
                     spec.calls = body.value("calls", 2);
                     spec.concurrency = body.value("concurrency", 1);
@@ -295,14 +376,15 @@ int main(int argc, char **argv) {
                         if (!plan.allowed)
                             throw std::invalid_argument("load preflight rejected: " +
                                                         plan.preflight["skip_reasons"].dump());
-                        auto run_manager = make_manager(effective);
+                        auto run_manager = effective.runtime == "qwen_prefix" ?
+                            std::unique_ptr<asr::IASREngine>{} : make_engine(effective);
                         std::unique_ptr<asr::WebSocketServer> server;
                         std::unique_ptr<asr::WebSocketEngine> network;
-                        asr::IASREngine *ingress = run_manager.get();
+                        asr::IASREngine *ingress = run_manager ? run_manager.get() : manager.get();
                         if (spec.mode == "network") {
-                            server = std::make_unique<asr::WebSocketServer>(*run_manager);
+                            server = std::make_unique<asr::WebSocketServer>(*ingress);
                             network = std::make_unique<asr::WebSocketEngine>(server->port(),
-                                                                             run_manager->capabilities());
+                                                                             ingress->capabilities());
                             ingress = network.get();
                         }
                         return asr::run_load(effective, *ingress, plan, sample_count, pcm, metadata,
@@ -316,20 +398,35 @@ int main(int argc, char **argv) {
                             sweep.axes.push_back({axis.at("key").get<std::string>(),
                                                   axis.at("values").get<std::vector<std::string>>()});
                         sweep.selected = body.value("selected", std::vector<std::vector<std::string>>{});
-                        const auto plan = asr::plan_sweep(config_path, all, sweep, sample_count, memory);
+                        auto plan = asr::plan_sweep(config_path, all, sweep, sample_count, memory);
+                        if (effective.runtime == "qwen_prefix")
+                            for (auto &item : plan.cases)
+                                if (item.config) {
+                                    validate_shared_suite(config, *item.config);
+                                    item.config->shared_model_loaded = true;
+                                    // Recompute memory admission against the already loaded model.
+                                    const auto fresh = asr::plan_load(*item.config, item.load ? item.load->spec : spec,
+                                                                      sample_count, memory);
+                                    if (item.load && item.skip_reasons ==
+                                        item.load->preflight["skip_reasons"].get<std::vector<std::string>>())
+                                        item.skip_reasons = fresh.preflight["skip_reasons"].get<std::vector<std::string>>();
+                                    item.load = fresh;
+                                }
                         if (dry_run)
                             return plan.json();
                         return asr::run_sweep(
                             plan, effective.output_directory,
                             [&](const asr::RunConfig &selected, const asr::LoadPlan &load) {
-                                auto run_manager = make_manager(selected);
+                                validate_shared_suite(config, selected);
+                                auto run_manager = selected.runtime == "qwen_prefix" ?
+                                    std::unique_ptr<asr::IASREngine>{} : make_engine(selected);
                                 std::unique_ptr<asr::WebSocketServer> server;
                                 std::unique_ptr<asr::WebSocketEngine> network;
-                                asr::IASREngine *ingress = run_manager.get();
+                                asr::IASREngine *ingress = run_manager ? run_manager.get() : manager.get();
                                 if (load.spec.mode == "network") {
-                                    server = std::make_unique<asr::WebSocketServer>(*run_manager);
+                                    server = std::make_unique<asr::WebSocketServer>(*ingress);
                                     network = std::make_unique<asr::WebSocketEngine>(
-                                        server->port(), run_manager->capabilities());
+                                        server->port(), ingress->capabilities());
                                     ingress = network.get();
                                 }
                                 return asr::run_load(selected, *ingress, load, sample_count, pcm, metadata,
@@ -346,20 +443,7 @@ int main(int argc, char **argv) {
                         std::lock_guard lock(sampler_mutex);
                         sample = sampler.sample();
                     }
-                    nlohmann::json workers = nlohmann::json::array();
-                    for (const auto &worker : manager->workers())
-                        workers.push_back({{"worker_id", worker.worker_id},
-                                           {"call_id", worker.call_id},
-                                           {"language", worker.language},
-                                           {"state", state_name(worker.state)},
-                                           {"occupied", worker.occupied},
-                                           {"healthy", worker.healthy},
-                                           {"active_sessions", worker.active_sessions},
-                                           {"runtime_threads", worker.runtime_threads},
-                                           {"process_id", worker.process_id},
-                                           {"failures", worker.failures},
-                                           {"last_error", worker.last_error},
-                                           {"server_queue_depth", nullptr}});
+                    const auto workers = workers_json(*manager);
                     std::int64_t rss = 0;
                     for (const auto &process : sample["processes"])
                         rss += process["rss_bytes"].get<std::int64_t>();
@@ -373,7 +457,7 @@ int main(int argc, char **argv) {
                            sample["host_memory_bytes"].value("MemAvailable", 0LL)},
                           {"host_memory_total_bytes", sample["host_memory_bytes"].value("MemTotal", 0LL)},
                           {"sampled_process_tree_rss_bytes", rss},
-                          {"queue_depth_available", false}}}};
+                          {"queue_depth_available", config.runtime == "qwen_prefix"}}}};
                 });
             asr::WebSocketServer server(*manager, std::uint16_t(serve_port), &api, &gate);
             std::signal(SIGINT, on_stop_signal);
@@ -387,7 +471,7 @@ int main(int argc, char **argv) {
                       << std::endl;
             while (!stop_server)
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            manager->begin_draining();
+            drain_engine(*manager);
             return 0;
         }
         std::optional<asr::PreparedAudio> prepared;
@@ -419,7 +503,7 @@ int main(int argc, char **argv) {
                                          {"calls", 1},
                                          {"worker_processes", config.worker_processes},
                                          {"inference_slots_per_process", 1},
-                                         {"max_sessions_per_process", 1},
+                                         {"max_sessions_per_process", config.max_sessions_per_process},
                                          {"chunks", (samples + chunk - 1) / chunk},
                                          {"samples", samples},
                                          {"clock", config.realtime ? "host_steady" : "simulated"},
@@ -483,7 +567,7 @@ int main(int argc, char **argv) {
             auto summary =
                 asr::run_sweep(plan, config.output_directory,
                                [&](const asr::RunConfig &effective, const asr::LoadPlan &load) {
-                                   auto manager = make_manager(effective);
+                                   auto manager = make_engine(effective);
                                    std::unique_ptr<asr::WebSocketServer> server;
                                    std::unique_ptr<asr::WebSocketEngine> network;
                                    asr::IASREngine *ingress = manager.get();
@@ -501,7 +585,8 @@ int main(int argc, char **argv) {
         }
         config.resolved["audio"]["effective_samples"] = samples;
         config.resolved["audio"]["effective_duration_seconds"] = static_cast<double>(samples) / 16000;
-        std::unique_ptr<asr::IASREngine> engine = make_manager(config);
+        std::unique_ptr<asr::IASREngine> engine = make_engine(config);
+        config.shared_model_loaded = config.runtime == "qwen_prefix";
         if (action == "load") {
             auto plan = asr::plan_load(config, load_spec, samples, asr::linux_available_memory_bytes());
             std::unique_ptr<asr::WebSocketServer> server;

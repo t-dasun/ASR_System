@@ -1,0 +1,1694 @@
+{
+  "schema": "main_cpp_prefix_service_v1",
+  "capabilities": {
+    "cooperative_cancellation": false,
+    "device": "cpu",
+    "engine": "qwen_prefix_multiplex_experimental",
+    "engine_revision": "prefix_v1",
+    "hard_decode_watchdog": false,
+    "inference_slots_per_process": 1,
+    "is_mock": false,
+    "languages": [
+      "en",
+      "id",
+      "zh"
+    ],
+    "max_sessions_per_process": 8,
+    "max_websocket_frame_bytes": 65536,
+    "precision": "bf16_weights",
+    "process_isolated": false,
+    "protocol": "asr.websocket.v1",
+    "routes": [
+      "/v1/capabilities",
+      "/v1/config/resolve",
+      "/v1/runtime",
+      "/v1/jobs",
+      "/v1/history",
+      "/v1/artifacts/{id}/{file}",
+      "/v1/reports",
+      "/v1/reports/{id}",
+      "/v1/suites/dry-run",
+      "/v1/suites",
+      "/v1/jobs/{id}",
+      "/v1/jobs/{id}/stop",
+      "/v1/asr",
+      "/v1/observe"
+    ],
+    "sample_rate_hz": 16000,
+    "schema_version": 1,
+    "streaming_kind": "causal_prefix_redecode",
+    "worker_processes": 1
+  },
+  "sweep_dry_run": {
+    "axes": [
+      {
+        "key": "concurrency",
+        "values": [
+          "1",
+          "2",
+          "4",
+          "8"
+        ]
+      }
+    ],
+    "base_overrides": [],
+    "case_count": 4,
+    "cases": [
+      {
+        "concurrency": 1,
+        "effective_config": {
+          "audio": {
+            "channel_mix": "reject",
+            "channels": 1,
+            "chunk_ms": 200,
+            "duration_ms": 1200,
+            "late_tolerance_ms": 5,
+            "max_lag_ms": 1000,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+            "queue_max_bytes": 32000,
+            "queue_max_chunks": 8,
+            "queue_max_ms": 1000,
+            "realtime_pacing": true,
+            "sample_rate_hz": 16000,
+            "source": "wav"
+          },
+          "cpu": {
+            "affinity_enabled": false,
+            "cores": []
+          },
+          "dataset": {
+            "language": "en"
+          },
+          "experiment": {
+            "name": "qwen_prefix_shared",
+            "seed": 42
+          },
+          "metrics": {
+            "resource_sampling": true,
+            "sample_interval_ms": 200
+          },
+          "mock": {
+            "partial_every_ms": 400
+          },
+          "model": {
+            "decode_step_ms": 2000,
+            "device": "cpu",
+            "max_new_tokens": 32,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/models/qwen3-asr-0.6b",
+            "prefix_preview_ms": 4000,
+            "refine_final": true,
+            "runtime": "qwen_prefix",
+            "threads": 4,
+            "timeout_ms": 45000
+          },
+          "output": {
+            "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp"
+          },
+          "schema_version": 1,
+          "workers": {
+            "executor": "in_process",
+            "idle_timeout_ms": 30000,
+            "inference_slots_per_process": 1,
+            "max_sessions_per_process": 8,
+            "model_instances_per_process": 1,
+            "processes": 1,
+            "scheduler": "round_robin",
+            "threads_per_process": 4,
+            "total_timeout_ms": 600000
+          }
+        },
+        "id": "scale_1",
+        "load": {
+          "allowed": true,
+          "calls": [
+            {
+              "id": "repeat_0_call_0",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 0,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_1",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 1,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            }
+          ],
+          "preflight": {
+            "active_call_slots": 8,
+            "available_disk_bytes": 960148824064,
+            "available_memory_bytes": 7993212928,
+            "estimated_disk_bytes": 782336,
+            "estimated_duration_seconds": 35.16,
+            "memory_estimate_kind": "shared_model_scratch_plus_reserve_and_call_buffers",
+            "mode": "direct",
+            "network_mode": "loopback_websocket_v1",
+            "per_call_chunks": 63,
+            "required_memory_bytes": 2164260864,
+            "shared_model_already_loaded": true,
+            "skip_reasons": [],
+            "total_audio_seconds": 25.16,
+            "total_calls": 2,
+            "worker_processes": 1
+          },
+          "schema_version": 1,
+          "spec": {
+            "calls": 2,
+            "concurrency": 1,
+            "languages": [
+              "en"
+            ],
+            "max_failure_rate": null,
+            "max_p95_final_ms": null,
+            "max_p95_send_lag_ms": null,
+            "max_peak_rss_bytes": null,
+            "min_audio_throughput": null,
+            "mode": "direct",
+            "repetitions": 1,
+            "seed": 42,
+            "stagger_ms": 0,
+            "warmups": 0
+          }
+        },
+        "overrides": [],
+        "skip_reasons": []
+      },
+      {
+        "concurrency": 2,
+        "effective_config": {
+          "audio": {
+            "channel_mix": "reject",
+            "channels": 1,
+            "chunk_ms": 200,
+            "duration_ms": 1200,
+            "late_tolerance_ms": 5,
+            "max_lag_ms": 1000,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+            "queue_max_bytes": 32000,
+            "queue_max_chunks": 8,
+            "queue_max_ms": 1000,
+            "realtime_pacing": true,
+            "sample_rate_hz": 16000,
+            "source": "wav"
+          },
+          "cpu": {
+            "affinity_enabled": false,
+            "cores": []
+          },
+          "dataset": {
+            "language": "en"
+          },
+          "experiment": {
+            "name": "qwen_prefix_shared",
+            "seed": 42
+          },
+          "metrics": {
+            "resource_sampling": true,
+            "sample_interval_ms": 200
+          },
+          "mock": {
+            "partial_every_ms": 400
+          },
+          "model": {
+            "decode_step_ms": 2000,
+            "device": "cpu",
+            "max_new_tokens": 32,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/models/qwen3-asr-0.6b",
+            "prefix_preview_ms": 4000,
+            "refine_final": true,
+            "runtime": "qwen_prefix",
+            "threads": 4,
+            "timeout_ms": 45000
+          },
+          "output": {
+            "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp"
+          },
+          "schema_version": 1,
+          "workers": {
+            "executor": "in_process",
+            "idle_timeout_ms": 30000,
+            "inference_slots_per_process": 1,
+            "max_sessions_per_process": 8,
+            "model_instances_per_process": 1,
+            "processes": 1,
+            "scheduler": "round_robin",
+            "threads_per_process": 4,
+            "total_timeout_ms": 600000
+          }
+        },
+        "id": "scale_2",
+        "load": {
+          "allowed": true,
+          "calls": [
+            {
+              "id": "repeat_0_call_0",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 0,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_1",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 1,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_2",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 2,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_3",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 3,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            }
+          ],
+          "preflight": {
+            "active_call_slots": 8,
+            "available_disk_bytes": 960148824064,
+            "available_memory_bytes": 7993212928,
+            "estimated_disk_bytes": 1564672,
+            "estimated_duration_seconds": 45.16,
+            "memory_estimate_kind": "shared_model_scratch_plus_reserve_and_call_buffers",
+            "mode": "direct",
+            "network_mode": "loopback_websocket_v1",
+            "per_call_chunks": 63,
+            "required_memory_bytes": 2181038080,
+            "shared_model_already_loaded": true,
+            "skip_reasons": [],
+            "total_audio_seconds": 50.32,
+            "total_calls": 4,
+            "worker_processes": 1
+          },
+          "schema_version": 1,
+          "spec": {
+            "calls": 4,
+            "concurrency": 2,
+            "languages": [
+              "en"
+            ],
+            "max_failure_rate": null,
+            "max_p95_final_ms": null,
+            "max_p95_send_lag_ms": null,
+            "max_peak_rss_bytes": null,
+            "min_audio_throughput": null,
+            "mode": "direct",
+            "repetitions": 1,
+            "seed": 42,
+            "stagger_ms": 0,
+            "warmups": 0
+          }
+        },
+        "overrides": [],
+        "skip_reasons": []
+      },
+      {
+        "concurrency": 4,
+        "effective_config": {
+          "audio": {
+            "channel_mix": "reject",
+            "channels": 1,
+            "chunk_ms": 200,
+            "duration_ms": 1200,
+            "late_tolerance_ms": 5,
+            "max_lag_ms": 1000,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+            "queue_max_bytes": 32000,
+            "queue_max_chunks": 8,
+            "queue_max_ms": 1000,
+            "realtime_pacing": true,
+            "sample_rate_hz": 16000,
+            "source": "wav"
+          },
+          "cpu": {
+            "affinity_enabled": false,
+            "cores": []
+          },
+          "dataset": {
+            "language": "en"
+          },
+          "experiment": {
+            "name": "qwen_prefix_shared",
+            "seed": 42
+          },
+          "metrics": {
+            "resource_sampling": true,
+            "sample_interval_ms": 200
+          },
+          "mock": {
+            "partial_every_ms": 400
+          },
+          "model": {
+            "decode_step_ms": 2000,
+            "device": "cpu",
+            "max_new_tokens": 32,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/models/qwen3-asr-0.6b",
+            "prefix_preview_ms": 4000,
+            "refine_final": true,
+            "runtime": "qwen_prefix",
+            "threads": 4,
+            "timeout_ms": 45000
+          },
+          "output": {
+            "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp"
+          },
+          "schema_version": 1,
+          "workers": {
+            "executor": "in_process",
+            "idle_timeout_ms": 30000,
+            "inference_slots_per_process": 1,
+            "max_sessions_per_process": 8,
+            "model_instances_per_process": 1,
+            "processes": 1,
+            "scheduler": "round_robin",
+            "threads_per_process": 4,
+            "total_timeout_ms": 600000
+          }
+        },
+        "id": "scale_4",
+        "load": {
+          "allowed": true,
+          "calls": [
+            {
+              "id": "repeat_0_call_0",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 0,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_1",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 1,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_2",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 2,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_3",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 3,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_4",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 4,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_5",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 5,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_6",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 6,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_7",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 7,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            }
+          ],
+          "preflight": {
+            "active_call_slots": 8,
+            "available_disk_bytes": 960148824064,
+            "available_memory_bytes": 7993212928,
+            "estimated_disk_bytes": 3129344,
+            "estimated_duration_seconds": 65.16,
+            "memory_estimate_kind": "shared_model_scratch_plus_reserve_and_call_buffers",
+            "mode": "direct",
+            "network_mode": "loopback_websocket_v1",
+            "per_call_chunks": 63,
+            "required_memory_bytes": 2214592512,
+            "shared_model_already_loaded": true,
+            "skip_reasons": [],
+            "total_audio_seconds": 100.64,
+            "total_calls": 8,
+            "worker_processes": 1
+          },
+          "schema_version": 1,
+          "spec": {
+            "calls": 8,
+            "concurrency": 4,
+            "languages": [
+              "en"
+            ],
+            "max_failure_rate": null,
+            "max_p95_final_ms": null,
+            "max_p95_send_lag_ms": null,
+            "max_peak_rss_bytes": null,
+            "min_audio_throughput": null,
+            "mode": "direct",
+            "repetitions": 1,
+            "seed": 42,
+            "stagger_ms": 0,
+            "warmups": 0
+          }
+        },
+        "overrides": [],
+        "skip_reasons": []
+      },
+      {
+        "concurrency": 8,
+        "effective_config": {
+          "audio": {
+            "channel_mix": "reject",
+            "channels": 1,
+            "chunk_ms": 200,
+            "duration_ms": 1200,
+            "late_tolerance_ms": 5,
+            "max_lag_ms": 1000,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+            "queue_max_bytes": 32000,
+            "queue_max_chunks": 8,
+            "queue_max_ms": 1000,
+            "realtime_pacing": true,
+            "sample_rate_hz": 16000,
+            "source": "wav"
+          },
+          "cpu": {
+            "affinity_enabled": false,
+            "cores": []
+          },
+          "dataset": {
+            "language": "en"
+          },
+          "experiment": {
+            "name": "qwen_prefix_shared",
+            "seed": 42
+          },
+          "metrics": {
+            "resource_sampling": true,
+            "sample_interval_ms": 200
+          },
+          "mock": {
+            "partial_every_ms": 400
+          },
+          "model": {
+            "decode_step_ms": 2000,
+            "device": "cpu",
+            "max_new_tokens": 32,
+            "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/models/qwen3-asr-0.6b",
+            "prefix_preview_ms": 4000,
+            "refine_final": true,
+            "runtime": "qwen_prefix",
+            "threads": 4,
+            "timeout_ms": 45000
+          },
+          "output": {
+            "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp"
+          },
+          "schema_version": 1,
+          "workers": {
+            "executor": "in_process",
+            "idle_timeout_ms": 30000,
+            "inference_slots_per_process": 1,
+            "max_sessions_per_process": 8,
+            "model_instances_per_process": 1,
+            "processes": 1,
+            "scheduler": "round_robin",
+            "threads_per_process": 4,
+            "total_timeout_ms": 600000
+          }
+        },
+        "id": "scale_8",
+        "load": {
+          "allowed": true,
+          "calls": [
+            {
+              "id": "repeat_0_call_0",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 0,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_1",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 1,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_2",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 2,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_3",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 3,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_4",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 4,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_5",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 5,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_6",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 6,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_7",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 7,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 0
+            },
+            {
+              "id": "repeat_0_call_8",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 8,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_9",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 9,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_10",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 10,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_11",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 11,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_12",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 12,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_13",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 13,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_14",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 14,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            },
+            {
+              "id": "repeat_0_call_15",
+              "language": "en",
+              "offset_ms": 0,
+              "ordinal": 15,
+              "repetition": 0,
+              "warmup": false,
+              "wave": 1
+            }
+          ],
+          "preflight": {
+            "active_call_slots": 8,
+            "available_disk_bytes": 960148824064,
+            "available_memory_bytes": 7993212928,
+            "estimated_disk_bytes": 6258688,
+            "estimated_duration_seconds": 105.16,
+            "memory_estimate_kind": "shared_model_scratch_plus_reserve_and_call_buffers",
+            "mode": "direct",
+            "network_mode": "loopback_websocket_v1",
+            "per_call_chunks": 63,
+            "required_memory_bytes": 2281701376,
+            "shared_model_already_loaded": true,
+            "skip_reasons": [],
+            "total_audio_seconds": 201.28,
+            "total_calls": 16,
+            "worker_processes": 1
+          },
+          "schema_version": 1,
+          "spec": {
+            "calls": 16,
+            "concurrency": 8,
+            "languages": [
+              "en"
+            ],
+            "max_failure_rate": null,
+            "max_p95_final_ms": null,
+            "max_p95_send_lag_ms": null,
+            "max_peak_rss_bytes": null,
+            "min_audio_throughput": null,
+            "mode": "direct",
+            "repetitions": 1,
+            "seed": 42,
+            "stagger_ms": 0,
+            "warmups": 0
+          }
+        },
+        "overrides": [],
+        "skip_reasons": []
+      }
+    ],
+    "config_path": "configs/qwen_prefix_shared.yaml",
+    "network_mode": "loopback_websocket_v1",
+    "schema_version": 1,
+    "seed": 42,
+    "selected": [],
+    "strategy": "scale"
+  },
+  "active_runtime": {
+    "schema_version": 1,
+    "system": {
+      "host_cpu_percent": null,
+      "host_memory_available_bytes": 7989862400,
+      "host_memory_total_bytes": 15870791680,
+      "queue_depth_available": true,
+      "sampled_process_tree_rss_bytes": 1843085312
+    },
+    "timestamp_ns": 11257260841583,
+    "workers": [
+      {
+        "active_sessions": 3,
+        "blas_threads": 4,
+        "call_id": "",
+        "calls": [
+          {
+            "buffered_samples": 9600,
+            "call_id": "indonesian",
+            "decoding": false,
+            "language": "id",
+            "state": "streaming"
+          },
+          {
+            "buffered_samples": 9600,
+            "call_id": "mandarin",
+            "decoding": false,
+            "language": "zh",
+            "state": "streaming"
+          },
+          {
+            "buffered_samples": 9600,
+            "call_id": "english",
+            "decoding": false,
+            "language": "en",
+            "state": "streaming"
+          }
+        ],
+        "draining": false,
+        "failures": 0,
+        "healthy": true,
+        "language": "mixed",
+        "last_error": "",
+        "max_sessions": 8,
+        "occupied": true,
+        "process_id": 29551,
+        "runtime_threads": 4,
+        "server_queue_depth": 0,
+        "state": "ready",
+        "worker_id": "prefix_shared_0"
+      }
+    ]
+  },
+  "interactive_suite_gate": {
+    "error": "interactive call is active"
+  },
+  "live_calls": [
+    {
+      "call_id": "english",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 5601,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "english",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 11262284332586,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T11:06:32Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 14931,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "english",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 11271688255910,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T11:06:42Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12581,
+      "done_ms": 14931,
+      "status": {
+        "code": "none",
+        "message": ""
+      }
+    },
+    {
+      "call_id": "indonesian",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 7001,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "indonesian",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 11263564100640,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T11:06:34Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 20094,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "indonesian",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 11276851599192,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T11:06:47Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 20094,
+      "status": {
+        "code": "none",
+        "message": ""
+      }
+    },
+    {
+      "call_id": "mandarin",
+      "language": "zh",
+      "sample_count": 228480,
+      "events": [
+        {
+          "elapsed_ms": 4601,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "mandarin",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 11261275519543,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "\u55ef\u3002",
+              "utc": "2026-10-05T11:06:31Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 16845,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "mandarin",
+              "clock_domain": "host_steady",
+              "consumed_samples": 228480,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 11273602083271,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "main_service_1791198386851374116",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "\u610f\u5927\u5229\u8bed\u7684\u53d1\u97f3\u76f8\u5bf9\u5bb9\u6613\uff0c\u56e0\u4e3a\u5927\u591a\u6570\u5355\u8bcd\u7684\u53d1\u97f3\u4e0e\u62fc\u5199\u5b8c\u5168\u76f8\u540c\u3002",
+              "utc": "2026-10-05T11:06:44Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 72,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 14281,
+      "done_ms": 16845,
+      "status": {
+        "code": "none",
+        "message": ""
+      }
+    }
+  ],
+  "suite_live_gate": {
+    "credits": 0,
+    "status": {
+      "code": "resource_exhausted",
+      "message": "benchmark suite has exclusive service admission"
+    },
+    "type": "ready",
+    "v": 1,
+    "worker_id": ""
+  },
+  "cpp_suite_job": {
+    "job_id": "job_18db9d761e1c4369_f41e3a2c384f28a32bd929d26c3ca724",
+    "result": {
+      "completed_calls": 4,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76",
+      "failed_calls": 0,
+      "is_mock": false,
+      "measurement_failures": 0,
+      "metrics": {
+        "audio_seconds_per_wall_second": 2.278737973657784,
+        "call_max_send_lag_ms": {
+          "count": 4,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 0.371051,
+          "mean": 0.18404,
+          "p50": 0.13553549999999998,
+          "p90": 0.30125330000000006,
+          "p95": 0.3361521499999999,
+          "p99": 0.36407122999999997,
+          "population": "completed-call maxima",
+          "unit": "ms"
+        },
+        "completed_audio_seconds": 50.32,
+        "completed_calls": 4,
+        "completed_calls_per_minute": 10.868384612040305,
+        "effective_rtf": {
+          "count": 4,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 1.7466775914944357,
+          "mean": 1.4699764902623211,
+          "p50": 1.4699079879968204,
+          "p90": 1.6915116932193959,
+          "p95": 1.7190946423569158,
+          "p99": 1.7411610016669317,
+          "population": "completed calls",
+          "unit": "ratio"
+        },
+        "failure_rate": 0.0,
+        "final_result_ms": {
+          "count": 4,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 21973.204101,
+          "mean": 18492.3042475,
+          "p50": 18491.442489,
+          "p90": 21279.2171007,
+          "p95": 21626.210600849998,
+          "p99": 21903.80540097,
+          "population": "completed calls",
+          "unit": "ms"
+        },
+        "first_usable_ms": {
+          "count": 4,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 8136.689263,
+          "mean": 6606.576037,
+          "p50": 6609.0082265,
+          "p90": 7831.3856986,
+          "p95": 7984.0374808,
+          "p99": 8106.15890656,
+          "population": "completed calls with text",
+          "unit": "ms"
+        },
+        "measurement_wall_seconds": 22.082398495,
+        "offered_calls": 4,
+        "sampled_peak_tree_rss_bytes": 2869850112
+      },
+      "mode": "network",
+      "phases": [
+        {
+          "calls": [
+            {
+              "call": {
+                "id": "repeat_0_call_0",
+                "language": "en",
+                "offset_ms": 0,
+                "ordinal": 0,
+                "repetition": 0,
+                "warmup": false,
+                "wave": 0
+              },
+              "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_0",
+              "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_0",
+              "status": "COMPLETE",
+              "summary": {
+                "audio": {
+                  "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+                  "source": "wav"
+                },
+                "audio_overflows": 0,
+                "audio_samples": 201280,
+                "audio_seconds": 12.58,
+                "chunks": 63,
+                "clock_domain": "host_steady",
+                "elapsed_clock_ns": 17323176683,
+                "engine": "qwen_prefix_multiplex_experimental",
+                "events": 2,
+                "is_mock": false,
+                "late_chunks": 0,
+                "max_send_lag_ns": 94038,
+                "measurements": {
+                  "audio_duration_ns": 12580000000,
+                  "controller_queue_wait": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 2245.0,
+                    "mean": 640.4126984126984,
+                    "p50": 581.0,
+                    "p90": 865.2000000000002,
+                    "p95": 1277.9999999999993,
+                    "p99": 2058.3800000000006,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "effective_rtf": 1.3770247120826709,
+                  "effective_rtf_definition": "final publication minus stream start, divided by unique input duration; includes paced waiting and EOF refinement",
+                  "eof_refinement_wall_ns": null,
+                  "eof_requested_ns": 11289586245747,
+                  "final_result_ns": 17322970878,
+                  "finalization_ns": 4701030882,
+                  "finalization_reference": "controller EOF request (worker receipt unavailable)",
+                  "first_inference_compute_ns": null,
+                  "first_partial_ns": 6099005738,
+                  "first_stable_transcript_ns": null,
+                  "first_usable_transcript_ns": 6099005738,
+                  "inference_compute_rtf": null,
+                  "live_invocation_wall_ns": null,
+                  "model_load_ns": null,
+                  "partial_service_lag_ns": null,
+                  "publication_boundary": "load-client sink receipt after WebSocket transport; includes network latency, no UI",
+                  "publication_delay": {
+                    "count": 2,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 381573.0,
+                    "mean": 305310.5,
+                    "p50": 305310.5,
+                    "p90": 366320.5,
+                    "p95": 373946.75,
+                    "p99": 380047.75,
+                    "population": "recognition events",
+                    "unit": "ns"
+                  },
+                  "ready_ns": 11276964304659,
+                  "runtime_queue_wait_ns": null,
+                  "scheduled_final_lag_ns": 4742970878,
+                  "schema_version": 1,
+                  "send_lag": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 94038.0,
+                    "mean": 68347.61904761905,
+                    "p50": 66083.0,
+                    "p90": 82207.8,
+                    "p95": 84389.4,
+                    "p99": 89410.94000000002,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "session_requested_ns": 11276857254365,
+                  "startup_ns": 107050294,
+                  "stream_start_ns": 11276964305751,
+                  "submit_wall": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 53519446.0,
+                    "mean": 41267265.428571425,
+                    "p50": 40901257.0,
+                    "p90": 41806320.4,
+                    "p95": 41853227.3,
+                    "p99": 46315727.38000003,
+                    "population": "submitted chunks",
+                    "unit": "ns"
+                  },
+                  "tail_warning": "Small populations do not establish tail SLOs; never pool by averaging percentiles.",
+                  "unavailable_reason": "Native API has no active-decode, dequeue, stable-prefix, or consumed-audio boundary; delivered samples are not acoustic alignment.",
+                  "worker_cpu_ns": null,
+                  "worker_eof_received_ns": null,
+                  "worker_peak_rss_bytes": null
+                },
+                "mode": "network",
+                "note": "Measured native call; offline evaluator adds human-reference accuracy",
+                "peak_queued_bytes": 6400,
+                "peak_queued_chunks": 1,
+                "peak_queued_samples": 3200,
+                "resources": {
+                  "enabled": false,
+                  "reason": "disabled by config"
+                },
+                "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_0",
+                "schema_version": 1,
+                "status": "COMPLETE",
+                "transcript": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+                "worker_id": "prefix_shared_0"
+              }
+            },
+            {
+              "call": {
+                "id": "repeat_0_call_1",
+                "language": "en",
+                "offset_ms": 0,
+                "ordinal": 1,
+                "repetition": 0,
+                "warmup": false,
+                "wave": 0
+              },
+              "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_1",
+              "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_1",
+              "status": "COMPLETE",
+              "summary": {
+                "audio": {
+                  "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+                  "source": "wav"
+                },
+                "audio_overflows": 0,
+                "audio_samples": 201280,
+                "audio_seconds": 12.58,
+                "chunks": 63,
+                "clock_domain": "host_steady",
+                "elapsed_clock_ns": 15013324048,
+                "engine": "qwen_prefix_multiplex_experimental",
+                "events": 2,
+                "is_mock": false,
+                "late_chunks": 0,
+                "max_send_lag_ns": 371051,
+                "measurements": {
+                  "audio_duration_ns": 12580000000,
+                  "controller_queue_wait": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 1684.0,
+                    "mean": 908.968253968254,
+                    "p50": 841.0,
+                    "p90": 1292.0000000000005,
+                    "p95": 1379.0,
+                    "p99": 1553.1800000000005,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "effective_rtf": 1.1934123935612082,
+                  "effective_rtf_definition": "final publication minus stream start, divided by unique input duration; includes paced waiting and EOF refinement",
+                  "eof_refinement_wall_ns": null,
+                  "eof_requested_ns": 11289584394767,
+                  "final_result_ns": 15013127911,
+                  "finalization_ns": 2392110419,
+                  "finalization_reference": "controller EOF request (worker receipt unavailable)",
+                  "first_inference_compute_ns": null,
+                  "first_partial_ns": 5071598432,
+                  "first_stable_transcript_ns": null,
+                  "first_usable_transcript_ns": 5071598432,
+                  "inference_compute_rtf": null,
+                  "live_invocation_wall_ns": null,
+                  "model_load_ns": null,
+                  "partial_service_lag_ns": null,
+                  "publication_boundary": "load-client sink receipt after WebSocket transport; includes network latency, no UI",
+                  "publication_delay": {
+                    "count": 2,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 330378.0,
+                    "mean": 267806.0,
+                    "p50": 267806.0,
+                    "p90": 317863.6,
+                    "p95": 324120.8,
+                    "p99": 329126.56,
+                    "population": "recognition events",
+                    "unit": "ns"
+                  },
+                  "ready_ns": 11276963376304,
+                  "runtime_queue_wait_ns": null,
+                  "scheduled_final_lag_ns": 2433127911,
+                  "schema_version": 1,
+                  "send_lag": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 371051.0,
+                    "mean": 101323.66666666667,
+                    "p50": 80019.0,
+                    "p90": 228208.60000000062,
+                    "p95": 272822.9,
+                    "p99": 329327.48000000016,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "session_requested_ns": 11276857036387,
+                  "startup_ns": 106339917,
+                  "stream_start_ns": 11276963377275,
+                  "submit_wall": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 53846268.0,
+                    "mean": 41203569.38095238,
+                    "p50": 40909512.0,
+                    "p90": 41298434.8,
+                    "p95": 41804937.9,
+                    "p99": 46591749.68000003,
+                    "population": "submitted chunks",
+                    "unit": "ns"
+                  },
+                  "tail_warning": "Small populations do not establish tail SLOs; never pool by averaging percentiles.",
+                  "unavailable_reason": "Native API has no active-decode, dequeue, stable-prefix, or consumed-audio boundary; delivered samples are not acoustic alignment.",
+                  "worker_cpu_ns": null,
+                  "worker_eof_received_ns": null,
+                  "worker_peak_rss_bytes": null
+                },
+                "mode": "network",
+                "note": "Measured native call; offline evaluator adds human-reference accuracy",
+                "peak_queued_bytes": 6400,
+                "peak_queued_chunks": 1,
+                "peak_queued_samples": 3200,
+                "resources": {
+                  "enabled": false,
+                  "reason": "disabled by config"
+                },
+                "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_1",
+                "schema_version": 1,
+                "status": "COMPLETE",
+                "transcript": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+                "worker_id": "prefix_shared_0"
+              }
+            },
+            {
+              "call": {
+                "id": "repeat_0_call_2",
+                "language": "en",
+                "offset_ms": 0,
+                "ordinal": 2,
+                "repetition": 0,
+                "warmup": false,
+                "wave": 0
+              },
+              "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_2",
+              "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_2",
+              "status": "COMPLETE",
+              "summary": {
+                "audio": {
+                  "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+                  "source": "wav"
+                },
+                "audio_overflows": 0,
+                "audio_samples": 201280,
+                "audio_seconds": 12.58,
+                "chunks": 63,
+                "clock_domain": "host_steady",
+                "elapsed_clock_ns": 21973411940,
+                "engine": "qwen_prefix_multiplex_experimental",
+                "events": 2,
+                "is_mock": false,
+                "late_chunks": 0,
+                "max_send_lag_ns": 132679,
+                "measurements": {
+                  "audio_duration_ns": 12580000000,
+                  "controller_queue_wait": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 1533.0,
+                    "mean": 700.2063492063492,
+                    "p50": 712.0,
+                    "p90": 905.8000000000002,
+                    "p95": 1146.8999999999999,
+                    "p99": 1532.38,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "effective_rtf": 1.7466775914944357,
+                  "effective_rtf_definition": "final publication minus stream start, divided by unique input duration; includes paced waiting and EOF refinement",
+                  "eof_refinement_wall_ns": null,
+                  "eof_requested_ns": 11289586254043,
+                  "final_result_ns": 21973204101,
+                  "finalization_ns": 9351129433,
+                  "finalization_reference": "controller EOF request (worker receipt unavailable)",
+                  "first_inference_compute_ns": null,
+                  "first_partial_ns": 7119010715,
+                  "first_stable_transcript_ns": null,
+                  "first_usable_transcript_ns": 7119010715,
+                  "inference_compute_rtf": null,
+                  "live_invocation_wall_ns": null,
+                  "model_load_ns": null,
+                  "partial_service_lag_ns": null,
+                  "publication_boundary": "load-client sink receipt after WebSocket transport; includes network latency, no UI",
+                  "publication_delay": {
+                    "count": 2,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 400919.0,
+                    "mean": 355850.0,
+                    "p50": 355850.0,
+                    "p90": 391905.2,
+                    "p95": 396412.1,
+                    "p99": 400017.62,
+                    "population": "recognition events",
+                    "unit": "ns"
+                  },
+                  "ready_ns": 11276964178904,
+                  "runtime_queue_wait_ns": null,
+                  "scheduled_final_lag_ns": 9393204101,
+                  "schema_version": 1,
+                  "send_lag": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 132679.0,
+                    "mean": 75182.31746031746,
+                    "p50": 73557.0,
+                    "p90": 85223.0,
+                    "p95": 87796.59999999999,
+                    "p99": 124039.30000000003,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "session_requested_ns": 11276857226462,
+                  "startup_ns": 106952442,
+                  "stream_start_ns": 11276964179375,
+                  "submit_wall": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 53190291.0,
+                    "mean": 41310151.07936508,
+                    "p50": 41011853.0,
+                    "p90": 41880861.6,
+                    "p95": 41977749.9,
+                    "p99": 46311085.340000026,
+                    "population": "submitted chunks",
+                    "unit": "ns"
+                  },
+                  "tail_warning": "Small populations do not establish tail SLOs; never pool by averaging percentiles.",
+                  "unavailable_reason": "Native API has no active-decode, dequeue, stable-prefix, or consumed-audio boundary; delivered samples are not acoustic alignment.",
+                  "worker_cpu_ns": null,
+                  "worker_eof_received_ns": null,
+                  "worker_peak_rss_bytes": null
+                },
+                "mode": "network",
+                "note": "Measured native call; offline evaluator adds human-reference accuracy",
+                "peak_queued_bytes": 6400,
+                "peak_queued_chunks": 1,
+                "peak_queued_samples": 3200,
+                "resources": {
+                  "enabled": false,
+                  "reason": "disabled by config"
+                },
+                "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_2",
+                "schema_version": 1,
+                "status": "COMPLETE",
+                "transcript": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+                "worker_id": "prefix_shared_0"
+              }
+            },
+            {
+              "call": {
+                "id": "repeat_0_call_3",
+                "language": "en",
+                "offset_ms": 0,
+                "ordinal": 3,
+                "repetition": 0,
+                "warmup": false,
+                "wave": 0
+              },
+              "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76/load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_3",
+              "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_3",
+              "status": "COMPLETE",
+              "summary": {
+                "audio": {
+                  "path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+                  "source": "wav"
+                },
+                "audio_overflows": 0,
+                "audio_samples": 201280,
+                "audio_seconds": 12.58,
+                "chunks": 63,
+                "clock_domain": "host_steady",
+                "elapsed_clock_ns": 19660112120,
+                "engine": "qwen_prefix_multiplex_experimental",
+                "events": 2,
+                "is_mock": false,
+                "late_chunks": 0,
+                "max_send_lag_ns": 138392,
+                "measurements": {
+                  "audio_duration_ns": 12580000000,
+                  "controller_queue_wait": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 2635.0,
+                    "mean": 1262.936507936508,
+                    "p50": 1212.0,
+                    "p90": 1759.000000000001,
+                    "p95": 2027.0,
+                    "p99": 2461.4000000000005,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "effective_rtf": 1.5627912639109698,
+                  "effective_rtf_definition": "final publication minus stream start, divided by unique input duration; includes paced waiting and EOF refinement",
+                  "eof_refinement_wall_ns": null,
+                  "eof_requested_ns": 11289584367015,
+                  "final_result_ns": 19659914100,
+                  "finalization_ns": 7038838660,
+                  "finalization_reference": "controller EOF request (worker receipt unavailable)",
+                  "first_inference_compute_ns": null,
+                  "first_partial_ns": 8136689263,
+                  "first_stable_transcript_ns": null,
+                  "first_usable_transcript_ns": 8136689263,
+                  "inference_compute_rtf": null,
+                  "live_invocation_wall_ns": null,
+                  "model_load_ns": null,
+                  "partial_service_lag_ns": null,
+                  "publication_boundary": "load-client sink receipt after WebSocket transport; includes network latency, no UI",
+                  "publication_delay": {
+                    "count": 2,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 475208.0,
+                    "mean": 366915.5,
+                    "p50": 366915.5,
+                    "p90": 453549.5,
+                    "p95": 464378.75,
+                    "p99": 473042.15,
+                    "population": "recognition events",
+                    "unit": "ns"
+                  },
+                  "ready_ns": 11276963290583,
+                  "runtime_queue_wait_ns": null,
+                  "scheduled_final_lag_ns": 7079914100,
+                  "schema_version": 1,
+                  "send_lag": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 138392.0,
+                    "mean": 81776.88888888889,
+                    "p50": 80560.0,
+                    "p90": 92369.0,
+                    "p95": 115331.19999999998,
+                    "p99": 135749.56,
+                    "population": "delivered chunks",
+                    "unit": "ns"
+                  },
+                  "session_requested_ns": 11276857234698,
+                  "startup_ns": 106055885,
+                  "stream_start_ns": 11276963291575,
+                  "submit_wall": {
+                    "count": 63,
+                    "estimator": "linear_(n-1)*p_type7",
+                    "max": 53552228.0,
+                    "mean": 41305691.952380955,
+                    "p50": 40992827.0,
+                    "p90": 41807728.6,
+                    "p95": 41889139.1,
+                    "p99": 46421743.78000003,
+                    "population": "submitted chunks",
+                    "unit": "ns"
+                  },
+                  "tail_warning": "Small populations do not establish tail SLOs; never pool by averaging percentiles.",
+                  "unavailable_reason": "Native API has no active-decode, dequeue, stable-prefix, or consumed-audio boundary; delivered samples are not acoustic alignment.",
+                  "worker_cpu_ns": null,
+                  "worker_eof_received_ns": null,
+                  "worker_peak_rss_bytes": null
+                },
+                "mode": "network",
+                "note": "Measured native call; offline evaluator adds human-reference accuracy",
+                "peak_queued_bytes": 6400,
+                "peak_queued_chunks": 1,
+                "peak_queued_samples": 3200,
+                "resources": {
+                  "enabled": false,
+                  "reason": "disabled by config"
+                },
+                "run_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76_repeat_0_call_3",
+                "schema_version": 1,
+                "status": "COMPLETE",
+                "transcript": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+                "worker_id": "prefix_shared_0"
+              }
+            }
+          ],
+          "measurement_end_ns": 11298938795116,
+          "measurement_start_ns": 11276856396621,
+          "phase": 0,
+          "resource_samples_path": "phase_0_system_metrics.jsonl",
+          "resources": {
+            "cpu_definition": "process CPU seconds / measured wall interval; 1.0 means one logical CPU. Host/per-core utilization 0..100 percent.",
+            "enabled": true,
+            "error": "",
+            "max_tree_cpu_core_equivalents": 4.501424904412026,
+            "measurement_valid": true,
+            "requested_interval_ms": 200,
+            "sample_count": 95,
+            "sampled_peak_tree_pss_bytes": 2866230272,
+            "sampled_peak_tree_rss_bytes": 2869850112,
+            "sampled_peak_worker_threads": 0,
+            "sampling_note": "sampled peaks are lower bounds; short-lived processes and between-sample peaks may be missed",
+            "scope": "controller and descendants, including startup; RSS sum can double-count shared pages"
+          },
+          "warmup": false
+        }
+      ],
+      "preflight": {
+        "active_call_slots": 8,
+        "available_disk_bytes": 960148824064,
+        "available_memory_bytes": 7793270784,
+        "estimated_disk_bytes": 1564672,
+        "estimated_duration_seconds": 32.58,
+        "memory_estimate_kind": "shared_model_scratch_plus_reserve_and_call_buffers",
+        "mode": "network",
+        "network_mode": "loopback_websocket_v1",
+        "per_call_chunks": 63,
+        "required_memory_bytes": 2214592512,
+        "shared_model_already_loaded": true,
+        "skip_reasons": [],
+        "total_audio_seconds": 50.32,
+        "total_calls": 4,
+        "worker_processes": 1
+      },
+      "schema_version": 1,
+      "slo": {
+        "note": "Fewer than 20 measured calls: tail estimate is screening only",
+        "profile_declared": true,
+        "qualified": false,
+        "tail_population_sufficient": false,
+        "thresholds_met": true,
+        "violations": []
+      },
+      "status": "COMPLETE",
+      "suite_id": "load_18db9d761e44009b_8f43fad5ebb529bf0474675672ce8f76"
+    },
+    "status": "COMPLETE"
+  },
+  "idle_runtime": {
+    "schema_version": 1,
+    "system": {
+      "host_cpu_percent": 8.446297446798955,
+      "host_memory_available_bytes": 7791886336,
+      "host_memory_total_bytes": 15870791680,
+      "queue_depth_available": true,
+      "sampled_process_tree_rss_bytes": 2868772864
+    },
+    "timestamp_ns": 11298950962473,
+    "workers": [
+      {
+        "active_sessions": 0,
+        "blas_threads": 4,
+        "call_id": "",
+        "calls": [],
+        "draining": false,
+        "failures": 0,
+        "healthy": true,
+        "language": "mixed",
+        "last_error": "",
+        "max_sessions": 8,
+        "occupied": false,
+        "process_id": 29551,
+        "runtime_threads": 4,
+        "server_queue_depth": 0,
+        "state": "ready",
+        "worker_id": "prefix_shared_0"
+      }
+    ]
+  }
+}

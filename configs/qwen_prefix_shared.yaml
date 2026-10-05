@@ -1,0 +1,29 @@
+schema_version: 1
+experiment:
+  name: qwen_prefix_shared
+  seed: 42
+model:
+  runtime: qwen_prefix
+  device: cpu
+  path: ../models/qwen3-asr-0.6b
+  threads: 4
+  prefix_preview_ms: 4000
+  refine_final: true
+workers:
+  processes: 1
+  inference_slots_per_process: 1
+  max_sessions_per_process: 8
+  model_instances_per_process: 1
+  scheduler: round_robin
+audio:
+  source: wav
+  path: ../datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav
+  channel_mix: reject
+  sample_rate_hz: 16000
+  channels: 1
+  chunk_ms: 200
+  realtime_pacing: true
+dataset:
+  language: en
+output:
+  directory: ../results/time_multiplexing/main_cpp

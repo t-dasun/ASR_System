@@ -103,17 +103,23 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
     LoadPlan plan;
     plan.spec = spec;
     std::vector<std::string> reasons;
-    if (spec.concurrency > config.worker_processes)
-        reasons.emplace_back("target concurrency exceeds isolated worker processes");
+    const bool prefix = config.runtime == "qwen_prefix";
+    const int slots = config.worker_processes * config.max_sessions_per_process;
+    if (spec.concurrency > slots)
+        reasons.emplace_back("target concurrency exceeds configured active call slots");
     if (!config.realtime)
         reasons.emplace_back("load measurement requires host steady-clock pacing");
-    if (config.runtime == "qwen_native" && config.audio_source != "wav")
+    if (config.runtime != "mock" && config.audio_source != "wav")
         reasons.emplace_back("native load requires real WAV audio");
+    if (prefix && samples > 16000LL * 60)
+        reasons.emplace_back("qwen_prefix call exceeds 60-second audio bound");
     const auto total_calls = std::uint64_t(spec.calls) * (spec.warmups + spec.repetitions);
     const auto chunks =
         (samples + std::int64_t(config.chunk_ms) * 16 - 1) / (std::int64_t(config.chunk_ms) * 16);
     const auto estimated_disk = total_calls * (262144ULL + std::uint64_t(chunks) * 2048ULL);
     const auto required_memory =
+        prefix ? (config.shared_model_loaded ? 2ULL : 5ULL) * 1024 * 1024 * 1024 +
+                     std::uint64_t(spec.concurrency) * 16ULL * 1024 * 1024 :
         config.runtime == "qwen_native"
             ? 2ULL * 1024 * 1024 * 1024 + std::uint64_t(spec.concurrency) * 3ULL * 1024 * 1024 * 1024
             : 256ULL * 1024 * 1024 + std::uint64_t(spec.concurrency) * 64ULL * 1024 * 1024;
@@ -138,7 +144,7 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
     const double audio_seconds = double(samples) / 16000.0;
     const auto waves = (spec.calls + spec.concurrency - 1) / spec.concurrency;
     const auto estimated_seconds = double(waves) * (spec.warmups + spec.repetitions) *
-                                   (audio_seconds + (config.runtime == "qwen_native" ? 5.0 : 0.1));
+                                   (audio_seconds + (config.runtime == "mock" ? 0.1 : 5.0 * (prefix ? spec.concurrency : 1)));
     if (estimated_seconds > 7200)
         reasons.emplace_back("estimated run duration exceeds two-hour safety bound");
     std::mt19937 rng(spec.seed);
@@ -166,6 +172,9 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
                       {"available_memory_bytes", available_memory_bytes},
                       {"required_memory_bytes", required_memory},
                       {"worker_processes", config.worker_processes},
+                      {"active_call_slots", slots},
+                      {"shared_model_already_loaded", prefix && config.shared_model_loaded},
+                      {"memory_estimate_kind", prefix ? "shared_model_scratch_plus_reserve_and_call_buffers" : "isolated_workers_plus_reserve"},
                       {"per_call_chunks", chunks},
                       {"mode", spec.mode},
                       {"network_mode", "loopback_websocket_v1"}};

@@ -11,6 +11,9 @@ export interface Capabilities {
   languages: Language[]
   sample_rate_hz: number
   worker_processes: number
+  max_sessions_per_process?: number
+  process_isolated?: boolean
+  hard_decode_watchdog?: boolean
 }
 
 export interface WorkerSnapshot {
@@ -26,6 +29,7 @@ export interface WorkerSnapshot {
   failures: number
   last_error: string
   server_queue_depth: number | null
+  calls?: { call_id: string; language: string; state: string; buffered_samples: number; decoding: boolean }[]
 }
 
 export interface RuntimeSnapshot {

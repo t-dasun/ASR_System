@@ -1,0 +1,191 @@
+{
+  "schema": "experimental_prefix_load_v1",
+  "run_id": "prefix_load_1791194321351986269",
+  "inputs": [
+    {
+      "language": "en",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+      "pcm_sha256": "905ca9c7bf8e526c148c439c8f0b3ec4bf6cdf6613869114f6cd35489ff14921"
+    },
+    {
+      "language": "id",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav",
+      "pcm_sha256": "8edd4fcf5085e20e908b54482e14599f28734e976ed28581a671d7ea16434a7f"
+    }
+  ],
+  "reference": null,
+  "summary": {
+    "call_count": 2,
+    "all_completed": true,
+    "pre_eof_text_count": 2,
+    "reference_match_count": 0,
+    "first_text_ms": [
+      5001,
+      6401
+    ],
+    "final_ms": [
+      15337,
+      19082
+    ],
+    "mean_first_text_ms": 5701,
+    "mean_final_ms": 17210,
+    "wall_seconds": 19.583,
+    "cpu_seconds": 140.62,
+    "mean_cpu_cores": 7.181,
+    "rss_start_bytes": 2841665536,
+    "rss_peak_bytes": 2868535296,
+    "rss_end_bytes": 2868535296
+  },
+  "calls": [
+    {
+      "call_id": "call_0",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 5001,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_0",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7196209113342,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194321351986269",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T09:58:46Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 15337,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_0",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7206595061981,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194321351986269",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T09:58:57Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12581,
+      "done_ms": 15337,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+      "matches_reference": null,
+      "first_text_ms": 5001,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_1",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 6401,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_1",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7197611365762,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194321351986269",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T09:58:48Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 19082,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_1",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7210340419936,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194321351986269",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T09:59:00Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 19082,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+      "matches_reference": null,
+      "first_text_ms": 6401,
+      "first_text_before_eof": true
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 /build/
-/docs/
+/docs/*
+!/docs/TIME_MULTIPLEXING_RESULTS.md
+!/docs/MATCHED_TOPOLOGY_COMPARISON.md
+!/docs/AVAILABLE_RESULTS_BY_LANGUAGE.md
 /reports/temp/
 /results/*
 !/results/README.md

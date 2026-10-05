@@ -38,6 +38,21 @@ int main() {
         native_config.audio_source = "wav";
         const auto memory_rejected = asr::plan_load(native_config, spec, 3200, 6ULL * 1024 * 1024 * 1024);
         check(!memory_rejected.allowed, "native memory preflight failed");
+        auto shared = native_config;
+        shared.runtime = "qwen_prefix";
+        shared.worker_processes = 1;
+        shared.max_sessions_per_process = 8;
+        auto shared_spec = spec;
+        shared_spec.concurrency = 8;
+        const auto shared_plan = asr::plan_load(shared, shared_spec, 3200, 6ULL * 1024 * 1024 * 1024);
+        check(shared_plan.allowed && shared_plan.preflight["active_call_slots"] == 8,
+              "shared-model preflight multiplied model memory by call count");
+        shared_spec.concurrency = 9;
+        check(!asr::plan_load(shared, shared_spec, 3200, 6ULL * 1024 * 1024 * 1024).allowed,
+              "shared-model preflight allowed excess call slots");
+        shared_spec.concurrency = 1;
+        check(!asr::plan_load(shared, shared_spec, 16000LL * 61, 6ULL * 1024 * 1024 * 1024).allowed,
+              "shared-model preflight ignored the audio memory bound");
         auto network = spec;
         network.mode = "network";
         const auto network_plan = asr::plan_load(config, network, 3200, 4ULL * 1024 * 1024 * 1024);

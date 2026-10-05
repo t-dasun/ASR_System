@@ -1,0 +1,64 @@
+{
+  "active_calls": 2,
+  "calls": [
+    {
+      "audio_seconds": 12.58,
+      "events": [
+        {
+          "begin_ms": 4003.800554,
+          "end_ms": 5519.577656,
+          "inference_ms": 1515.7771020000005,
+          "kind": "prefix_preview",
+          "prefix_samples": 64000,
+          "text": "Due to the long distance from the continent, mammals were.",
+          "text_before_eof": true
+        },
+        {
+          "begin_ms": 12582.510397,
+          "end_ms": 15090.379702,
+          "inference_ms": 2507.869305,
+          "kind": "final",
+          "prefix_samples": 201280,
+          "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+          "text_before_eof": false
+        }
+      ],
+      "id": "call_0",
+      "language": "English",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav"
+    },
+    {
+      "audio_seconds": 15.48,
+      "events": [
+        {
+          "begin_ms": 5519.600508,
+          "end_ms": 6897.593769,
+          "inference_ms": 1377.9932609999996,
+          "kind": "prefix_preview",
+          "prefix_samples": 64000,
+          "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+          "text_before_eof": true
+        },
+        {
+          "begin_ms": 15484.003373,
+          "end_ms": 19023.137596,
+          "inference_ms": 3539.134223000001,
+          "kind": "final",
+          "prefix_samples": 247680,
+          "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+          "text_before_eof": false
+        }
+      ],
+      "id": "call_1",
+      "language": "Indonesian",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav"
+    }
+  ],
+  "causal_input": "only the scheduled sample prefix is passed before EOF",
+  "method": "one_model_serial_prefix_redecode",
+  "model_load_ms": 802.988464,
+  "native_live_api_used": false,
+  "rss_after_calls_kib": 2789596,
+  "rss_after_load_kib": 1796808,
+  "schema_version": 1
+}

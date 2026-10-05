@@ -1,5 +1,7 @@
 # M7 loopback API and streaming transport
 
+On the `time-multiplexing` branch, `asr-cli serve --config configs/qwen_prefix_shared.yaml --port 0` selects the shared-model C++ prefix engine through the same REST/audio/observer routes. It owns up to eight call sessions directly; `/v1/runtime` lists call IDs, buffers, decoding activity, and queued native jobs on one shared worker. REST C++ load jobs reuse the already loaded model and the same exclusive live/suite gate. Runtime layout and deadline changes require restarting this service, while CLI sweeps can reload between cases. Its soft deadlines and in-process failure boundary are reported in `/v1/capabilities`. The original `qwen_native` configuration still uses the process-isolated `SessionManager`. See [shared-model evidence](../../docs/TIME_MULTIPLEXING_RESULTS.md).
+
 `asr-cli serve --config configs/qwen_native_single.yaml --port 0` starts one C++ service on `127.0.0.1` and prints its assigned port. REST and WebSocket share that port and the same `SessionManager`/M6 load and sweep implementations as the CLI. `api_service.hpp/.cpp` owns REST routing and bounded asynchronous suite jobs; `websocket.hpp/.cpp` owns HTTP framing, v1 PCM transport, and a separate observation feed. The API does not import the Qwen runtime.
 
 REST v1:

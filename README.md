@@ -2,6 +2,8 @@
 
 Modular C++20 platform for evaluating Qwen3-ASR on CPU using progressively streamed audio, reproducible experiments, and Google FLEURS as the initial dataset.
 
+The `time-multiplexing` branch adds a shared Qwen runtime to the main C++ `run`, `load`, `sweep`, and `serve` paths. `qwen_prefix_shared.yaml` loads one model and schedules up to eight active calls by serial prefix redecoding. The main C++ 20-call-per-level screen completed 80/80 calls with both Qwen and OpenMP/BLAS set to four compute threads; four/eight-call throughput was about 2.12 audio seconds per wall second, with rising tail latency at eight. See [time multiplexing implementation and results](docs/TIME_MULTIPLEXING_RESULTS.md) for live-preview results, limits, and raw evidence. Start it with `build/release-cpu/asr-cli serve --config configs/qwen_prefix_shared.yaml --port 8767`.
+
 M0–M8 are implemented; M9–M11 provide robustness screens, a conservative sizing report, and a final prototype handoff, with explicit qualification gaps. The system has pinned CPU Qwen artifacts, modular C++ contracts, WAV/paced delivery, a process-isolated native adapter, measured single calls/offline accuracy evaluation, isolated session management, direct/network load and sweep tooling, a local REST/WebSocket service, and an engineering dashboard. The native stream can truncate provisional text; the adapter performs separate full-audio EOF refinement. The service remains loopback-only. Read the [final technical report](reports/FINAL_TECHNICAL_REPORT.md) for measured results and the limits of the production claim.
 
 See [implementation status and measured smoke evidence](docs/IMPLEMENTATION_STATUS.md).

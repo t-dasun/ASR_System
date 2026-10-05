@@ -1,0 +1,683 @@
+{
+  "schema": "experimental_prefix_load_v1",
+  "run_id": "prefix_load_1791194559290475958",
+  "inputs": [
+    {
+      "language": "en",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+      "pcm_sha256": "905ca9c7bf8e526c148c439c8f0b3ec4bf6cdf6613869114f6cd35489ff14921"
+    },
+    {
+      "language": "id",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav",
+      "pcm_sha256": "8edd4fcf5085e20e908b54482e14599f28734e976ed28581a671d7ea16434a7f"
+    },
+    {
+      "language": "en",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+      "pcm_sha256": "905ca9c7bf8e526c148c439c8f0b3ec4bf6cdf6613869114f6cd35489ff14921"
+    },
+    {
+      "language": "id",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav",
+      "pcm_sha256": "8edd4fcf5085e20e908b54482e14599f28734e976ed28581a671d7ea16434a7f"
+    },
+    {
+      "language": "en",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+      "pcm_sha256": "905ca9c7bf8e526c148c439c8f0b3ec4bf6cdf6613869114f6cd35489ff14921"
+    },
+    {
+      "language": "id",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav",
+      "pcm_sha256": "8edd4fcf5085e20e908b54482e14599f28734e976ed28581a671d7ea16434a7f"
+    },
+    {
+      "language": "en",
+      "path": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav",
+      "pcm_sha256": "905ca9c7bf8e526c148c439c8f0b3ec4bf6cdf6613869114f6cd35489ff14921"
+    },
+    {
+      "language": "id",
+      "path": "datasets/prepared/fleurs_m4/fleurs_id_id_validation_1520_4.wav",
+      "pcm_sha256": "8edd4fcf5085e20e908b54482e14599f28734e976ed28581a671d7ea16434a7f"
+    }
+  ],
+  "reference": "results/time_multiplexing/prefix_load_n2.json",
+  "summary": {
+    "call_count": 8,
+    "all_completed": true,
+    "pre_eof_text_count": 6,
+    "reference_match_count": 8,
+    "first_text_ms": [
+      6602,
+      8203,
+      9603,
+      11402,
+      12585,
+      14402,
+      5402,
+      15842
+    ],
+    "final_ms": [
+      21698,
+      26635,
+      29979,
+      33992,
+      36939,
+      40891,
+      18760,
+      44932
+    ],
+    "mean_first_text_ms": 10505,
+    "mean_final_ms": 31728,
+    "wall_seconds": 45.432,
+    "cpu_seconds": 652.46,
+    "mean_cpu_cores": 14.361,
+    "rss_start_bytes": 2858766336,
+    "rss_peak_bytes": 2877067264,
+    "rss_end_bytes": 2877067264
+  },
+  "calls": [
+    {
+      "call_id": "call_0",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 6602,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_0",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7435648339343,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T10:02:46Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 21698,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_0",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7450893912874,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T10:03:01Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12582,
+      "done_ms": 21698,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+      "matches_reference": true,
+      "first_text_ms": 6602,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_1",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 8203,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_1",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7437341431139,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T10:02:47Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 26634,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_1",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7455830695798,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T10:03:06Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 26635,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+      "matches_reference": true,
+      "first_text_ms": 8203,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_2",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 9603,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_2",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7438693383825,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T10:02:49Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 29979,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_2",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7459175713096,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T10:03:09Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12582,
+      "done_ms": 29979,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+      "matches_reference": true,
+      "first_text_ms": 9603,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_3",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 11402,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_3",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7440464557396,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T10:02:51Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 33992,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_3",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7463188411333,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T10:03:13Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 33992,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+      "matches_reference": true,
+      "first_text_ms": 11402,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_4",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 12585,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_4",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7441781248223,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T10:02:52Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 36939,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_4",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7466135198210,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T10:03:16Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12582,
+      "done_ms": 36939,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+      "matches_reference": true,
+      "first_text_ms": 12585,
+      "first_text_before_eof": false
+    },
+    {
+      "call_id": "call_5",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 14402,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_5",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7443444388557,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T10:02:54Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 40891,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_5",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7470087752219,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T10:03:20Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 40891,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+      "matches_reference": true,
+      "first_text_ms": 14402,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_6",
+      "language": "en",
+      "sample_count": 201280,
+      "events": [
+        {
+          "elapsed_ms": 5402,
+          "payload": {
+            "event": {
+              "before_eof": true,
+              "call_id": "call_6",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7434400439885,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Due to the long distance from the continent, mammals were.",
+              "utc": "2026-10-05T10:02:44Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 18760,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_6",
+              "clock_domain": "host_steady",
+              "consumed_samples": 201280,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7447956735919,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+              "utc": "2026-10-05T10:02:58Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 63,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 12581,
+      "done_ms": 18760,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Due to the long distance from the continent, mammals were unable to make the journey, making the giant tortoise the primary grazing animal in the Gobi Los.",
+      "matches_reference": true,
+      "first_text_ms": 5402,
+      "first_text_before_eof": true
+    },
+    {
+      "call_id": "call_7",
+      "language": "id",
+      "sample_count": 247680,
+      "events": [
+        {
+          "elapsed_ms": 15842,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_7",
+              "clock_domain": "host_steady",
+              "consumed_samples": 64000,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "partial",
+              "produced_ns": 7445038378450,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 1,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 0,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemeriksaan",
+              "utc": "2026-10-05T10:02:55Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        },
+        {
+          "elapsed_ms": 44932,
+          "payload": {
+            "event": {
+              "before_eof": false,
+              "call_id": "call_7",
+              "clock_domain": "host_steady",
+              "consumed_samples": 247680,
+              "error": {
+                "code": "none",
+                "message": ""
+              },
+              "kind": "final",
+              "produced_ns": 7474128627752,
+              "producer_id": "qwen_prefix_multiplex",
+              "published_ns": null,
+              "revision": 2,
+              "run_id": "prefix_load_1791194559290475958",
+              "schema_version": 1,
+              "sequence": 1,
+              "text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+              "utc": "2026-10-05T10:03:24Z",
+              "worker_id": "prefix_shared_0"
+            },
+            "type": "event",
+            "v": 1
+          }
+        }
+      ],
+      "ack_count": 78,
+      "worker_id": "prefix_shared_0",
+      "eof_sent_ms": 15481,
+      "done_ms": 44932,
+      "status": {
+        "code": "none",
+        "message": ""
+      },
+      "final_text": "Dari 1.400 orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8% sejak tahun 2008.",
+      "matches_reference": true,
+      "first_text_ms": 15842,
+      "first_text_before_eof": false
+    }
+  ]
+}

@@ -59,6 +59,12 @@ Json CallMeasurements::summary() const {
                 {"scheduled_final_lag_ns", nullptr},
                 {"effective_rtf", nullptr},
                 {"model_load_ns", nullptr},
+                {"shared_model_load_ns", nullptr},
+                {"prefix_decode_wall_ns", nullptr},
+                {"prefix_decode_queue_wait_ns", nullptr},
+                {"eof_decode_queue_wait_ns", nullptr},
+                {"offline_decode_wall_ns", nullptr},
+                {"offline_decode_wall_rtf", nullptr},
                 {"live_invocation_wall_ns", nullptr},
                 {"eof_refinement_wall_ns", nullptr},
                 {"worker_cpu_ns", nullptr},
@@ -113,6 +119,16 @@ Json CallMeasurements::summary() const {
         }
     }
     for (const auto &item : runtime) {
+        if (item.stage == "shared_model_load" && item.duration_ns) {
+            result["shared_model_load_ns"] = *item.duration_ns;
+            result["shared_model_load_definition"] = "one context load before call admission; reused metadata, not per-call startup";
+        }
+        if (item.stage == "prefix_decode" && item.duration_ns)
+            result["prefix_decode_wall_ns"] = *item.duration_ns;
+        if (item.stage == "prefix_decode_queue_wait" && item.duration_ns)
+            result["prefix_decode_queue_wait_ns"] = *item.duration_ns;
+        if (item.stage == "eof_decode_queue_wait" && item.duration_ns)
+            result["eof_decode_queue_wait_ns"] = *item.duration_ns;
         if (item.stage == "model_load" && item.duration_ns)
             result["model_load_ns"] = *item.duration_ns;
         if (item.stage == "live_invocation" && item.duration_ns)
@@ -123,6 +139,17 @@ Json CallMeasurements::summary() const {
             result["worker_cpu_ns"] = *item.cpu_ns;
         if (item.peak_rss_bytes)
             result["worker_peak_rss_bytes"] = *item.peak_rss_bytes;
+    }
+    if (!result["shared_model_load_ns"].is_null()) {
+        const auto amount = [&](const char *key) -> std::int64_t {
+            return result[key].is_null() ? 0 : result[key].get<std::int64_t>();
+        };
+        result["runtime_queue_wait_ns"] = amount("prefix_decode_queue_wait_ns") + amount("eof_decode_queue_wait_ns");
+        result["offline_decode_wall_ns"] = amount("prefix_decode_wall_ns") + amount("eof_refinement_wall_ns");
+        if (audio_samples && (!result["prefix_decode_wall_ns"].is_null() || !result["eof_refinement_wall_ns"].is_null()))
+            result["offline_decode_wall_rtf"] = double(amount("offline_decode_wall_ns")) / double(audio_samples * 62500);
+        result["offline_decode_wall_definition"] = "sum of prefix and EOF offline invocation wall time, divided by unique source duration for RTF; excludes call pacing and ready-job wait";
+        result["unavailable_reason"] = "Prefix wrapper measures ready-to-decode wait and offline invocation wall time; vendor internal decode/word alignment and stable text remain unavailable.";
     }
     result["send_lag"] = distribution(lag, "delivered chunks", "ns");
     result["controller_queue_wait"] = distribution(queue, "delivered chunks", "ns");

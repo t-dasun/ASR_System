@@ -15,6 +15,9 @@ struct RunConfig {
     std::filesystem::path output_directory, wav_path, model_path;
     std::string runtime = "mock", audio_source = "synthetic", channel_mix = "reject";
     int native_threads = 4, decode_step_ms = 2000, max_new_tokens = 32, timeout_ms = 45000;
+    int prefix_preview_ms = 4000, max_sessions_per_process = 1;
+    // Internal preflight state; never accepted from YAML or API overrides.
+    bool shared_model_loaded = false;
     bool refine_final = true;
     bool resource_sampling = true;
     int sample_interval_ms = 200;

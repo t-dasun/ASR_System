@@ -20,6 +20,8 @@ void checkpoint(const std::filesystem::path &directory, const Json &summary) {
 bool valid_axis(const std::string &key) {
     static const std::set<std::string> keys{"model.threads",
                                             "workers.processes",
+                                            "workers.max_sessions_per_process",
+                                            "model.prefix_preview_ms",
                                             "audio.chunk_ms",
                                             "model.decode_step_ms",
                                             "model.max_new_tokens",
@@ -148,9 +150,13 @@ SweepPlan plan_sweep(const std::filesystem::path &config_path, const std::vector
             if (level < 1 || level > 16 || !levels.insert(level).second)
                 throw std::invalid_argument("scale levels must be unique in 1..16");
         }
-        for (const auto level : levels)
+        const auto base = resolve_config(config_path, base_overrides);
+        for (const auto level : levels) {
+            const auto overrides = base.runtime == "qwen_prefix" ? std::vector<std::string>{} :
+                std::vector<std::string>{"workers.processes=" + std::to_string(level)};
             plan.cases.push_back(make_case(plan, "scale_" + std::to_string(level),
-                                           {"workers.processes=" + std::to_string(level)}, level));
+                                           overrides, level));
+        }
     } else {
         if (spec.axes.empty())
             throw std::invalid_argument("oat/matrix strategy needs at least one --axis");
@@ -240,8 +246,9 @@ Json run_sweep(const SweepPlan &plan, const std::filesystem::path &output_root, 
             if (cancel_requested && cancel_requested->load())
                 break;
             const int middle = last_pass + (first_fail - last_pass) / 2;
-            auto refined = make_case(plan, "refine_" + std::to_string(middle),
-                                     {"workers.processes=" + std::to_string(middle)}, middle);
+            const auto overrides = resolve_config(plan.config_path, plan.base_overrides).runtime == "qwen_prefix" ?
+                std::vector<std::string>{} : std::vector<std::string>{"workers.processes=" + std::to_string(middle)};
+            auto refined = make_case(plan, "refine_" + std::to_string(middle), overrides, middle);
             auto row = run_case(refined, plan.samples, directory, executor);
             records.push_back(row);
             result["cases"] = records;

@@ -1,0 +1,635 @@
+{
+  "schema": "main_cpp_shared_model_screen_v1",
+  "source_sweep": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp_short_screen/sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1/summary.json",
+  "source_sweep_sha256": "d3fafbc85bf2bda2ae469779df3fd80dce075142fdb1c3208199758b5d99d7dd",
+  "fixture_sha256": "aa641aab086aea649ada42d7d5704225a4ef7e478e36d39b56ef2d5ed560f91c",
+  "config": "configs/qwen_prefix_shared.yaml",
+  "sweep": {
+    "cases": [
+      {
+        "concurrency": 1,
+        "id": "scale_1",
+        "metrics": {
+          "audio_seconds_per_wall_second": 0.5654445188958251,
+          "call_max_send_lag_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 1.096978,
+            "mean": 0.15069784999999997,
+            "p50": 0.10059799999999999,
+            "p90": 0.1234788,
+            "p95": 0.17284460000000068,
+            "p99": 0.9121513199999988,
+            "population": "completed-call maxima",
+            "unit": "ms"
+          },
+          "completed_audio_seconds": 23.999999999999993,
+          "completed_calls": 20,
+          "completed_calls_per_minute": 28.272225944791266,
+          "effective_rtf": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 1.9363020191666667,
+            "mean": 1.76755499975,
+            "p50": 1.7547801945833332,
+            "p90": 1.9073356610833334,
+            "p95": 1.90981377875,
+            "p99": 1.9310043710833333,
+            "population": "completed calls",
+            "unit": "ratio"
+          },
+          "failure_rate": 0.0,
+          "final_result_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 2323.562423,
+            "mean": 2121.0659997000002,
+            "p50": 2105.7362335,
+            "p90": 2288.8027933000003,
+            "p95": 2291.7765345,
+            "p99": 2317.2052452999997,
+            "population": "completed calls",
+            "unit": "ms"
+          },
+          "first_usable_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 2323.562423,
+            "mean": 2121.0659997000002,
+            "p50": 2105.7362335,
+            "p90": 2288.8027933000003,
+            "p95": 2291.7765345,
+            "p99": 2317.2052452999997,
+            "population": "completed calls with text",
+            "unit": "ms"
+          },
+          "measurement_wall_seconds": 42.444482523,
+          "offered_calls": 20,
+          "sampled_peak_tree_rss_bytes": 2787176448
+        },
+        "runtime": "qwen_prefix",
+        "slo": {
+          "note": "Measured-call population; warmups excluded",
+          "profile_declared": false,
+          "qualified": false,
+          "tail_population_sufficient": true,
+          "thresholds_met": false,
+          "violations": []
+        },
+        "status": "COMPLETE",
+        "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp_short_screen/sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1/load_18db9be09aec3a2d_59b0f35a04fcb0f7b7cd467e180e74d9"
+      },
+      {
+        "concurrency": 2,
+        "id": "scale_2",
+        "metrics": {
+          "audio_seconds_per_wall_second": 0.8115519992777055,
+          "call_max_send_lag_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 9.912959,
+            "mean": 1.6182737000000003,
+            "p50": 0.84699,
+            "p90": 4.1380365,
+            "p95": 4.445331850000004,
+            "p99": 8.819433569999994,
+            "population": "completed-call maxima",
+            "unit": "ms"
+          },
+          "completed_audio_seconds": 23.999999999999993,
+          "completed_calls": 20,
+          "completed_calls_per_minute": 40.577599963885284,
+          "effective_rtf": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 4.904047790833333,
+            "mean": 2.4115443469999995,
+            "p50": 1.9402377654166667,
+            "p90": 3.8706285975833348,
+            "p95": 4.675044564708333,
+            "p99": 4.858247145608333,
+            "population": "completed calls",
+            "unit": "ratio"
+          },
+          "failure_rate": 0.0,
+          "final_result_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 5884.857349,
+            "mean": 2893.8532164,
+            "p50": 2328.2853185,
+            "p90": 4644.754317100002,
+            "p95": 5610.053477650001,
+            "p99": 5829.89657473,
+            "population": "completed calls",
+            "unit": "ms"
+          },
+          "first_usable_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 5884.857349,
+            "mean": 2893.8532164,
+            "p50": 2328.2853185,
+            "p90": 4644.754317100002,
+            "p95": 5610.053477650001,
+            "p99": 5829.89657473,
+            "population": "completed calls with text",
+            "unit": "ms"
+          },
+          "measurement_wall_seconds": 29.572966392,
+          "offered_calls": 20,
+          "sampled_peak_tree_rss_bytes": 2807525376
+        },
+        "runtime": "qwen_prefix",
+        "slo": {
+          "note": "Measured-call population; warmups excluded",
+          "profile_declared": false,
+          "qualified": false,
+          "tail_population_sufficient": true,
+          "thresholds_met": false,
+          "violations": []
+        },
+        "status": "COMPLETE",
+        "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp_short_screen/sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1/load_18db9bea966bd857_3924c4fb81a335f173ae9813afdace5b"
+      },
+      {
+        "concurrency": 4,
+        "id": "scale_4",
+        "metrics": {
+          "audio_seconds_per_wall_second": 1.078153586576925,
+          "call_max_send_lag_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 1.755118,
+            "mean": 0.6520241,
+            "p50": 0.6336930000000001,
+            "p90": 1.2383931000000008,
+            "p95": 1.7352668,
+            "p99": 1.7511477599999998,
+            "population": "completed-call maxima",
+            "unit": "ms"
+          },
+          "completed_audio_seconds": 23.999999999999993,
+          "completed_calls": 20,
+          "completed_calls_per_minute": 53.90767932884626,
+          "effective_rtf": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 4.988565433333333,
+            "mean": 3.4562608292083334,
+            "p50": 3.4750545783333333,
+            "p90": 3.7412521035,
+            "p95": 3.894173735541668,
+            "p99": 4.769687093774999,
+            "population": "completed calls",
+            "unit": "ratio"
+          },
+          "failure_rate": 0.0,
+          "final_result_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 5986.27852,
+            "mean": 4147.51299505,
+            "p50": 4170.065494,
+            "p90": 4489.5025242,
+            "p95": 4673.008482650001,
+            "p99": 5723.624512529998,
+            "population": "completed calls",
+            "unit": "ms"
+          },
+          "first_usable_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 5986.27852,
+            "mean": 4147.51299505,
+            "p50": 4170.065494,
+            "p90": 4489.5025242,
+            "p95": 4673.008482650001,
+            "p99": 5723.624512529998,
+            "population": "completed calls with text",
+            "unit": "ms"
+          },
+          "measurement_wall_seconds": 22.260279332,
+          "offered_calls": 20,
+          "sampled_peak_tree_rss_bytes": 2872029184
+        },
+        "runtime": "qwen_prefix",
+        "slo": {
+          "note": "Measured-call population; warmups excluded",
+          "profile_declared": false,
+          "qualified": false,
+          "tail_population_sufficient": true,
+          "thresholds_met": false,
+          "violations": []
+        },
+        "status": "COMPLETE",
+        "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp_short_screen/sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1/load_18db9bf183ceabb1_5827b229db6ac8d1738e5336629fe117"
+      },
+      {
+        "concurrency": 8,
+        "id": "scale_8",
+        "metrics": {
+          "audio_seconds_per_wall_second": 1.0772147258289146,
+          "call_max_send_lag_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 9.64008,
+            "mean": 1.1066173,
+            "p50": 0.33637700000000004,
+            "p90": 2.5176241000000004,
+            "p95": 3.129854450000005,
+            "p99": 8.33803488999999,
+            "population": "completed-call maxima",
+            "unit": "ms"
+          },
+          "completed_audio_seconds": 23.999999999999993,
+          "completed_calls": 20,
+          "completed_calls_per_minute": 53.860736291445754,
+          "effective_rtf": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 7.8594543791666664,
+            "mean": 6.155633521666667,
+            "p50": 6.9120453783333335,
+            "p90": 7.336991727916667,
+            "p95": 7.425828159291667,
+            "p99": 7.772729135191666,
+            "population": "completed calls",
+            "unit": "ratio"
+          },
+          "failure_rate": 0.0,
+          "final_result_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 9431.345255,
+            "mean": 7386.760226,
+            "p50": 8294.454453999999,
+            "p90": 8804.3900735,
+            "p95": 8910.99379115,
+            "p99": 9327.27496223,
+            "population": "completed calls",
+            "unit": "ms"
+          },
+          "first_usable_ms": {
+            "count": 20,
+            "estimator": "linear_(n-1)*p_type7",
+            "max": 9431.345255,
+            "mean": 7386.760226,
+            "p50": 8294.454453999999,
+            "p90": 8804.3900735,
+            "p95": 8910.99379115,
+            "p99": 9327.27496223,
+            "population": "completed calls with text",
+            "unit": "ms"
+          },
+          "measurement_wall_seconds": 22.279680573,
+          "offered_calls": 20,
+          "sampled_peak_tree_rss_bytes": 2936360960
+        },
+        "runtime": "qwen_prefix",
+        "slo": {
+          "note": "Measured-call population; warmups excluded",
+          "profile_declared": false,
+          "qualified": false,
+          "tail_population_sufficient": true,
+          "thresholds_met": false,
+          "violations": []
+        },
+        "status": "COMPLETE",
+        "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/main_cpp_short_screen/sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1/load_18db9bf6bdd66a87_47016e73881674e860303f2fafcc7f24"
+      }
+    ],
+    "completed_cases": 4,
+    "failed_cases": 0,
+    "saturation": {
+      "first_failing_concurrency": null,
+      "last_passing_concurrency": 8,
+      "note": "Exploratory first-failure screening; formal capacity qualification belongs to M10",
+      "qualified_capacity": false,
+      "safety_boundary": false
+    },
+    "schema_version": 1,
+    "skipped_cases": 0,
+    "status": "COMPLETE",
+    "strategy": "scale",
+    "sweep_id": "sweep_18db9be085e76c53_1c7f0aba95fa61bac367010087619fe1"
+  },
+  "levels": [
+    {
+      "concurrency": 1,
+      "source_summary_sha256": "4ea776270febc2af8b99b78004f9d2ab5b0d2fe2f0b43e4dc24499532d8ec74a",
+      "metrics": {
+        "audio_seconds_per_wall_second": 0.5654445188958251,
+        "call_max_send_lag_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 1.096978,
+          "mean": 0.15069784999999997,
+          "p50": 0.10059799999999999,
+          "p90": 0.1234788,
+          "p95": 0.17284460000000068,
+          "p99": 0.9121513199999988,
+          "population": "completed-call maxima",
+          "unit": "ms"
+        },
+        "completed_audio_seconds": 23.999999999999993,
+        "completed_calls": 20,
+        "completed_calls_per_minute": 28.272225944791266,
+        "effective_rtf": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 1.9363020191666667,
+          "mean": 1.76755499975,
+          "p50": 1.7547801945833332,
+          "p90": 1.9073356610833334,
+          "p95": 1.90981377875,
+          "p99": 1.9310043710833333,
+          "population": "completed calls",
+          "unit": "ratio"
+        },
+        "failure_rate": 0.0,
+        "final_result_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 2323.562423,
+          "mean": 2121.0659997000002,
+          "p50": 2105.7362335,
+          "p90": 2288.8027933000003,
+          "p95": 2291.7765345,
+          "p99": 2317.2052452999997,
+          "population": "completed calls",
+          "unit": "ms"
+        },
+        "first_usable_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 2323.562423,
+          "mean": 2121.0659997000002,
+          "p50": 2105.7362335,
+          "p90": 2288.8027933000003,
+          "p95": 2291.7765345,
+          "p99": 2317.2052452999997,
+          "population": "completed calls with text",
+          "unit": "ms"
+        },
+        "measurement_wall_seconds": 42.444482523,
+        "offered_calls": 20,
+        "sampled_peak_tree_rss_bytes": 2787176448
+      },
+      "completed_calls": 20,
+      "pre_eof_text_calls": 0,
+      "worker_ids": [
+        "prefix_shared_0"
+      ],
+      "transcripts": [
+        "And so my."
+      ],
+      "reference_match_count": 20,
+      "slo": {
+        "note": "Measured-call population; warmups excluded",
+        "profile_declared": false,
+        "qualified": false,
+        "tail_population_sufficient": true,
+        "thresholds_met": false,
+        "violations": []
+      }
+    },
+    {
+      "concurrency": 2,
+      "source_summary_sha256": "56b318fbbec2d431240eb1aaeac869d1a3ce04d408897f182aaa2e5c372b694f",
+      "metrics": {
+        "audio_seconds_per_wall_second": 0.8115519992777055,
+        "call_max_send_lag_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 9.912959,
+          "mean": 1.6182737000000003,
+          "p50": 0.84699,
+          "p90": 4.1380365,
+          "p95": 4.445331850000004,
+          "p99": 8.819433569999994,
+          "population": "completed-call maxima",
+          "unit": "ms"
+        },
+        "completed_audio_seconds": 23.999999999999993,
+        "completed_calls": 20,
+        "completed_calls_per_minute": 40.577599963885284,
+        "effective_rtf": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 4.904047790833333,
+          "mean": 2.4115443469999995,
+          "p50": 1.9402377654166667,
+          "p90": 3.8706285975833348,
+          "p95": 4.675044564708333,
+          "p99": 4.858247145608333,
+          "population": "completed calls",
+          "unit": "ratio"
+        },
+        "failure_rate": 0.0,
+        "final_result_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 5884.857349,
+          "mean": 2893.8532164,
+          "p50": 2328.2853185,
+          "p90": 4644.754317100002,
+          "p95": 5610.053477650001,
+          "p99": 5829.89657473,
+          "population": "completed calls",
+          "unit": "ms"
+        },
+        "first_usable_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 5884.857349,
+          "mean": 2893.8532164,
+          "p50": 2328.2853185,
+          "p90": 4644.754317100002,
+          "p95": 5610.053477650001,
+          "p99": 5829.89657473,
+          "population": "completed calls with text",
+          "unit": "ms"
+        },
+        "measurement_wall_seconds": 29.572966392,
+        "offered_calls": 20,
+        "sampled_peak_tree_rss_bytes": 2807525376
+      },
+      "completed_calls": 20,
+      "pre_eof_text_calls": 0,
+      "worker_ids": [
+        "prefix_shared_0"
+      ],
+      "transcripts": [
+        "And so my."
+      ],
+      "reference_match_count": 20,
+      "slo": {
+        "note": "Measured-call population; warmups excluded",
+        "profile_declared": false,
+        "qualified": false,
+        "tail_population_sufficient": true,
+        "thresholds_met": false,
+        "violations": []
+      }
+    },
+    {
+      "concurrency": 4,
+      "source_summary_sha256": "853c8c02078e65ecad5c93dea2bb3fdb57d081bee4d1582468fef4bae200014c",
+      "metrics": {
+        "audio_seconds_per_wall_second": 1.078153586576925,
+        "call_max_send_lag_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 1.755118,
+          "mean": 0.6520241,
+          "p50": 0.6336930000000001,
+          "p90": 1.2383931000000008,
+          "p95": 1.7352668,
+          "p99": 1.7511477599999998,
+          "population": "completed-call maxima",
+          "unit": "ms"
+        },
+        "completed_audio_seconds": 23.999999999999993,
+        "completed_calls": 20,
+        "completed_calls_per_minute": 53.90767932884626,
+        "effective_rtf": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 4.988565433333333,
+          "mean": 3.4562608292083334,
+          "p50": 3.4750545783333333,
+          "p90": 3.7412521035,
+          "p95": 3.894173735541668,
+          "p99": 4.769687093774999,
+          "population": "completed calls",
+          "unit": "ratio"
+        },
+        "failure_rate": 0.0,
+        "final_result_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 5986.27852,
+          "mean": 4147.51299505,
+          "p50": 4170.065494,
+          "p90": 4489.5025242,
+          "p95": 4673.008482650001,
+          "p99": 5723.624512529998,
+          "population": "completed calls",
+          "unit": "ms"
+        },
+        "first_usable_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 5986.27852,
+          "mean": 4147.51299505,
+          "p50": 4170.065494,
+          "p90": 4489.5025242,
+          "p95": 4673.008482650001,
+          "p99": 5723.624512529998,
+          "population": "completed calls with text",
+          "unit": "ms"
+        },
+        "measurement_wall_seconds": 22.260279332,
+        "offered_calls": 20,
+        "sampled_peak_tree_rss_bytes": 2872029184
+      },
+      "completed_calls": 20,
+      "pre_eof_text_calls": 0,
+      "worker_ids": [
+        "prefix_shared_0"
+      ],
+      "transcripts": [
+        "And so my."
+      ],
+      "reference_match_count": 20,
+      "slo": {
+        "note": "Measured-call population; warmups excluded",
+        "profile_declared": false,
+        "qualified": false,
+        "tail_population_sufficient": true,
+        "thresholds_met": false,
+        "violations": []
+      }
+    },
+    {
+      "concurrency": 8,
+      "source_summary_sha256": "d8012fd43f0ba52361341ef15adecea0c4671b8c5c60b0cc33d4d0991c96e8d7",
+      "metrics": {
+        "audio_seconds_per_wall_second": 1.0772147258289146,
+        "call_max_send_lag_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 9.64008,
+          "mean": 1.1066173,
+          "p50": 0.33637700000000004,
+          "p90": 2.5176241000000004,
+          "p95": 3.129854450000005,
+          "p99": 8.33803488999999,
+          "population": "completed-call maxima",
+          "unit": "ms"
+        },
+        "completed_audio_seconds": 23.999999999999993,
+        "completed_calls": 20,
+        "completed_calls_per_minute": 53.860736291445754,
+        "effective_rtf": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 7.8594543791666664,
+          "mean": 6.155633521666667,
+          "p50": 6.9120453783333335,
+          "p90": 7.336991727916667,
+          "p95": 7.425828159291667,
+          "p99": 7.772729135191666,
+          "population": "completed calls",
+          "unit": "ratio"
+        },
+        "failure_rate": 0.0,
+        "final_result_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 9431.345255,
+          "mean": 7386.760226,
+          "p50": 8294.454453999999,
+          "p90": 8804.3900735,
+          "p95": 8910.99379115,
+          "p99": 9327.27496223,
+          "population": "completed calls",
+          "unit": "ms"
+        },
+        "first_usable_ms": {
+          "count": 20,
+          "estimator": "linear_(n-1)*p_type7",
+          "max": 9431.345255,
+          "mean": 7386.760226,
+          "p50": 8294.454453999999,
+          "p90": 8804.3900735,
+          "p95": 8910.99379115,
+          "p99": 9327.27496223,
+          "population": "completed calls with text",
+          "unit": "ms"
+        },
+        "measurement_wall_seconds": 22.279680573,
+        "offered_calls": 20,
+        "sampled_peak_tree_rss_bytes": 2936360960
+      },
+      "completed_calls": 20,
+      "pre_eof_text_calls": 0,
+      "worker_ids": [
+        "prefix_shared_0"
+      ],
+      "transcripts": [
+        "And so my."
+      ],
+      "reference_match_count": 20,
+      "slo": {
+        "note": "Measured-call population; warmups excluded",
+        "profile_declared": false,
+        "qualified": false,
+        "tail_population_sufficient": true,
+        "thresholds_met": false,
+        "violations": []
+      }
+    }
+  ]
+}
