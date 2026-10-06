@@ -6,9 +6,12 @@
 #include <chrono>
 #include <cmath>
 #include <fstream>
+#include <iomanip>
 #include <latch>
 #include <limits>
+#include <openssl/evp.h>
 #include <random>
+#include <set>
 #include <stdexcept>
 #include <thread>
 
@@ -28,6 +31,8 @@ std::int64_t now_ns() {
 Json call_json(const LoadCall &call) {
     return {{"id", call.id},
             {"language", call.language},
+            {"input_index", call.input_index},
+            {"recording_id", call.recording_id},
             {"ordinal", call.ordinal},
             {"wave", call.wave},
             {"offset_ms", call.offset_ms},
@@ -35,12 +40,88 @@ Json call_json(const LoadCall &call) {
             {"repetition", call.repetition}};
 }
 } // namespace
+std::vector<LoadWavInput> prepare_load_manifest(const std::filesystem::path &path) {
+    std::ifstream stream(path);
+    if (!stream)
+        throw std::invalid_argument("cannot open WAV manifest");
+    std::vector<LoadWavInput> inputs;
+    std::set<std::string> ids;
+    std::size_t total_bytes = 0;
+    std::string line;
+    SincResampler resampler;
+    while (std::getline(stream, line)) {
+        if (line.empty())
+            continue;
+        if (inputs.size() >= 200 || line.size() > 65536)
+            throw std::invalid_argument("WAV manifest bound exceeded");
+        const auto row = Json::parse(line);
+        LoadWavInput input;
+        input.id = row.at("id");
+        input.language = row.at("language");
+        input.path = row.at("file").get<std::string>();
+        if (input.id.empty() || !ids.insert(input.id).second ||
+            (input.language != "en" && input.language != "id" && input.language != "zh"))
+            throw std::invalid_argument("invalid or duplicate WAV manifest identity/language");
+        if (input.path.is_relative() && !std::filesystem::exists(input.path))
+            input.path = path.parent_path() / input.path;
+        input.path = std::filesystem::absolute(input.path).lexically_normal();
+        if (std::filesystem::file_size(input.path) > 128ULL * 1024 * 1024)
+            throw std::invalid_argument("manifest WAV exceeds 128 MiB input bound");
+        std::ifstream bytes(input.path, std::ios::binary);
+        if (!bytes)
+            throw std::invalid_argument("manifest WAV missing: " + input.path.string());
+        auto context =
+            std::unique_ptr<EVP_MD_CTX, decltype(&EVP_MD_CTX_free)>(EVP_MD_CTX_new(), EVP_MD_CTX_free);
+        if (!context || EVP_DigestInit_ex(context.get(), EVP_sha256(), nullptr) != 1)
+            throw std::runtime_error("SHA256 initialization failed");
+        char buffer[65536];
+        while (bytes.read(buffer, sizeof(buffer)) || bytes.gcount())
+            if (EVP_DigestUpdate(context.get(), buffer, bytes.gcount()) != 1)
+                throw std::runtime_error("SHA256 update failed");
+        unsigned char digest[EVP_MAX_MD_SIZE];
+        unsigned size = 0;
+        if (bytes.bad() || EVP_DigestFinal_ex(context.get(), digest, &size) != 1)
+            throw std::runtime_error("WAV hash failed");
+        std::ostringstream hash;
+        hash << std::hex << std::setfill('0');
+        for (unsigned i = 0; i < size; ++i)
+            hash << std::setw(2) << unsigned(digest[i]);
+        if (row.contains("sha256") && row.at("sha256") != hash.str())
+            throw std::invalid_argument("manifest WAV SHA256 mismatch: " + input.id);
+        auto prepared = prepare_wav(input.path, ChannelMix::reject, resampler);
+        input.pcm = prepared.pcm;
+        if (row.contains("num_samples") && row.at("num_samples") != input.pcm->size())
+            throw std::invalid_argument("manifest prepared sample count mismatch: " + input.id);
+        if (input.pcm->empty())
+            throw std::invalid_argument("empty manifest WAV");
+        total_bytes += input.pcm->size() * sizeof(std::int16_t);
+        if (total_bytes > 256ULL * 1024 * 1024)
+            throw std::invalid_argument("prepared manifest exceeds 256 MiB PCM bound");
+        input.metadata = {{"source", "wav"},
+                          {"recording_id", input.id},
+                          {"path", input.path.string()},
+                          {"sha256", hash.str()},
+                          {"reference", row.value("reference", std::string{})},
+                          {"output_samples", input.pcm->size()},
+                          {"input_rate_hz", prepared.metadata.input_rate},
+                          {"input_channels", prepared.metadata.input_channels},
+                          {"resampler", prepared.metadata.resampler}};
+        inputs.push_back(std::move(input));
+    }
+    if (inputs.empty())
+        throw std::invalid_argument("empty WAV manifest");
+    return inputs;
+}
 Json LoadPlan::json() const {
+    Json inputs = Json::array();
+    for (auto &input : spec.inputs)
+        inputs.push_back(input.metadata);
     Json items = Json::array();
     for (const auto &call : calls)
         items.push_back(call_json(call));
     return {
         {"schema_version", 1},
+        {"inputs", inputs},
         {"allowed", allowed},
         {"spec",
          {{"calls", spec.calls},
@@ -86,6 +167,20 @@ std::uint64_t linux_available_memory_bytes() {
 }
 LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t samples,
                    std::uint64_t available_memory_bytes) {
+    std::vector<int> eligible;
+    std::uint64_t corpus_bytes = 0;
+    for (std::size_t i = 0; i < spec.inputs.size(); ++i) {
+        const auto &input = spec.inputs[i];
+        if (!input.pcm || input.pcm->empty())
+            throw std::invalid_argument("unprepared manifest input");
+        corpus_bytes += input.pcm->size() * sizeof(std::int16_t);
+        if (std::find(spec.languages.begin(), spec.languages.end(), input.language) != spec.languages.end()) {
+            eligible.push_back(static_cast<int>(i));
+            samples = std::max(samples, static_cast<std::int64_t>(input.pcm->size()));
+        }
+    }
+    if (!spec.inputs.empty() && eligible.empty())
+        throw std::invalid_argument("no manifest WAVs match requested languages");
     const auto valid_nonnegative = [](const std::optional<double> &value) {
         return !value || (std::isfinite(*value) && *value >= 0);
     };
@@ -118,11 +213,13 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
         (samples + std::int64_t(config.chunk_ms) * 16 - 1) / (std::int64_t(config.chunk_ms) * 16);
     const auto estimated_disk = total_calls * (262144ULL + std::uint64_t(chunks) * 2048ULL);
     const auto required_memory =
-        prefix ? (config.shared_model_loaded ? 2ULL : 5ULL) * 1024 * 1024 * 1024 +
-                     std::uint64_t(spec.concurrency) * 16ULL * 1024 * 1024 :
-        config.runtime == "qwen_native"
-            ? 2ULL * 1024 * 1024 * 1024 + std::uint64_t(spec.concurrency) * 3ULL * 1024 * 1024 * 1024
-            : 256ULL * 1024 * 1024 + std::uint64_t(spec.concurrency) * 64ULL * 1024 * 1024;
+        corpus_bytes +
+        (prefix ? (2ULL + (config.shared_model_loaded ? 0ULL : 3ULL * config.worker_processes)) * 1024 *
+                          1024 * 1024 +
+                      std::uint64_t(spec.concurrency) * 16ULL * 1024 * 1024
+         : config.runtime == "qwen_native"
+             ? 2ULL * 1024 * 1024 * 1024 + std::uint64_t(spec.concurrency) * 3ULL * 1024 * 1024 * 1024
+             : 256ULL * 1024 * 1024 + std::uint64_t(spec.concurrency) * 64ULL * 1024 * 1024);
     if (available_memory_bytes < required_memory)
         reasons.emplace_back("available memory below conservative worker-plus-reserve estimate");
     if (total_calls > 2000)
@@ -143,8 +240,9 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
         reasons.emplace_back("output filesystem lacks estimated artifacts plus 100 MiB reserve");
     const double audio_seconds = double(samples) / 16000.0;
     const auto waves = (spec.calls + spec.concurrency - 1) / spec.concurrency;
-    const auto estimated_seconds = double(waves) * (spec.warmups + spec.repetitions) *
-                                   (audio_seconds + (config.runtime == "mock" ? 0.1 : 5.0 * (prefix ? spec.concurrency : 1)));
+    const auto estimated_seconds =
+        double(waves) * (spec.warmups + spec.repetitions) *
+        (audio_seconds + (config.runtime == "mock" ? 0.1 : 5.0 * (prefix ? spec.concurrency : 1)));
     if (estimated_seconds > 7200)
         reasons.emplace_back("estimated run duration exceeds two-hour safety bound");
     std::mt19937 rng(spec.seed);
@@ -157,15 +255,26 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
             call.ordinal = ordinal;
             call.wave = ordinal / spec.concurrency;
             call.offset_ms = ordinal < spec.concurrency ? ordinal * spec.stagger_ms : 0;
-            call.language = spec.languages[choose(rng)];
+            if (eligible.empty())
+                call.language = spec.languages[choose(rng)];
+            else {
+                call.input_index = eligible[ordinal % eligible.size()];
+                call.language = spec.inputs[call.input_index].language;
+                call.recording_id = spec.inputs[call.input_index].id;
+            }
             call.id = std::string(call.warmup ? "warmup_" : "repeat_") + std::to_string(call.repetition) +
                       "_call_" + std::to_string(ordinal);
             plan.calls.push_back(std::move(call));
         }
+    double total_audio_seconds = 0;
+    for (const auto &call : plan.calls)
+        total_audio_seconds += call.input_index < 0
+                                   ? audio_seconds
+                                   : double(spec.inputs[call.input_index].pcm->size()) / 16000.0;
     plan.allowed = reasons.empty();
     plan.preflight = {{"skip_reasons", reasons},
                       {"total_calls", total_calls},
-                      {"total_audio_seconds", audio_seconds * total_calls},
+                      {"total_audio_seconds", total_audio_seconds},
                       {"estimated_duration_seconds", estimated_seconds},
                       {"estimated_disk_bytes", estimated_disk},
                       {"available_disk_bytes", available_disk},
@@ -174,8 +283,11 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
                       {"worker_processes", config.worker_processes},
                       {"active_call_slots", slots},
                       {"shared_model_already_loaded", prefix && config.shared_model_loaded},
-                      {"memory_estimate_kind", prefix ? "shared_model_scratch_plus_reserve_and_call_buffers" : "isolated_workers_plus_reserve"},
+                      {"memory_estimate_kind", prefix ? "shared_model_scratch_plus_reserve_and_call_buffers"
+                                                      : "isolated_workers_plus_reserve"},
                       {"per_call_chunks", chunks},
+                      {"manifest_unique_inputs", eligible.size()},
+                      {"manifest_pcm_bytes", corpus_bytes},
                       {"mode", spec.mode},
                       {"network_mode", "loopback_websocket_v1"}};
     return plan;
@@ -215,7 +327,8 @@ Json run_load(const RunConfig &config, IASREngine &engine, const LoadPlan &plan,
               const std::atomic<bool> *cancel_requested) {
     if (!plan.allowed)
         throw std::invalid_argument("preflight rejected load plan");
-    if (config.audio_source == "wav" && (!pcm || std::int64_t(pcm->size()) != samples))
+    if (plan.spec.inputs.empty() && config.audio_source == "wav" &&
+        (!pcm || std::int64_t(pcm->size()) != samples))
         throw std::invalid_argument("load WAV buffer/sample count mismatch");
     const auto suite_id = new_run_id("load");
     const auto suite_dir = config.output_directory / suite_id;
@@ -278,12 +391,26 @@ Json run_load(const RunConfig &config, IASREngine &engine, const LoadPlan &plan,
                         FileResultRepository repository(suite_dir);
                         try {
                             std::unique_ptr<IAudioSource> source;
-                            if (pcm)
-                                source = std::make_unique<BufferPcmSource>(pcm);
+                            auto call_pcm = pcm;
+                            auto call_samples = samples;
+                            auto call_metadata = audio_metadata;
+                            if (call.input_index >= 0) {
+                                const auto &input = plan.spec.inputs.at(call.input_index);
+                                call_pcm = input.pcm;
+                                call_samples = input.pcm->size();
+                                call_metadata = input.metadata;
+                                effective.wav_path = input.path;
+                                effective.audio_source = "wav";
+                                effective.resolved["audio"]["source"] = "wav";
+                                effective.resolved["audio"]["path"] = input.path.string();
+                                effective.resolved["audio"]["recording_id"] = input.id;
+                            }
+                            if (call_pcm)
+                                source = std::make_unique<BufferPcmSource>(call_pcm);
                             else
-                                source = std::make_unique<SyntheticPcmSource>(samples, effective.seed);
+                                source = std::make_unique<SyntheticPcmSource>(call_samples, effective.seed);
                             auto summary = run_baseline(effective, engine, *source, clock, repository, run_id,
-                                                        samples, audio_metadata);
+                                                        call_samples, call_metadata);
                             results[index] = {{"call", call_json(call)},
                                               {"run_id", run_id},
                                               {"directory", repository.directory().string()},

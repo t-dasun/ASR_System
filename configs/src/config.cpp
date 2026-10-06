@@ -171,16 +171,10 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     range(root["model"]["max_new_tokens"], 1, 256, "model.max_new_tokens");
     range(root["model"]["timeout_ms"], 1000, 600000, "model.timeout_ms");
     range(root["workers"]["processes"], 1, 4, "workers.processes");
-    for (const auto *key :
-         {"inference_slots_per_process", "model_instances_per_process"})
+    for (const auto *key : {"inference_slots_per_process", "model_instances_per_process"})
         if (root["workers"][key] != 1)
             invalid(std::string("workers.") + key, "M5 requires one isolated slot/context per process");
-    range(root["workers"]["max_sessions_per_process"], 1, prefix ? 8 : 1,
-          "workers.max_sessions_per_process");
-    if (prefix && root["workers"]["processes"] != 1)
-        invalid("workers.processes", "qwen_prefix owns one shared model in the service process");
-    if (prefix && root["workers"]["scheduler"] != "round_robin")
-        invalid("workers.scheduler", "qwen_prefix schedules native jobs round robin");
+    range(root["workers"]["max_sessions_per_process"], 1, prefix ? 8 : 1, "workers.max_sessions_per_process");
     if (prefix && !root["model"]["refine_final"].get<bool>())
         invalid("model.refine_final", "qwen_prefix requires full-audio EOF final decoding");
     range(root["workers"]["idle_timeout_ms"], 1, 600000, "workers.idle_timeout_ms");
@@ -253,7 +247,8 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     config.scheduler = scheduler;
     config.affinity_enabled = affinity;
     config.cpu_cores = cores;
-    root["workers"]["executor"] = runtime == "qwen_native" ? "process" : "in_process";
+    root["workers"]["executor"] =
+        runtime == "qwen_native" || (prefix && config.worker_processes > 1) ? "process" : "in_process";
     root["workers"]["threads_per_process"] = root["model"]["threads"];
     range(root["metrics"]["sample_interval_ms"], 50, 5000, "metrics.sample_interval_ms");
     config.resource_sampling = root["metrics"]["resource_sampling"].get<bool>();

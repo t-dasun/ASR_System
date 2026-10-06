@@ -14,7 +14,7 @@ workers:
   inference_slots_per_process: 1
   max_sessions_per_process: 8
   model_instances_per_process: 1
-  scheduler: round_robin
+  scheduler: least_active
 audio:
   source: wav
   path: ../datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav

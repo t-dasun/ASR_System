@@ -24,15 +24,15 @@ class PrefixMultiplexEngine final : public IASREngine {
     std::shared_ptr<PrefixShared> shared_;
 
   public:
-    explicit PrefixMultiplexEngine(std::string model_directory, int max_calls = 2,
-                                   int preview_ms = 4000, int threads = 4,
-                                   int idle_timeout_ms = 30000, int total_timeout_ms = 600000,
-                                   int decode_timeout_ms = 45000);
+    explicit PrefixMultiplexEngine(std::string model_directory, int max_calls = 2, int preview_ms = 4000,
+                                   int threads = 4, int idle_timeout_ms = 30000,
+                                   int total_timeout_ms = 600000, int decode_timeout_ms = 45000,
+                                   std::string worker_id = "prefix_shared_0");
     ~PrefixMultiplexEngine() override;
     EngineCapabilities capabilities() const override;
     PrefixWorkerStatus worker_status() const;
     void begin_draining();
-    Result<std::unique_ptr<IASRSession>> create_session(const SessionConfig &config,
-                                                        IRecognitionSink &sink, IClock &clock) override;
+    Result<std::unique_ptr<IASRSession>> create_session(const SessionConfig &config, IRecognitionSink &sink,
+                                                        IClock &clock) override;
 };
 } // namespace asr

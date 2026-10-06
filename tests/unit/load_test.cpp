@@ -1,5 +1,6 @@
 #include <asr/benchmark/load.hpp>
 #include <asr/engines/mock_engine.hpp>
+#include <cmath>
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
@@ -47,6 +48,13 @@ int main() {
         const auto shared_plan = asr::plan_load(shared, shared_spec, 3200, 6ULL * 1024 * 1024 * 1024);
         check(shared_plan.allowed && shared_plan.preflight["active_call_slots"] == 8,
               "shared-model preflight multiplied model memory by call count");
+        auto pool_config = shared;
+        pool_config.worker_processes = 2;
+        auto pool_plan = asr::plan_load(pool_config, shared_spec, 3200, 12ULL * 1024 * 1024 * 1024);
+        check(pool_plan.allowed && pool_plan.preflight["active_call_slots"] == 16 &&
+                  pool_plan.preflight["required_memory_bytes"].get<std::uint64_t>() >
+                      shared_plan.preflight["required_memory_bytes"].get<std::uint64_t>(),
+              "prefix pool memory estimate ignored additional model contexts");
         shared_spec.concurrency = 9;
         check(!asr::plan_load(shared, shared_spec, 3200, 6ULL * 1024 * 1024 * 1024).allowed,
               "shared-model preflight allowed excess call slots");
@@ -72,6 +80,30 @@ int main() {
                   result["metrics"]["offered_calls"] == 2 && result["metrics"]["completed_calls"] == 2 &&
                   result["slo"]["qualified"] == false,
               "mock load execution failed");
+        auto mixed_spec = spec;
+        mixed_spec.warmups = 0;
+        mixed_spec.inputs = {{"en_fixture",
+                              "en",
+                              {},
+                              std::make_shared<const std::vector<std::int16_t>>(1600, 1),
+                              {{"recording_id", "en_fixture"}}},
+                             {"id_fixture",
+                              "id",
+                              {},
+                              std::make_shared<const std::vector<std::int16_t>>(3200, 2),
+                              {{"recording_id", "id_fixture"}}}};
+        const auto mixed_plan = asr::plan_load(config, mixed_spec, 0, 4ULL * 1024 * 1024 * 1024);
+        check(mixed_plan.allowed && mixed_plan.calls[0].language == "en" &&
+                  mixed_plan.calls[1].language == "id" &&
+                  std::abs(mixed_plan.preflight["total_audio_seconds"].get<double>() - 0.3) < 1e-9,
+              "manifest assignment or duration accounting incorrect");
+        auto mixed_config = config;
+        mixed_config.audio_source = "wav";
+        const auto mixed =
+            asr::run_load(mixed_config, manager, mixed_plan, 0, nullptr, nlohmann::json::object());
+        check(mixed["status"] == "COMPLETE" &&
+                  std::abs(mixed["metrics"]["completed_audio_seconds"].get<double>() - 0.3) < 1e-9,
+              "distinct WAV input durations did not reach the C++ runner");
         auto strict = spec;
         strict.max_p95_final_ms = 1;
         const auto slo = asr::evaluate_load_slo(strict, result);

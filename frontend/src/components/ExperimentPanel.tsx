@@ -25,10 +25,15 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const [job, setJob] = useState<JobStatus | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const sharedModel = capabilities?.engine === 'qwen_prefix_multiplex_experimental'
-  const activeLimit = sharedModel ? (capabilities?.max_sessions_per_process || 1) : 16
+  const sharedModel = capabilities?.engine?.startsWith('qwen_prefix_') || false
+  const manifestInputs = capabilities?.manifest_inputs || 0
+  const activeLimit = sharedModel ? Math.min(16, (capabilities?.max_sessions_per_process || 1) * (capabilities?.worker_processes || 1)) : 16
 
   useEffect(() => { setProcesses(capabilities?.worker_processes || 1) }, [capabilities?.worker_processes])
+
+  useEffect(() => {
+    if (manifestInputs > 0) { setKind('load'); setCalls(manifestInputs); setLanguages(['en', 'id', 'zh']) }
+  }, [manifestInputs])
 
   const overrides = useMemo(() => [
     'audio.realtime_pacing=true', `workers.processes=${processes}`,
@@ -102,7 +107,7 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
       await requestJson(base, `/v1/jobs/${job.job_id}/stop`, {})
       log('warn', 'experiment', capabilities?.hard_decode_watchdog
         ? 'Stop requested; active native call may continue to its watchdog'
-        : 'Stop requested; active decode finishes before the next call is stopped')
+        : 'Stop requested; active calls finish before remaining calls are stopped')
     } catch (cause) { setError(String(cause)) }
   }
 
@@ -119,10 +124,11 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
       <div><p className="eyebrow">02 / CONTROL PLANE</p><h2 id="experiment-heading">Experiment editor</h2></div>
       <span className="subtle-tag">same C++ runner as CLI</span>
     </div>
+    {manifestInputs > 0 && <p className="fine-print">Dataset: {manifestInputs} configured WAV recordings. Calls cycle through recordings matching the selected languages; each call receives paced audio chunks.</p>}
     <div className="form-grid three">
       <label className="field">Suite
         <select value={kind} onChange={event => setKind(event.target.value as 'load' | 'sweep')}>
-          <option value="load">Load</option><option value="sweep">Sweep</option>
+          <option value="load">Load</option><option value="sweep" disabled={manifestInputs > 0}>Sweep</option>
         </select>
       </label>
       <label className="field">Ingress

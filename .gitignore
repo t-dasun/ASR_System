@@ -3,6 +3,9 @@
 !/docs/TIME_MULTIPLEXING_RESULTS.md
 !/docs/MATCHED_TOPOLOGY_COMPARISON.md
 !/docs/AVAILABLE_RESULTS_BY_LANGUAGE.md
+!/docs/SHARED_WORKER_POOL.md
+!/docs/SHARED_WORKER_POOL_RESULTS.md
+!/docs/CLI_QUICKSTART.md
 /reports/temp/
 /results/*
 !/results/README.md

@@ -1,20 +1,21 @@
 #include <asr/engines/prefix_engine.hpp>
+#include <asr/engines/prefix_scheduler.hpp>
 extern "C" {
 #include "qwen_asr.h"
 #include "qwen_asr_kernels.h"
 #include <cblas.h>
 }
-#include <omp.h>
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <cstdlib>
 #include <memory>
 #include <mutex>
+#include <omp.h>
 #include <stdexcept>
 #include <thread>
-#include <vector>
 #include <unistd.h>
+#include <vector>
 
 namespace asr {
 namespace {
@@ -36,27 +37,30 @@ struct Call {
     bool eof = false, cancelled = false, terminal = false, busy = false, preview_done = false;
     Status terminal_status;
     std::condition_variable completed;
-    Call(SessionConfig value, IRecognitionSink &output, IClock &source)
+    Call(SessionConfig value, IRecognitionSink &output, IClock &source, const std::string &worker_id)
         : config(std::move(value)), sink(&output), clock(&source) {
-        snapshot.worker_id = "prefix_shared_0";
+        snapshot.worker_id = worker_id;
         created_ns = last_audio_ns = source.now_ns();
     }
 };
 
 const char *language_name(const std::string &language) {
-    if (language == "en") return "English";
-    if (language == "id") return "Indonesian";
-    if (language == "zh") return "Chinese";
+    if (language == "en")
+        return "English";
+    if (language == "id")
+        return "Indonesian";
+    if (language == "zh")
+        return "Chinese";
     return nullptr;
 }
 
-RecognitionEvent make_event(Call &call, EventKind kind, std::int64_t samples,
-                            std::string text, Status status, bool before_eof) {
+RecognitionEvent make_event(Call &call, EventKind kind, std::int64_t samples, std::string text, Status status,
+                            bool before_eof) {
     RecognitionEvent event;
     event.run_id = call.config.run_id;
     event.call_id = call.config.call_id;
     event.producer_id = "qwen_prefix_multiplex";
-    event.worker_id = "prefix_shared_0";
+    event.worker_id = call.snapshot.worker_id;
     event.sequence = call.event_sequence++;
     event.revision = ++call.snapshot.revision;
     event.produced_ns = call.clock->now_ns();
@@ -81,6 +85,8 @@ struct PrefixShared {
     std::unique_ptr<qwen_ctx_t, decltype(&qwen_free)> model{nullptr, qwen_free};
     std::thread inference;
     std::size_t next_call = 0;
+    unsigned previews_since_final = 0;
+    std::string worker_id;
     int max_calls, preview_samples, runtime_threads, idle_timeout_ms, total_timeout_ms, decode_timeout_ms;
     int blas_threads = 0;
     std::uint64_t failures = 0;
@@ -88,15 +94,16 @@ struct PrefixShared {
     std::int64_t model_load_ns = 0, model_loaded_ns = 0;
     bool stopping = false, draining = false;
 
-    PrefixShared(const std::string &directory, int limit, int preview_ms, int threads,
-                 int idle_ms, int total_ms, int decode_ms)
-        : runtime_owner(native_runtime_owner, std::try_to_lock), max_calls(limit),
-          preview_samples(0), runtime_threads(threads), idle_timeout_ms(idle_ms),
-          total_timeout_ms(total_ms), decode_timeout_ms(decode_ms) {
+    PrefixShared(const std::string &directory, int limit, int preview_ms, int threads, int idle_ms,
+                 int total_ms, int decode_ms, std::string id)
+        : runtime_owner(native_runtime_owner, std::try_to_lock), max_calls(limit), preview_samples(0),
+          runtime_threads(threads), idle_timeout_ms(idle_ms), total_timeout_ms(total_ms),
+          decode_timeout_ms(decode_ms) {
+        worker_id = std::move(id);
         if (!runtime_owner.owns_lock())
             throw std::runtime_error("a shared Qwen context already owns this process runtime");
-        if (limit < 1 || limit > 8 || preview_ms < 1000 || preview_ms > 20000 ||
-            threads < 1 || threads > 16 || idle_ms < 1 || total_ms < idle_ms || decode_ms < 1)
+        if (limit < 1 || limit > 8 || preview_ms < 1000 || preview_ms > 20000 || threads < 1 ||
+            threads > 16 || idle_ms < 1 || total_ms < idle_ms || decode_ms < 1)
             throw std::invalid_argument("invalid experimental prefix worker settings");
         preview_samples = preview_ms * 16;
         // BLAS may initialize before main. Its explicit runtime control is
@@ -113,10 +120,13 @@ struct PrefixShared {
         const auto load_start = std::chrono::steady_clock::now();
         model.reset(qwen_load(directory.c_str()));
         model_loaded_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::steady_clock::now().time_since_epoch()).count();
+                              std::chrono::steady_clock::now().time_since_epoch())
+                              .count();
         model_load_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::steady_clock::now() - load_start).count();
-        if (!model) throw std::runtime_error("cannot load Qwen model for prefix worker");
+                            std::chrono::steady_clock::now() - load_start)
+                            .count();
+        if (!model)
+            throw std::runtime_error("cannot load Qwen model for prefix worker");
         inference = std::thread([this] { loop(); });
     }
     ~PrefixShared() {
@@ -125,7 +135,8 @@ struct PrefixShared {
             stopping = true;
         }
         wake.notify_all();
-        if (inference.joinable()) inference.join();
+        if (inference.joinable())
+            inference.join();
     }
 
     struct Job {
@@ -137,35 +148,43 @@ struct PrefixShared {
     };
 
     Job select() {
-        if (calls.empty()) return {};
+        std::vector<PrefixReadyJob> ready;
         for (std::size_t count = 0; count < calls.size(); ++count) {
             const std::size_t index = (next_call + count) % calls.size();
             auto &call = calls[index];
-            if (call->busy || call->cancelled || call->terminal) continue;
-            const auto now = call->clock->now_ns();
-            const bool expired = now - call->created_ns >= std::int64_t(total_timeout_ms) * 1000000 ||
-                (!call->eof && now - call->last_audio_ns >= std::int64_t(idle_timeout_ms) * 1000000);
-            const bool final = call->eof;
-            if (!expired && !final && (call->preview_done ||
-                           call->audio.size() < static_cast<std::size_t>(preview_samples)))
+            if (call->busy || call->cancelled || call->terminal)
                 continue;
-            call->busy = true;
-            next_call = (index + 1) % calls.size();
-            Job job;
-            job.call = call;
-            if (expired) {
-                job.status = {ErrorCode::deadline_expired, "shared call idle or total deadline expired"};
-                return job;
-            }
-            job.final = final;
-            job.ready_ns = final ? call->eof_received_ns : call->preview_ready_ns;
-            job.eof_ns = call->eof_received_ns;
-            const auto count_samples = final ? call->audio.size() :
-                static_cast<std::size_t>(preview_samples);
-            job.samples.assign(call->audio.begin(), call->audio.begin() + count_samples);
+            const auto now = call->clock->now_ns();
+            const bool expired =
+                now - call->created_ns >= std::int64_t(total_timeout_ms) * 1000000 ||
+                (!call->eof && now - call->last_audio_ns >= std::int64_t(idle_timeout_ms) * 1000000);
+            if (expired || call->eof ||
+                (!call->preview_done && call->audio.size() >= static_cast<std::size_t>(preview_samples)))
+                ready.push_back({index,
+                                 expired     ? call->created_ns
+                                 : call->eof ? call->eof_received_ns
+                                             : call->preview_ready_ns,
+                                 call->eof, expired});
+        }
+        const auto selected = select_prefix_job(ready, previews_since_final);
+        if (!selected)
+            return {};
+        auto &call = calls[selected->index];
+        call->busy = true;
+        next_call = (selected->index + 1) % calls.size();
+        Job job;
+        job.call = call;
+        if (selected->expired) {
+            job.status = {ErrorCode::deadline_expired, "shared call idle or total deadline expired"};
             return job;
         }
-        return {};
+        job.final = selected->final;
+        previews_since_final = job.final ? 0 : previews_since_final + 1;
+        job.ready_ns = selected->ready_ns;
+        job.eof_ns = call->eof_received_ns;
+        const auto count_samples = job.final ? call->audio.size() : static_cast<std::size_t>(preview_samples);
+        job.samples.assign(call->audio.begin(), call->audio.begin() + count_samples);
+        return job;
     }
 
     void loop() {
@@ -181,7 +200,8 @@ struct PrefixShared {
             Job job;
             {
                 std::unique_lock lock(mutex);
-                if (stopping) break;
+                if (stopping)
+                    break;
                 job = select();
                 if (!job.call) {
                     wake.wait_for(lock, std::chrono::milliseconds(20));
@@ -192,25 +212,47 @@ struct PrefixShared {
             Status status = job.status;
             const auto decode_started_ns = job.call->clock->now_ns();
             const auto decode_start = std::chrono::steady_clock::now();
+            struct DecodeGuard {
+                PrefixShared *worker;
+                Call *call;
+                std::chrono::steady_clock::time_point started;
+            } guard{this, job.call.get(), decode_start};
+            model->offline_decode_guard_userdata = &guard;
+            model->offline_decode_guard = [](void *userdata) -> int {
+                auto &value = *static_cast<DecodeGuard *>(userdata);
+                std::lock_guard lock(value.worker->mutex);
+                return !value.call->cancelled && !value.worker->stopping &&
+                       std::chrono::steady_clock::now() - value.started <
+                           std::chrono::milliseconds(value.worker->decode_timeout_ms) &&
+                       value.call->clock->now_ns() - value.call->created_ns <
+                           std::int64_t(value.worker->total_timeout_ms) * 1000000;
+            };
             try {
                 if (status && !job.samples.empty()) {
-                    if (qwen_set_force_language(model.get(),
-                                                language_name(job.call->config.language)) != 0)
+                    if (qwen_set_force_language(model.get(), language_name(job.call->config.language)) != 0)
                         throw std::runtime_error("native language selection failed");
                     std::unique_ptr<char, decltype(&std::free)> result(
                         qwen_transcribe_audio(model.get(), job.samples.data(),
-                                              static_cast<int>(job.samples.size())), std::free);
-                    if (!result) throw std::runtime_error("native prefix decode failed");
+                                              static_cast<int>(job.samples.size())),
+                        std::free);
+                    if (!result)
+                        throw std::runtime_error("native prefix decode failed");
                     text = result.get();
+                    if (model->offline_decode_aborted) {
+                        text.clear();
+                        status = {ErrorCode::deadline_expired, "prefix decode interrupted at token boundary"};
+                    }
                 }
             } catch (const std::exception &error) {
                 status = {ErrorCode::runtime_failure, error.what()};
             }
+            model->offline_decode_guard = nullptr;
+            model->offline_decode_guard_userdata = nullptr;
             const auto decode_finished_ns = job.call->clock->now_ns();
             if (status && (std::chrono::steady_clock::now() - decode_start >=
-                           std::chrono::milliseconds(decode_timeout_ms) ||
+                               std::chrono::milliseconds(decode_timeout_ms) ||
                            job.call->clock->now_ns() - job.call->created_ns >=
-                           std::int64_t(total_timeout_ms) * 1000000))
+                               std::int64_t(total_timeout_ms) * 1000000))
                 status = {ErrorCode::deadline_expired, "shared call decode or total deadline expired"};
 
             RecognitionEvent event;
@@ -222,13 +264,19 @@ struct PrefixShared {
                     model_info = !call.model_info_sent;
                     call.model_info_sent = true;
                     const bool pre_eof = !job.final && !call.eof && !text.empty();
-                    event = make_event(call, !status ? EventKind::failed :
-                                       job.final ? EventKind::final : EventKind::partial,
-                                       static_cast<std::int64_t>(job.status ? job.samples.size() : call.audio.size()),
-                                       !status && text.empty() ? call.snapshot.text : std::move(text), status, pre_eof);
-                    if (!job.final) call.preview_done = true;
-                    call.snapshot.state = !status ? SessionState::failed :
-                                          job.final ? SessionState::completed : SessionState::streaming;
+                    event = make_event(
+                        call,
+                        !status     ? EventKind::failed
+                        : job.final ? EventKind::final
+                                    : EventKind::partial,
+                        static_cast<std::int64_t>(job.status ? job.samples.size() : call.audio.size()),
+                        !status && text.empty() ? call.snapshot.text : std::move(text), status, pre_eof);
+                    if (!job.final)
+                        call.preview_done = true;
+                    call.snapshot.state = !status     ? SessionState::failed
+                                          : job.final ? SessionState::completed
+                                          : call.eof  ? SessionState::finalizing
+                                                      : SessionState::streaming;
                     publish = true;
                 }
             }
@@ -238,7 +286,7 @@ struct PrefixShared {
                                              std::optional<std::int64_t> duration) {
                         RuntimeObservation value;
                         value.stage = stage;
-                        value.worker_id = "prefix_shared_0";
+                        value.worker_id = worker_id;
                         value.process_id = getpid();
                         value.timestamp_ns = timestamp;
                         value.duration_ns = duration;
@@ -253,12 +301,14 @@ struct PrefixShared {
                     if (job.status && !job.samples.empty()) {
                         observe(job.final ? "eof_decode_queue_wait" : "prefix_decode_queue_wait",
                                 decode_started_ns, decode_started_ns - job.ready_ns);
-                        observe(job.final ? "eof_refinement" : "prefix_decode",
-                                decode_finished_ns, decode_finished_ns - decode_started_ns);
+                        observe(job.final ? "eof_refinement" : "prefix_decode", decode_finished_ns,
+                                decode_finished_ns - decode_started_ns);
                     }
                     job.call->sink->on_event(event);
+                } catch (...) {
+                    status = {ErrorCode::runtime_failure, "result delivery failed"};
+                    terminal = true;
                 }
-                catch (...) { status = {ErrorCode::runtime_failure, "result delivery failed"}; terminal = true; }
             }
             {
                 std::lock_guard lock(mutex);
@@ -298,7 +348,8 @@ class PrefixSession final : public IASRSession {
     }
     Status submit(AudioChunk chunk) override {
         std::lock_guard lock(shared_->mutex);
-        if (call_->terminal && !call_->terminal_status) return call_->terminal_status;
+        if (call_->terminal && !call_->terminal_status)
+            return call_->terminal_status;
         if (call_->eof || call_->cancelled || call_->terminal)
             return {ErrorCode::invalid_state, "audio after terminal state"};
         if (chunk.run_id != call_->config.run_id || chunk.call_id != call_->config.call_id ||
@@ -313,7 +364,8 @@ class PrefixSession final : public IASRSession {
             call_->audio.push_back(static_cast<float>(sample) / 32768.0f);
         ++call_->next_sequence;
         call_->last_audio_ns = call_->clock->now_ns();
-        if (!call_->preview_ready_ns && call_->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))
+        if (!call_->preview_ready_ns &&
+            call_->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))
             call_->preview_ready_ns = call_->last_audio_ns;
         call_->snapshot.state = SessionState::streaming;
         call_->snapshot.consumed_samples = static_cast<std::int64_t>(call_->audio.size());
@@ -322,9 +374,12 @@ class PrefixSession final : public IASRSession {
     }
     Status finish_input() override {
         std::unique_lock lock(shared_->mutex);
-        if (call_->terminal) return call_->terminal_status;
-        if (call_->cancelled) return {ErrorCode::cancelled, "call cancelled"};
-        if (!call_->eof) call_->eof_received_ns = call_->clock->now_ns();
+        if (call_->terminal)
+            return call_->terminal_status;
+        if (call_->cancelled)
+            return {ErrorCode::cancelled, "call cancelled"};
+        if (!call_->eof)
+            call_->eof_received_ns = call_->clock->now_ns();
         call_->eof = true;
         call_->snapshot.state = SessionState::finalizing;
         shared_->wake.notify_all();
@@ -333,21 +388,27 @@ class PrefixSession final : public IASRSession {
     }
     Status cancel(CancelReason reason) override {
         std::unique_lock lock(shared_->mutex);
-        if (call_->terminal) return call_->terminal_status;
+        if (call_->busy && (call_->snapshot.state == SessionState::completed ||
+                            call_->snapshot.state == SessionState::failed))
+            call_->completed.wait(lock, [&] { return !call_->busy; });
+        if (call_->terminal)
+            return call_->terminal_status;
         call_->cancelled = true;
         shared_->wake.notify_all();
         call_->completed.wait(lock, [&] { return !call_->busy; });
         call_->snapshot.state = SessionState::stopped;
         Status status{reason == CancelReason::deadline ? ErrorCode::deadline_expired : ErrorCode::cancelled,
                       "experimental prefix call cancelled"};
-        auto event = make_event(*call_, EventKind::stopped,
-                                static_cast<std::int64_t>(call_->audio.size()),
+        auto event = make_event(*call_, EventKind::stopped, static_cast<std::int64_t>(call_->audio.size()),
                                 call_->snapshot.text, status, false);
         call_->terminal = true;
         call_->terminal_status = status;
         lock.unlock();
-        try { call_->sink->on_event(event); }
-        catch (...) { return {ErrorCode::runtime_failure, "result delivery failed"}; }
+        try {
+            call_->sink->on_event(event);
+        } catch (...) {
+            return {ErrorCode::runtime_failure, "result delivery failed"};
+        }
         return {};
     }
     SessionSnapshot snapshot() const override {
@@ -357,11 +418,11 @@ class PrefixSession final : public IASRSession {
 };
 } // namespace
 
-PrefixMultiplexEngine::PrefixMultiplexEngine(std::string directory, int max_calls,
-                                             int preview_ms, int threads, int idle_ms, int total_ms,
-                                             int decode_ms)
-    : shared_(std::make_shared<PrefixShared>(directory, max_calls, preview_ms, threads,
-                                           idle_ms, total_ms, decode_ms)) {}
+PrefixMultiplexEngine::PrefixMultiplexEngine(std::string directory, int max_calls, int preview_ms,
+                                             int threads, int idle_ms, int total_ms, int decode_ms,
+                                             std::string worker_id)
+    : shared_(std::make_shared<PrefixShared>(directory, max_calls, preview_ms, threads, idle_ms, total_ms,
+                                             decode_ms, std::move(worker_id))) {}
 PrefixMultiplexEngine::~PrefixMultiplexEngine() = default;
 
 PrefixWorkerStatus PrefixMultiplexEngine::worker_status() const {
@@ -374,12 +435,11 @@ PrefixWorkerStatus PrefixMultiplexEngine::worker_status() const {
     status.failures = shared_->failures;
     status.last_error = shared_->last_error;
     for (const auto &call : shared_->calls) {
-        status.calls.push_back({call->config.call_id, call->config.language,
-                               call->snapshot.state, static_cast<std::int64_t>(call->audio.size()),
-                               call->busy});
+        status.calls.push_back({call->config.call_id, call->config.language, call->snapshot.state,
+                                static_cast<std::int64_t>(call->audio.size()), call->busy});
         if (!call->busy && !call->cancelled && !call->terminal &&
             (call->eof || (!call->preview_done &&
-                          call->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))))
+                           call->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))))
             ++status.queued_jobs;
     }
     return status;
@@ -393,22 +453,22 @@ void PrefixMultiplexEngine::begin_draining() {
 EngineCapabilities PrefixMultiplexEngine::capabilities() const {
     EngineCapabilities value;
     value.engine_id = "qwen_prefix_multiplex_experimental";
-    value.revision = "prefix_v1";
+    value.revision = "prefix_v2_preview_fair";
     value.streaming_kind = "causal_prefix_redecode";
     value.is_mock = false;
     value.device = "cpu";
     value.precision = "bf16_weights";
-    value.cooperative_cancellation = false;
+    value.cooperative_cancellation = true;
     value.concurrent_sessions = true;
     value.transcript_semantics = "revisable_full_snapshot";
     return value;
 }
 
-Result<std::unique_ptr<IASRSession>> PrefixMultiplexEngine::create_session(
-    const SessionConfig &config, IRecognitionSink &sink, IClock &clock) {
-    if (!language_name(config.language) || config.sample_rate_hz != 16000 ||
-        clock.domain() != "host_steady")
-        return {{ErrorCode::unsupported, "experimental engine supports en/id/zh at 16 kHz with host clock"}, nullptr};
+Result<std::unique_ptr<IASRSession>>
+PrefixMultiplexEngine::create_session(const SessionConfig &config, IRecognitionSink &sink, IClock &clock) {
+    if (!language_name(config.language) || config.sample_rate_hz != 16000 || clock.domain() != "host_steady")
+        return {{ErrorCode::unsupported, "experimental engine supports en/id/zh at 16 kHz with host clock"},
+                nullptr};
     if (config.run_id.empty() || config.call_id.empty() || config.max_chunk_samples < 1 ||
         config.max_chunk_samples > 16000)
         return {{ErrorCode::invalid_input, "invalid experimental session configuration"}, nullptr};
@@ -420,7 +480,7 @@ Result<std::unique_ptr<IASRSession>> PrefixMultiplexEngine::create_session(
     for (const auto &existing : shared_->calls)
         if (existing->config.call_id == config.call_id)
             return {{ErrorCode::invalid_input, "duplicate active call ID"}, nullptr};
-    auto call = std::make_shared<Call>(config, sink, clock);
+    auto call = std::make_shared<Call>(config, sink, clock, shared_->worker_id);
     shared_->calls.push_back(call);
     shared_->wake.notify_all();
     return {{}, std::make_unique<PrefixSession>(shared_, std::move(call))};

@@ -66,13 +66,13 @@ export function RuntimePanel({ base, connected, log }: Props) {
           <polyline points={sparklinePoints(chart.rss)} /></svg></div>
     </div>
     <div className="subhead workers-title"><h3>Interactive worker slots</h3><span>{runtime?.workers.length ?? 0} configured</span></div>
-    <div className="table-wrap"><table><thead><tr><th>Worker</th><th>State</th><th>Call</th><th>Lang</th><th>Threads</th><th>Queue</th></tr></thead>
+    <div className="table-wrap"><table><thead><tr><th>Worker</th><th>PID</th><th>Sessions</th><th>State</th><th>Call</th><th>Lang</th><th>Threads</th><th>Queue</th></tr></thead>
       <tbody>{runtime?.workers.length ? runtime.workers.map(worker => <tr key={worker.worker_id}>
-        <td className="mono">{worker.worker_id}</td><td><span className={`dot ${worker.occupied ? 'live' : ''}`} />{worker.state}</td>
+        <td className="mono">{worker.worker_id}</td><td>{worker.process_id}</td><td>{worker.active_sessions}{worker.max_sessions ? ` / ${worker.max_sessions}` : ''}</td><td><span className={`dot ${worker.occupied ? 'live' : ''}`} />{worker.healthy ? worker.state : 'failed'}</td>
         <td className="mono clip-cell" title={worker.calls?.map(call => call.call_id).join(', ') || worker.call_id}>
-          {worker.calls?.length ? `${worker.active_sessions} calls: ${worker.calls.map(call => call.call_id).join(', ')}` : worker.call_id || '—'}</td><td>{worker.language || '—'}</td>
+          {worker.calls?.length ? `${worker.active_sessions} calls: ${worker.calls.map(call => call.call_id).join(', ')}` : worker.call_id || '—'}</td><td>{worker.calls?.length ? [...new Set(worker.calls.map(call => call.language))].join(', ') : worker.language || '—'}</td>
         <td>{worker.runtime_threads}</td><td>{worker.server_queue_depth ?? 'not exposed'}</td>
-      </tr>) : <tr><td colSpan={6} className="empty-cell">Connect to a service for worker state.</td></tr>}</tbody></table></div>
+      </tr>) : <tr><td colSpan={8} className="empty-cell">Connect to a service for worker state.</td></tr>}</tbody></table></div>
     <p className="fine-print">This snapshot samples active calls and the host process tree. Benchmark distributions appear after a job completes. {runtime?.system?.queue_depth_available ? 'Queue shows decode jobs waiting for the shared model.' : 'Server queue depth is unavailable in this runtime.'}</p>
   </section>
 }

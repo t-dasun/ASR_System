@@ -1,0 +1,58 @@
+{
+  "source_wav": "datasets/prepared/fleurs_m4/fleurs_en_us_validation_1518_26.wav",
+  "upstream_revision": "924694251d9e0f18e5d86bbd06aa3ab5f870002d",
+  "guard_source_sha256": "a5aca42d75301e867becf6c3bb6c42093b4d7f6790374c08f810b6d1527147b7",
+  "initial_unbounded": {
+    "directory": "results/time_multiplexing/shared_pool_10wav_20261005/shared_1w_1s/load_18dba8086f200fca_477253a7fd0599a40ed1db0a2fe5652c/load_18dba8086f200fca_477253a7fd0599a40ed1db0a2fe5652c_repeat_0_call_5",
+    "decode_wall_ns": 171177997561,
+    "status": "FAILED",
+    "error": "shared call decode or total deadline expired",
+    "generated_text_characters": 2048,
+    "generated_text_character_set": [
+      "!"
+    ]
+  },
+  "regressions": [
+    {
+      "name": "token_guard_1s",
+      "status": "FAILED",
+      "error": "prefix decode interrupted at token boundary",
+      "eof_decode_wall_ns": 1232892093,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/prefix_token_guard_20261005/load_18dba897bfcbc7e9_01b9fb404373295bb0c6e8b0187f10d2/load_18dba897bfcbc7e9_01b9fb404373295bb0c6e8b0187f10d2_repeat_0_call_0",
+      "artifact_sha256": {
+        "config.json": "c4f41e43ed250c050c3d056a7718a823e5e0f71b09bff77dd7d8990704cfeed5",
+        "environment.json": "6122413ea179cf9ad1f3d652d77195eb1fa1eb64eb29afba5a59159486cd7d6f",
+        "events.jsonl": "b67247e0900380219544d96fc1a6d8ebf355ea1ff96c35815ccb63f33aaee586",
+        "audio_timing.jsonl": "f466205b5b4737cce6dec775f948398a48b837d4fe1d41e4b093390a3214b426",
+        "runtime_timing.jsonl": "29ec32c0d558cc475a2fec385fe55ed117ed5da6820ef2ac75ba5c410e3005cd",
+        "system_metrics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "calls.jsonl": "31462a41079042ab7179582b410f744c63a0e81a65020315191fb396b5e643c9",
+        "workers.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.jsonl": "a93157f31f1daa2cae692215e4eb43cb6038d22d6e1859ce6fed3800abb8c4f4",
+        "summary.json": "0871396c39986605a821f51ebba32bb0b509410f5ac8ac53b337e2b04e25bcc8",
+        "status.json": "f6989d3126d87a7895f546cce8c4a4246c8ae663916cdde11ea3dbc7abe62c68"
+      }
+    },
+    {
+      "name": "fresh_context_5s",
+      "status": "FAILED",
+      "error": "prefix decode interrupted at token boundary",
+      "eof_decode_wall_ns": 5079162558,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/time_multiplexing/prefix_bad_wav_fresh_20261005/load_18dba8f441f77e9f_2d35797b7e2b2da7e0349d9594f25953/load_18dba8f441f77e9f_2d35797b7e2b2da7e0349d9594f25953_repeat_0_call_0",
+      "artifact_sha256": {
+        "config.json": "9a9bb4cd00fa9e7e4306922128e768e3c08cd5442b000e4717dcbfef67270118",
+        "environment.json": "2b2e961af6d44bb8b0e9af70c6b51d99eaed465c3eb246b630cfec0f9587ac33",
+        "events.jsonl": "1daf264efd04025072ff63a36a5545bc8e27d4952303d276130c1281de4b69f5",
+        "audio_timing.jsonl": "e2782993104aa10eff6af1f85a797e5005f07bf5a2c10d87beeedfeee5722136",
+        "runtime_timing.jsonl": "1235d34542e50fc006cf127418ec3e2de76f28eba013af153b70e8897c945782",
+        "system_metrics.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "calls.jsonl": "b2b4d362698b2e8cbc1e5db6f4d9f90ed18340163878318e9ed478f55b092b3c",
+        "workers.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.jsonl": "aaf6bb32cd272e149fc80bd8a8491c80dfa49b41349965f26f6331c8cb5b3c25",
+        "summary.json": "c4710f7a28e98d2d8345177cd04f28d5ce53d5e75e3ba0a7dc83e8b6a3afcfb7",
+        "status.json": "ffa4eec6a0e3a06f44b4c4234c78ccb95a0022967cc850fbffd529a1e27182a9"
+      }
+    }
+  ],
+  "definition": "guard cooperates between generated tokens; encoder/prefill and one kernel are blocking; aborted partial text is rejected"
+}

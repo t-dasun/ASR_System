@@ -141,3 +141,9 @@ python3 tools/multiplexing/probe_prefix_cancel.py --port 8767 \
 ```
 
 Prefix redecoding cost grows with the number and length of previews; the current one-preview policy bounds that cost but gives no later pre-EOF revisions. Sustained mixed-duration load, held-out accuracy, target-host headroom, crash recovery, and watchdog/cancellation during blocking decode remain qualification work.
+
+## Persistent shared worker pool and distinct WAV inputs
+
+The main C++ path now supports multi-worker shared models and multi-WAV load manifests. See [the run guide](../../docs/SHARED_WORKER_POOL.md). `run_shared_pool_matrix.py --output NEW_DIRECTORY --per-language 10` selects 10 unique heldout WAVs per language and runs the same corpus under shared 1w/1s, 1w/2s, 2w/1s and 2w/2s layouts. Language suites are separate; a mixed-WAV network suite additionally exercises C++ WebSocket ingress. Native live-streaming results remain in the earlier matched report and are not included in this new same-prefix-policy matrix.
+
+Final evidence: [10-WAV-per-language shared-pool report](../../docs/SHARED_WORKER_POOL_RESULTS.md), [curated full matrix](shared_worker_pool_comparison_20261005.json), [final C++ service/browser check](shared_worker_pool_final_service_20261005.json), and [decoder-guard regression](prefix_decode_guard_regression_20261005.json). The corpus completed 108/120 calls; failures remain included. `verify_pool_service.py --output NEW_DIRECTORY` repeats the final four-WAV service/browser check with Vite already running on port 5173. `frontend/tests/dashboard.pool.e2e.mjs SERVICE_URL OUTPUT_JSON` is a read-only UI check against an existing shared service.

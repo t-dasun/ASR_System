@@ -1,6 +1,8 @@
 # Available ASR results by language
 
-Updated: 2026-10-05. This report reorganizes existing evidence; no new inference runs were performed.
+Updated: 2026-10-05. This historical inventory reorganizes the earlier evidence. The newer [10-WAV-per-language shared worker pool results](SHARED_WORKER_POOL_RESULTS.md) contain the complete multi-worker corpus matrix, failures, decoder guard, final C++/browser check and links to all measurements.
+
+See the newer [shared worker pool implementation and run guide](SHARED_WORKER_POOL.md) for multi-worker routing, distinct-WAV chunk simulation and the per-language corpus runner. The historical data inventory below describes results available before that extension.
 
 ## Coverage and the missing experiment
 
@@ -329,4 +331,4 @@ Use 10 **unique heldout recordings** in each language (30 source recordings tota
 
 Keep clean and telephone audio in separate condition tables. Keep single-session and multi-session policies explicit; retain the shared single-session control. For overlapping calls, use distinct WAVs as well as the existing same-WAV routing check. Repetitions can measure run variability but must not be counted as additional unique recordings. Ten recordings per language is a broader diagnostic sample, and still does not establish reliable p95/p99 or production capacity.
 
-This experiment has not been run. The current comparison script selects one recording per language; increasing `--calls-per-wav` repeats those recordings and does not select 10 different WAVs. It needs dataset selection and multi-input scheduling support to run the proposed matched corpus.
+This experiment has not been run. The current comparison script selects one recording per language; increasing `--calls-per-wav` repeats those recordings and does not select 10 different WAVs. The new shared-pool corpus runner supports dataset selection and multi-input scheduling; see the linked guide. The historical script remains a same-WAV diagnostic.

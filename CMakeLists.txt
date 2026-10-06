@@ -47,7 +47,7 @@ target_include_directories(asr_websocket PUBLIC backend/transport/include)
 target_link_libraries(asr_websocket PUBLIC asr_engines asr_storage asr_observability asr_config
   OpenSSL::Crypto Threads::Threads PRIVATE asr_warnings)
 target_include_directories(asr_baseline PUBLIC benchmark/include)
-target_link_libraries(asr_baseline PUBLIC asr_audio asr_config asr_engines asr_storage asr_observability asr_session_manager PRIVATE asr_warnings)
+target_link_libraries(asr_baseline PUBLIC asr_audio asr_config asr_engines asr_storage asr_observability asr_session_manager OpenSSL::Crypto PRIVATE asr_warnings)
 add_executable(asr-cli apps/asr_cli/main.cpp)
 target_link_libraries(asr-cli PRIVATE asr_baseline asr_mock asr_session_manager asr_websocket Threads::Threads asr_warnings)
 if(ASR_ENABLE_QWEN_NATIVE)
@@ -82,10 +82,25 @@ if(ASR_ENABLE_QWEN_NATIVE)
   add_executable(asr-native-prefix-multiplex research/native_qwen/multiplex_prefix.cpp)
   target_link_libraries(asr-native-prefix-multiplex PRIVATE qwen_cpu nlohmann_json::nlohmann_json)
   target_compile_options(asr-native-prefix-multiplex PRIVATE -Wall -Wextra -Wpedantic)
-  add_library(asr_prefix_multiplex engines/prefix/src/prefix_engine.cpp)
+  add_library(asr_prefix_multiplex engines/prefix/src/prefix_engine.cpp engines/prefix/src/prefix_pool.cpp)
   find_package(OpenMP REQUIRED COMPONENTS CXX)
   target_include_directories(asr_prefix_multiplex PUBLIC engines/prefix/include PRIVATE "${OPENBLAS_INCLUDE_DIR}")
-  target_link_libraries(asr_prefix_multiplex PUBLIC asr_engines PRIVATE qwen_cpu Threads::Threads OpenMP::OpenMP_CXX asr_warnings)
+  target_link_libraries(asr_prefix_multiplex PUBLIC asr_engines PRIVATE qwen_cpu Threads::Threads OpenMP::OpenMP_CXX nlohmann_json::nlohmann_json asr_warnings)
+  add_executable(asr-prefix-worker engines/prefix/src/process_worker.cpp)
+  target_link_libraries(asr-prefix-worker PRIVATE asr_prefix_multiplex nlohmann_json::nlohmann_json asr_warnings)
+  if(ASR_BUILD_TESTS)
+    add_executable(prefix-scheduler-test tests/unit/prefix_scheduler_test.cpp)
+    target_include_directories(prefix-scheduler-test PRIVATE engines/prefix/include)
+    target_link_libraries(prefix-scheduler-test PRIVATE asr_warnings)
+    add_test(NAME prefix_scheduler_contracts COMMAND prefix-scheduler-test)
+    add_executable(prefix-worker-stub tests/integration/prefix_worker_stub.cpp)
+    target_include_directories(prefix-worker-stub PRIVATE engines/prefix/src)
+    target_link_libraries(prefix-worker-stub PRIVATE asr_prefix_multiplex nlohmann_json::nlohmann_json asr_warnings)
+    add_executable(prefix-pool-test tests/integration/prefix_pool_test.cpp)
+    target_link_libraries(prefix-pool-test PRIVATE asr_prefix_multiplex asr_warnings)
+    add_test(NAME prefix_pool_contracts COMMAND prefix-pool-test $<TARGET_FILE:prefix-worker-stub>)
+    set_tests_properties(prefix_scheduler_contracts prefix_pool_contracts PROPERTIES LABELS "model-free;prefix" TIMEOUT 30)
+  endif()
   target_link_libraries(asr-cli PRIVATE asr_prefix_multiplex)
   add_executable(asr-prefix-server apps/asr_prefix_server/main.cpp)
   target_link_libraries(asr-prefix-server PRIVATE asr_prefix_multiplex asr_websocket asr_warnings)
@@ -136,6 +151,13 @@ if(ASR_BUILD_TESTS)
     --config ${PROJECT_SOURCE_DIR}/configs/mock_baseline.yaml
     --set audio.realtime_pacing=true --set workers.processes=2
     --calls 3 --concurrency 2 --languages en,id,zh)
+  add_test(NAME cli_manifest_without_base COMMAND asr-cli load
+    --config ${PROJECT_SOURCE_DIR}/configs/mock_baseline.yaml
+    --manifest ${PROJECT_SOURCE_DIR}/tests/fixtures/load_manifest.jsonl
+    --set audio.source=wav --set audio.path=missing_manifest_base.wav
+    --set audio.realtime_pacing=true --concurrency 1
+    --set output.directory=${CMAKE_BINARY_DIR}/manifest-tests)
+  set_tests_properties(cli_manifest_without_base PROPERTIES LABELS "integration;model-free")
   add_test(NAME cli_sweep_dry_run COMMAND asr-cli sweep-dry-run
     --config ${PROJECT_SOURCE_DIR}/configs/mock_baseline.yaml
     --set audio.realtime_pacing=true --preset chunks --calls 2 --concurrency 1)

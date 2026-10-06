@@ -20,16 +20,27 @@ if(NOT OPENBLAS_INCLUDE_DIR OR NOT OPENBLAS_LIBRARY)
   message(FATAL_ERROR "OpenBLAS headers/library missing. See third_party/README.md.")
 endif()
 find_package(Threads REQUIRED)
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+set(QWEN_BUILD_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/qwen_guarded_cpu")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+  "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_guard.py")
+execute_process(COMMAND "${Python3_EXECUTABLE}"
+  "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_guard.py" "${QWEN_SOURCE}" "${QWEN_BUILD_SOURCE}"
+  RESULT_VARIABLE guard_result)
+if(NOT guard_result EQUAL 0)
+  message(FATAL_ERROR "Pinned Qwen decode guard source anchors did not match")
+endif()
+
 set(qwen_sources qwen_asr.c qwen_asr_kernels.c qwen_asr_kernels_generic.c
   qwen_asr_kernels_neon.c qwen_asr_kernels_avx.c qwen_asr_audio.c
   qwen_asr_encoder.c qwen_asr_decoder.c qwen_asr_tokenizer.c qwen_asr_safetensors.c)
-list(TRANSFORM qwen_sources PREPEND "${QWEN_SOURCE}/")
+list(TRANSFORM qwen_sources PREPEND "${QWEN_BUILD_SOURCE}/")
 add_library(qwen_cpu STATIC ${qwen_sources})
-target_include_directories(qwen_cpu PUBLIC "${QWEN_SOURCE}" PRIVATE "${OPENBLAS_INCLUDE_DIR}")
+target_include_directories(qwen_cpu PUBLIC "${QWEN_BUILD_SOURCE}" PRIVATE "${OPENBLAS_INCLUDE_DIR}")
 target_compile_definitions(qwen_cpu PRIVATE USE_BLAS USE_OPENBLAS)
 target_compile_options(qwen_cpu PRIVATE -O3 -march=native -ffast-math)
 target_link_libraries(qwen_cpu PUBLIC "${OPENBLAS_LIBRARY}" Threads::Threads m)
-add_executable(qwen-native-cli "${QWEN_SOURCE}/main.c")
+add_executable(qwen-native-cli "${QWEN_BUILD_SOURCE}/main.c")
 target_link_libraries(qwen-native-cli PRIVATE qwen_cpu)
 message(STATUS "Qwen CPU revision: ${QWEN_REVISION}")
 message(STATUS "OpenBLAS: ${OPENBLAS_LIBRARY}; headers: ${OPENBLAS_INCLUDE_DIR}")

@@ -133,9 +133,11 @@ void configurations(const std::filesystem::path &directory) {
     check(prefix.max_sessions_per_process == 8 && prefix.worker_processes == 1 &&
           prefix.prefix_preview_ms == 4000 && prefix.model_path.is_absolute(),
           "shared Qwen settings did not resolve");
-    rejects([] { (void)resolve_config({}, {"model.runtime=qwen_prefix", "model.path=missing-model",
-        "audio.realtime_pacing=true", "workers.scheduler=round_robin", "workers.processes=2"}); },
-        "multiple process-global Qwen contexts accepted");
+    const auto pool = resolve_config({}, {"model.runtime=qwen_prefix", "model.path=missing-model",
+        "audio.realtime_pacing=true", "workers.scheduler=least_active", "workers.processes=2",
+        "workers.max_sessions_per_process=2"});
+    check(pool.worker_processes == 2 && pool.max_sessions_per_process == 2,
+          "shared process pool layout rejected");
     rejects([] { (void)resolve_config({}, {"workers.max_sessions_per_process=2"}); },
         "baseline adapter accepted shared sessions");
     rejects([] { (void)resolve_config({}, {"model.runtime=qwen_native", "model.path=missing-model"}); },

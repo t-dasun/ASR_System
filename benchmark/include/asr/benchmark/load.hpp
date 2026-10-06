@@ -9,7 +9,16 @@
 #include <vector>
 
 namespace asr {
+struct LoadWavInput {
+    std::string id, language;
+    std::filesystem::path path;
+    PcmBuffer pcm;
+    nlohmann::json metadata;
+};
+// JSONL records: id, file, language; optional reference and SHA256.
+std::vector<LoadWavInput> prepare_load_manifest(const std::filesystem::path &path);
 struct LoadSpec {
+    std::vector<LoadWavInput> inputs;
     int calls = 2;
     int concurrency = 2;
     int warmups = 0;
@@ -25,6 +34,8 @@ struct LoadSpec {
 };
 struct LoadCall {
     std::string id, language;
+    int input_index = -1;
+    std::string recording_id;
     int ordinal = 0, wave = 0, offset_ms = 0;
     bool warmup = false;
     int repetition = 0;

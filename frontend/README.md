@@ -26,3 +26,9 @@ first text before audio EOF for each language. See the
 [final technical report](../reports/FINAL_TECHNICAL_REPORT.md).
 
 Production authentication/TLS, remote access, retention, and capacity qualification remain unimplemented.
+
+## Shared worker pool and corpus simulation
+
+See [the shared worker pool run guide](../docs/SHARED_WORKER_POOL.md). A shared service can now expose multiple workers through one endpoint. Runtime rows show worker PIDs, active sessions/capacity, call IDs and decode queues. The concurrency ceiling comes from workers × slots per worker. Worker layout is fixed at shared-service startup; restart it to change that layout.
+
+Start `asr-cli serve` with `--manifest FILE.jsonl` to configure distinct WAV inputs for Load suites. The editor shows the dataset count and offers the recordings matching its language selection. Calls cycle through eligible entries; browser WAV uploads remain separate live-call inputs. Manifest services disable parameter Sweep. Multiple streaming tabs can connect to the same pool endpoint.

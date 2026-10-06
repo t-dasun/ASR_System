@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "service": "http://127.0.0.1:38831",
+  "engine": "qwen_prefix_multiplex_experimental",
+  "workers": 1,
+  "slots_per_worker": 2,
+  "manifest_inputs": 30,
+  "concurrency_limit": "2",
+  "browser_errors": 0,
+  "checks": [
+    "manifest_controls",
+    "worker_layout",
+    "runtime_pid_sessions_queue",
+    "cpp_manifest_dry_run"
+  ]
+}

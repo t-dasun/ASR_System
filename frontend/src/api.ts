@@ -11,9 +11,13 @@ export interface Capabilities {
   languages: Language[]
   sample_rate_hz: number
   worker_processes: number
+  manifest_inputs?: number
+  worker_routing?: string
+  decode_scheduling?: string
   max_sessions_per_process?: number
   process_isolated?: boolean
   hard_decode_watchdog?: boolean
+  cooperative_cancellation?: boolean
 }
 
 export interface WorkerSnapshot {
@@ -23,6 +27,7 @@ export interface WorkerSnapshot {
   state: string
   occupied: boolean
   healthy: boolean
+  max_sessions?: number
   active_sessions: number
   runtime_threads: number
   process_id: number
