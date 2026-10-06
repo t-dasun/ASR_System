@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
             std::filesystem::temp_directory_path() / ("asr_m7_http_" + std::to_string(getpid()));
         std::filesystem::create_directories(root / "safe_run");
         std::filesystem::create_directories(root / "safe_run" / "call_0");
-        std::filesystem::create_directories(root / "reports" / "r1");
+
         {
             std::ofstream stream(root / "safe_run" / "summary.json");
             stream << R"({"status":"COMPLETE","is_mock":true})";
@@ -78,10 +78,7 @@ int main(int argc, char **argv) {
             std::ofstream stream(root / "safe_run" / "call_0" / "config.json");
             stream << R"({"language":"en"})";
         }
-        {
-            std::ofstream stream(root / "reports" / "r1" / "report.json");
-            stream << R"({"report_id":"r1"})";
-        }
+
         std::filesystem::create_directory_symlink(root / "safe_run", root / "linked_run");
         asr::WorkerLayout layout;
         layout.processes = 1;
@@ -136,8 +133,7 @@ int main(int argc, char **argv) {
                   "history detail failed");
             check(request(port, "GET", "/v1/artifacts/safe_run/summary.json").status == 200,
                   "artifact retrieval failed");
-            check(request(port, "GET", "/v1/artifacts/safe_run/call_0/config.json").body["language"] ==
-                      "en",
+            check(request(port, "GET", "/v1/artifacts/safe_run/call_0/config.json").body["language"] == "en",
                   "nested call artifact retrieval failed");
             check(request(port, "GET", "/v1/artifacts/safe_run/../config.json").status == 404,
                   "nested artifact traversal was allowed");
@@ -145,9 +141,7 @@ int main(int argc, char **argv) {
                   "artifact traversal was allowed");
             check(request(port, "GET", "/v1/artifacts/linked_run/summary.json").status == 404,
                   "symlinked artifact directory was allowed");
-            check(request(port, "GET", "/v1/reports").body["items"].size() == 1 &&
-                      request(port, "GET", "/v1/reports/r1").body["report_id"] == "r1",
-                  "report retrieval failed");
+
             check(request(port, "POST", "/v1/suites/dry-run", R"({"calls":3})").body["dry_run"] == true,
                   "suite dry run failed");
             check(gate.enter_live(), "fixture could not reserve interactive admission");

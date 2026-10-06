@@ -1,5 +1,0 @@
-# Engine adapters
-
-The `prefix` adapter is selectable as `model.runtime=qwen_prefix` through the main C++ application. One model context and one inference thread schedule multiple active sessions with independent ordered PCM and event streams. It provides a provisional prefix and an EOF final, plus admission, draining, cancellation, soft deadlines, and active/queued-call status. REST suites reuse its loaded context. Its native decoder runs in the service process; process isolation and hard interruption are not provided. See [implementation/results](../docs/TIME_MULTIPLEXING_RESULTS.md).
-
-Public engine/session/sink contracts live in `interfaces/include/asr/engines/engine.hpp`. The independent `mock` adapter is implemented and tested in M1. M3 adds the process-isolated `native` Qwen adapter and worker, built only in the CPU-native preset. Vendor headers remain in the worker source; core/session public headers contain none. Alternative adapters remain pending. M0's research probe stays separate.

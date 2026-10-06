@@ -55,6 +55,21 @@ int main() {
                   pool_plan.preflight["required_memory_bytes"].get<std::uint64_t>() >
                       shared_plan.preflight["required_memory_bytes"].get<std::uint64_t>(),
               "prefix pool memory estimate ignored additional model contexts");
+        auto max_pool = shared;
+        max_pool.worker_processes = 8;
+        auto max_load = shared_spec;
+        max_load.calls = 64;
+        max_load.concurrency = 64;
+        check(asr::plan_load(max_pool, max_load, 3200, 32ULL * 1024 * 1024 * 1024).allowed,
+              "load runner cannot exercise all eight shared workers' 64 slots");
+        max_load.concurrency = 65;
+        bool upper_bound_rejected = false;
+        try {
+            (void)asr::plan_load(max_pool, max_load, 3200, 32ULL * 1024 * 1024 * 1024);
+        } catch (const std::invalid_argument &) {
+            upper_bound_rejected = true;
+        }
+        check(upper_bound_rejected, "load runner exceeded the 64-call bound");
         shared_spec.concurrency = 9;
         check(!asr::plan_load(shared, shared_spec, 3200, 6ULL * 1024 * 1024 * 1024).allowed,
               "shared-model preflight allowed excess call slots");

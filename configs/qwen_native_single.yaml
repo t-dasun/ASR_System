@@ -24,7 +24,7 @@ cpu:
   cores: []
 audio:
   source: wav
-  path: ../third_party/qwen-asr/samples/jfk.wav
+  path: ../tests/fixtures/m8_jfk_1p2s.wav
   channel_mix: reject
   sample_rate_hz: 16000
   channels: 1

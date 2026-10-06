@@ -28,7 +28,9 @@ def acquire(destination, metadata_only=False):
         if manifest.get("model") != MODEL or manifest.get("revision") != PIN["revision"]:
             raise RuntimeError("Existing model acquisition is not at the pinned revision")
         missing = (REQUIRED | OPTIONAL) - {item["name"] for item in manifest["files"]}
-        if missing:
+        # A verified acquisition already records every available pinned artifact.
+        # Absent optional files need not force a network lookup on each setup.
+        if missing & REQUIRED or (missing and manifest.get("status") != "verified"):
             with urllib.request.urlopen(f"https://huggingface.co/api/models/{MODEL}/revision/{manifest['revision']}?blobs=true", timeout=60) as response:
                 pinned_info = json.load(response)
             available = {item["rfilename"]: item for item in pinned_info["siblings"]}

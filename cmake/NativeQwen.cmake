@@ -40,7 +40,5 @@ target_include_directories(qwen_cpu PUBLIC "${QWEN_BUILD_SOURCE}" PRIVATE "${OPE
 target_compile_definitions(qwen_cpu PRIVATE USE_BLAS USE_OPENBLAS)
 target_compile_options(qwen_cpu PRIVATE -O3 -march=native -ffast-math)
 target_link_libraries(qwen_cpu PUBLIC "${OPENBLAS_LIBRARY}" Threads::Threads m)
-add_executable(qwen-native-cli "${QWEN_BUILD_SOURCE}/main.c")
-target_link_libraries(qwen-native-cli PRIVATE qwen_cpu)
 message(STATUS "Qwen CPU revision: ${QWEN_REVISION}")
 message(STATUS "OpenBLAS: ${OPENBLAS_LIBRARY}; headers: ${OPENBLAS_INCLUDE_DIR}")

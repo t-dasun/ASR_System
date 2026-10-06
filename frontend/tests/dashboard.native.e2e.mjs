@@ -36,7 +36,7 @@ async function until(fn, label, timeoutMs = 15000) {
 
 try {
   if (evidenceDirectory) await mkdir(evidenceDirectory)
-  const manifest = (await readFile(path.join(root, 'datasets/manifests/fleurs_m4_tuning.jsonl'), 'utf8'))
+  const manifest = (await readFile(path.join(root, 'datasets/manifests/fleurs_tuning.jsonl'), 'utf8'))
     .trim().split('\n').map(line => JSON.parse(line))
   const clips = ['en', 'id', 'zh'].map(language => {
     const match = manifest.filter(row => row.language === language)
@@ -102,7 +102,7 @@ try {
     config_sha256: await sha256(path.join(root, 'configs/qwen_native_single.yaml')),
     cli_sha256: await sha256(cli),
     worker_sha256: await sha256(path.join(path.dirname(cli), 'asr-native-worker')),
-    manifest_sha256: await sha256(path.join(root, 'datasets/manifests/fleurs_m4_tuning.jsonl')),
+    manifest_sha256: await sha256(path.join(root, 'datasets/manifests/fleurs_tuning.jsonl')),
     model_acquisition: JSON.parse(await readFile(path.join(root, 'models/qwen3-asr-0.6b/acquisition.json'), 'utf8')) }
   if (evidenceDirectory)
     await writeFile(path.join(evidenceDirectory, 'demo.json'), JSON.stringify(evidence, null, 2) + '\n', { flag: 'wx' })

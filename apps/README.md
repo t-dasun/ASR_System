@@ -1,3 +1,7 @@
-# Application entry points
+# Executable entry points
 
-`asr_cli/main.cpp` is the M1 composition root for `asr-cli validate|dry-run|run`. It currently supports only the mock CPU engine and synthetic audio. Production `asr-bench`, `asr-server`, and `asr-worker` remain reserved. Native validation probes remain separately runnable under `research/native_qwen`.
+- `asr_cli/`: `asr-cli`, with argument/run handling in `main.cpp`, engine construction in `engine_runtime.cpp`, and service wiring in `service.cpp`.
+- `asr_native_worker/`: child helper for the one-call native runtime.
+- `asr_prefix_worker/`: persistent child helper for the shared-prefix worker pool.
+
+Use `asr-cli`; its selected runtime launches workers automatically. See [run commands](../docs/CLI_QUICKSTART.md).

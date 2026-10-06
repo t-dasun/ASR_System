@@ -17,7 +17,7 @@ workers:
   scheduler: least_active
 audio:
   source: wav
-  path: ../datasets/prepared/fleurs_m4/fleurs_en_us_validation_1605_16.wav
+  path: ../tests/fixtures/m8_jfk_1p2s.wav
   channel_mix: reject
   sample_rate_hz: 16000
   channels: 1
@@ -26,4 +26,4 @@ audio:
 dataset:
   language: en
 output:
-  directory: ../results/time_multiplexing/main_cpp
+  directory: ../results

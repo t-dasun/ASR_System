@@ -27,7 +27,8 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const [busy, setBusy] = useState(false)
   const sharedModel = capabilities?.engine?.startsWith('qwen_prefix_') || false
   const manifestInputs = capabilities?.manifest_inputs || 0
-  const activeLimit = sharedModel ? Math.min(16, (capabilities?.max_sessions_per_process || 1) * (capabilities?.worker_processes || 1)) : 16
+  const runnerLimit = capabilities?.max_load_concurrency || 64
+  const activeLimit = sharedModel ? Math.min(runnerLimit, (capabilities?.max_sessions_per_process || 1) * (capabilities?.worker_processes || 1)) : runnerLimit
 
   useEffect(() => { setProcesses(capabilities?.worker_processes || 1) }, [capabilities?.worker_processes])
 

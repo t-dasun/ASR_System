@@ -1,9 +1,21 @@
-# Dataset preparation
+# Dataset inputs
 
-M9 paired robustness preparation is in `tools/datasets/prepare_m9_pairs.py`, with the deterministic telephone transform in `tools/datasets/telephone.py`. It derives clean/simulated-telephone pairs from the already pinned FLEURS tuning manifest, verifies source hashes, and writes condition manifests plus `pairing.json` provenance outside Git. See [M9 runbook](../docs/m9-code.md). This does not replace real telephony or a versioned Common Voice subset.
+The retained manifests are **test inputs**, not results. They describe English (`en`), Indonesian (`id`), and Mandarin (`zh`) recordings from pinned Google FLEURS validation data, with references, sample counts, and SHA256 hashes.
 
-`tools/datasets/prepare_m9_stress.py` builds a deterministic speech-replay, interruption, and digital-silence WAV from an existing verified source. Its `schedule.json` marks exact sample boundaries and SHA256s. It has no human reference and must never be scored as FLEURS WER/CER.
+- `manifests/demo_calls.jsonl`: four distinct longer WAVs for the multi-call demonstration.
+- `manifests/fleurs_tuning.jsonl`: 20 recordings per language.
+- `manifests/fleurs_validation.jsonl`: 50 recordings per language, disjoint sentence IDs from tuning.
+- `manifests/fleurs.summary.json`: selection/source identity and manifest checksums.
+- `manifests/excluded_sentence_ids.json`: original demo sentence exclusions, applied across languages.
 
-M4 `tools/datasets/prepare_m4_fleurs.py` reuses verified cached shards without downloads. It creates 60 tuning clips (20/language) and 150 validation-holdout clips (50/language), globally grouped by sentence ID and excluding all M0 IDs. `manifests/fleurs_m4.summary.json` locks manifest hashes. This validation holdout is not the official test split and is not used for M4 configuration selection. The native measurement gate uses nine tuning recordings. See [M4 guide](../docs/m4-code.md).
+The validation holdout is not the official FLEURS test split. Raw Parquet and prepared WAV directories are ignored. Preparation verifies cached source hashes and refuses to overwrite differing files:
 
-The M0 source is pinned Google FLEURS validation data for `en_us`, `cmn_hans_cn`, and `id_id`: ten selected recordings per language, split into exploratory and held-out acceptance cohorts. `tools/datasets/prepare_fleurs.py` acquires and verifies the shards, prepares 16 kHz mono PCM16 WAVs, and writes `manifests/fleurs_m0.jsonl` plus its summary. `raw` and `prepared` are ignored; manifests retain provenance/reference metadata. See [the M0 file and artifact guide](../docs/m0-code.md). Vendor smoke audio is diagnostic input and is not a FLEURS accuracy benchmark.
+```bash
+python3 -m venv .venv-data
+.venv-data/bin/pip install -r tools/datasets/requirements.txt
+.venv-data/bin/python tools/datasets/prepare_fleurs.py
+```
+
+This downloads missing pinned shards into `datasets/raw/fleurs` and prepares `datasets/prepared/fleurs`. Existing local WAV inputs were retained during cleanup. The matrix driver itself needs only standard-library Python and those WAVs. See [Testing](../docs/TESTING.md).
+
+FLEURS is CC-BY-4.0. Preserve dataset attribution when sharing derived audio or results; see [third-party notices](../THIRD_PARTY_NOTICES.md).

@@ -1,0 +1,18 @@
+add_library(asr_native src/engines/native/src/native_engine.cpp)
+target_include_directories(asr_native PUBLIC src/engines/native/include PRIVATE src/engines/native/src)
+target_link_libraries(asr_native PUBLIC asr_engines PRIVATE nlohmann_json::nlohmann_json asr_warnings)
+add_executable(asr-native-worker apps/asr_native_worker/main.cpp)
+target_include_directories(asr-native-worker PRIVATE src/engines/native/src)
+target_link_libraries(asr-native-worker PRIVATE qwen_cpu nlohmann_json::nlohmann_json asr_warnings)
+target_link_libraries(asr-cli PRIVATE asr_native)
+target_compile_definitions(asr-cli PRIVATE ASR_HAS_QWEN_NATIVE=1)
+
+add_library(asr_prefix_multiplex src/engines/prefix/src/prefix_engine.cpp src/engines/prefix/src/prefix_pool.cpp)
+find_package(OpenMP REQUIRED COMPONENTS CXX)
+target_include_directories(asr_prefix_multiplex PUBLIC src/engines/prefix/include PRIVATE "${OPENBLAS_INCLUDE_DIR}")
+target_link_libraries(asr_prefix_multiplex PUBLIC asr_engines PRIVATE qwen_cpu Threads::Threads OpenMP::OpenMP_CXX nlohmann_json::nlohmann_json asr_warnings)
+add_executable(asr-prefix-worker apps/asr_prefix_worker/main.cpp)
+target_include_directories(asr-prefix-worker PRIVATE src/engines/prefix/src)
+target_link_libraries(asr-prefix-worker PRIVATE asr_prefix_multiplex nlohmann_json::nlohmann_json asr_warnings)
+
+target_link_libraries(asr-cli PRIVATE asr_prefix_multiplex)

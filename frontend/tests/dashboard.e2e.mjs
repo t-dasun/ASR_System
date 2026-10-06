@@ -7,7 +7,7 @@ import { chromium } from 'playwright-core'
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const root = path.resolve(frontend, '..')
 const executablePath = process.env.ASR_CHROME || '/usr/bin/google-chrome'
-const cli = process.env.ASR_CLI || path.join(root, 'build/dev-mock/asr-cli')
+const cli = process.env.ASR_CLI || path.join(root, 'build/release-cpu/asr-cli')
 const host = 'http://127.0.0.1:5173'
 const children = []
 let browser

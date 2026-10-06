@@ -1,9 +1,8 @@
-# Tests
+# Maintained tests
 
-Run `ctest --preset dev-mock` or `ctest --preset release-cpu`. Model-free tests cover chunk deadlines, foundation/audio contracts, CLI artifacts/load/sweep dry runs, known metric timelines/quantiles, replaceable resource sampling/loss, M5 session management, M6 seeded concurrent load/sweep plans, and M7 loopback WebSocket/API contracts. The native preset adds `native_adapter_contracts` and `native_manager_contracts`; both use a stand-in worker to test process separation, language state, crash isolation, cancellation, timeout, and repeated contexts without model weights. `integration/audio_realtime_60.cpp` remains a manual 60-second gate. CTest needs no internet, model, dataset, or Python; the two M7 socket tests need permission to open localhost TCP sockets.
+- `unit/`: C++ audio, metrics, configuration, load/sweep, and scheduler contracts.
+- `integration/`: C++ native/pool worker stubs, session lifecycles, REST/WebSocket contracts.
+- `python/`: acquisition pins/model reuse, input manifest consistency, scoring/timing, and cleanup boundaries.
+- `fixtures/`: small WAV/manifest inputs; they are required test data.
 
-Offline M4 checks run with `.venv-reference/bin/python tests/unit/evaluation_test.py` (JiWER parity and Unicode/failure fixtures) and `.venv-reference/bin/python tests/unit/m4_workflow_test.py` (prepared manifest disjointness and selection/quantiles). The separate nine-call native measurement gate requires the local model and prepared data; see [M4 guide](../docs/m4-code.md).
-
-M9 model-free telephone, paired-comparison, configuration-factor, and synthetic-schedule checks run with `.venv-reference/bin/python -m unittest tests/unit/telephone_test.py tests/unit/m9_pair_test.py tests/unit/m9_config_test.py tests/unit/m9_stress_test.py -v`. The WebSocket contract test now also exercises a delayed second PCM chunk; the session-manager contract test checks admission recovery after overload and cancellation. The M9 native screen requires the local model and prepared FLEURS WAVs; see [M9 runbook](../docs/m9-code.md).
-
-M10/M11 offline reporting and acquisition-pin checks run with `python3 -m unittest tests.unit.m10_report_test tests.unit.m10_capacity_test tests.unit.m11_pins_test -v`. They cover raw-seal rejection, conservative sizing classifications, comparable 1/2-worker screens, and exact pinned model/FLEURS initial acquisition or mismatched-manifest refusal without network downloads. M11's fresh mock/native CTest build results and reproduction limits are in [the runbook](../docs/m11-reproduction.md).
+Use `python3 scripts/regression.py` for the combined suite, or `--full` for real-model workflows. Individually run `ctest --preset release-cpu` and `python3 -m unittest discover -s tests/python -p '*_test.py' -v`. Browser tests live in `frontend/tests/`. Real-model corpus experiments live in `tools/testing/`. See [Testing](../docs/TESTING.md) for their different scopes.

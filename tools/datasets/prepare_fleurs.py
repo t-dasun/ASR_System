@@ -1,145 +1,116 @@
 #!/usr/bin/env python3
-"""Pin/download only FLEURS validation splits and prepare disjoint M0 cohorts."""
+"""Expand cached pinned validation data into globally sentence-disjoint cohorts.
+
+The evaluation cohort is a validation holdout, not the official FLEURS test split.
+Missing source shards are downloaded at the pinned revision; no inference is performed.
+Paths are relative to the repository root.
+"""
 import argparse
 import hashlib
 import io
 import json
 from pathlib import Path
-import urllib.request
 
-CONFIGS = {"en": "en_us", "zh": "cmn_hans_cn", "id": "id_id"}
-PIN = json.loads((Path(__file__).resolve().parents[2] / "third_party/revisions.lock").read_text())["fleurs"]
-
-
-def sha256(path):
-    with path.open("rb") as source:
-        return hashlib.file_digest(source, "sha256").hexdigest()
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from tools.datasets.fleurs_source import CONFIGS, PIN, acquire, immutable_text, sha256
 
 
-def fetch_json(url):
-    with urllib.request.urlopen(url, timeout=90) as response:
-        return json.load(response)
+def select_cohorts(identities, excluded, seed, tuning, heldout):
+    common = set.intersection(*(set(rows) for rows in identities.values())) - set(excluded)
+    # Keep the original rank salt so the retained cohorts stay reproducible.
+    ranked = sorted(common, key=lambda value: hashlib.sha256(f"m4:{seed}:{value}".encode()).hexdigest())
+    if len(ranked) < tuning + heldout:
+        raise ValueError("not enough shared sentence IDs after exclusions")
+    return {sentence: ("tuning" if rank < tuning else "heldout_validation", rank)
+            for rank, sentence in enumerate(ranked[:tuning + heldout])}
 
 
-def immutable_text(path, text):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists():
-        if path.read_text() != text:
-            raise ValueError(f"Refusing to replace different artifact: {path}")
-    else:
-        with path.open("x") as output:
-            output.write(text)
-
-
-def acquire(raw):
-    raw.mkdir(parents=True, exist_ok=True)
-    lock = raw / "source.json"
-    if lock.exists():
-        metadata = json.loads(lock.read_text())
-        if metadata.get("dataset") != "google/fleurs" or metadata.get("revision") != PIN["revision"]:
-            raise ValueError("Existing FLEURS source is not at the pinned revision")
-    else:
-        revision = PIN["revision"]
-        files = {}
-        for language, config in CONFIGS.items():
-            entries = fetch_json(f"https://huggingface.co/api/datasets/google/fleurs/tree/{revision}/parquet-data/{config}")
-            selected = [entry for entry in entries if Path(entry["path"]).name.startswith("validation-")]
-            if len(selected) != 1:
-                raise ValueError("Expected one pinned validation shard per language")
-            entry = selected[0]
-            files[language] = {"path": entry["path"], "size": entry["size"], "sha256": entry["lfs"]["oid"]}
-        metadata = {"dataset": "google/fleurs", "revision": revision, "split": "validation", "files": files}
-        immutable_text(lock, json.dumps(metadata, indent=2) + "\n")
-    for language, item in metadata["files"].items():
-        target = raw / f"{language}_validation.parquet"
-        if not target.exists():
-            temporary = target.with_suffix(".partial")
-            if temporary.exists():
-                raise ValueError(f"Inspect interrupted download before retrying: {temporary}")
-            print(f"Downloading {language} validation ({item['size'] / 1e6:.1f} MB)", flush=True)
-            url = f"https://huggingface.co/datasets/google/fleurs/resolve/{metadata['revision']}/{item['path']}"
-            with urllib.request.urlopen(url, timeout=180) as response, temporary.open("xb") as output:
-                while block := response.read(1024 * 1024):
-                    output.write(block)
-            if temporary.stat().st_size != item["size"] or sha256(temporary) != item["sha256"]:
-                raise ValueError(f"Download integrity failed: {temporary}")
-            temporary.rename(target)
-        elif sha256(target) != item["sha256"]:
-            raise ValueError(f"Cached shard checksum mismatch: {target}")
-    return metadata
-
-
-def prepare(raw, metadata, output, seed, per_language):
+def main(args):
     import pyarrow.parquet as pq
     import soundfile as sf
 
-    output.mkdir(parents=True, exist_ok=True)
+    metadata = acquire(args.raw)
+    excluded = json.loads(args.exclude.read_text())
+    if metadata["revision"] != "70bb2e84b976b7e960aa89f1c648e09c59f894dd" or metadata["split"] != "validation":
+        raise ValueError("unexpected pinned FLEURS source")
+    identities = {}
+    for language in CONFIGS:
+        shard = args.raw / f"{language}_validation.parquet"
+        if sha256(shard) != metadata["files"][language]["sha256"]:
+            raise ValueError(f"source checksum mismatch: {shard}")
+        identities[language] = {}
+        for index, row in enumerate(pq.read_table(shard, columns=["id"]).to_pylist()):
+            identities[language].setdefault(str(row["id"]), index)
+    chosen = select_cohorts(identities, set(excluded), args.seed,
+                            args.tuning, args.heldout)
+    args.output.mkdir(parents=True, exist_ok=True)
     records = []
     for language, config in CONFIGS.items():
-        shard = raw / f"{language}_validation.parquet"
-        identities = pq.read_table(shard, columns=["id", "path"]).to_pylist()
-        # One recording per sentence ID; no alternate reading crosses cohorts.
-        selected = {}
-        for index, row in enumerate(identities):
-            key = str(row["id"])
-            selected.setdefault(key, index)
-        ranked = sorted(selected, key=lambda key: hashlib.sha256(f"{seed}:{key}".encode()).hexdigest())
-        if len(ranked) < per_language:
-            raise ValueError("Not enough independent sentence IDs")
-        chosen = {selected[key]: rank for rank, key in enumerate(ranked[:per_language])}
+        selected = {identities[language][sentence]: (sentence, cohort, rank)
+                    for sentence, (cohort, rank) in chosen.items()}
         offset = 0
-        for batch in pq.ParquetFile(shard).iter_batches(batch_size=8):
+        for batch in pq.ParquetFile(args.raw / f"{language}_validation.parquet").iter_batches(batch_size=8):
             for local, row in enumerate(batch.to_pylist()):
                 index = offset + local
-                if index not in chosen:
+                if index not in selected:
                     continue
-                source_bytes = row["audio"]["bytes"]
-                audio, rate = sf.read(io.BytesIO(source_bytes), dtype="float32", always_2d=True)
-                if rate != 16000 or audio.shape[1] != 1 or len(audio) == 0:
-                    raise ValueError(f"Unexpected FLEURS audio format: {config}/{row['id']}")
-                recording_id = f"fleurs_{config}_validation_{row['id']}_{index}"
-                destination = output / f"{recording_id}.wav"
+                sentence, cohort, rank = selected[index]
+                raw = row["audio"]["bytes"]
+                audio, rate = sf.read(io.BytesIO(raw), dtype="float32", always_2d=True)
+                if rate != 16000 or audio.shape[1] != 1 or not len(audio):
+                    raise ValueError(f"unexpected input format: {language}/{sentence}")
+                identifier = f"fleurs_{config}_validation_{sentence}_{index}"
+                destination = args.output / f"{identifier}.wav"
                 encoded = io.BytesIO()
                 sf.write(encoded, audio, rate, format="WAV", subtype="PCM_16")
                 data = encoded.getvalue()
                 if destination.exists():
                     if destination.read_bytes() != data:
-                        raise ValueError(f"Prepared audio differs: {destination}")
+                        raise ValueError(f"refusing to overwrite differing WAV: {destination}")
                 else:
                     with destination.open("xb") as target:
                         target.write(data)
-                records.append({
-                    "schema_version": 1, "id": recording_id, "file": str(destination),
-                    "language": language, "config": config, "dataset": "google/fleurs",
-                    "revision": metadata["revision"], "split": "validation",
-                    "cohort": "exploratory" if chosen[index] < per_language // 2 else "acceptance",
-                    "selection_rank": chosen[index], "seed": seed, "source_id": str(row["id"]),
-                    "source_path": row["path"], "source_row": index,
-                    "reference": row["raw_transcription"], "source_transcription": row["transcription"],
-                    "reference_field": "raw_transcription", "sample_rate": rate, "channels": 1,
-                    "num_samples": len(audio), "duration_s": len(audio) / rate, "encoding": "PCM_16",
-                    "condition": "clean", "source_audio_sha256": hashlib.sha256(source_bytes).hexdigest(),
-                    "sha256": hashlib.sha256(data).hexdigest(), "license": "CC-BY-4.0",
-                    "conversion": {"library": "soundfile", "version": sf.__version__, "operation": "float32 decode to PCM16 WAV; no resampling"},
-                })
+                records.append({"schema_version": 1, "id": identifier, "file": str(destination),
+                                "language": language, "config": config, "dataset": "google/fleurs",
+                                "revision": metadata["revision"], "split": "validation", "cohort": cohort,
+                                "selection_rank": rank, "seed": args.seed, "source_id": sentence,
+                                "source_row": index, "source_path": row["path"],
+                                "speaker_id": row.get("speaker_id"), "reference": row["raw_transcription"],
+                                "source_transcription": row["transcription"], "reference_field": "raw_transcription",
+                                "num_samples": len(audio), "duration_s": len(audio) / rate, "sample_rate": rate,
+                                "channels": 1, "encoding": "PCM_16", "condition": "clean",
+                                "sha256": hashlib.sha256(data).hexdigest(),
+                                "source_audio_sha256": hashlib.sha256(raw).hexdigest(), "license": "CC-BY-4.0",
+                                "conversion": {"library": "soundfile", "version": sf.__version__,
+                                               "operation": "float32 decode to PCM16 WAV; no resampling"}})
             offset += len(batch)
-        print(f"Prepared {language}: {per_language} recordings", flush=True)
     records.sort(key=lambda row: (row["language"], row["selection_rank"]))
-    manifest = Path("datasets/manifests/fleurs_m0.jsonl")
-    immutable_text(manifest, "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in records))
-    summary = {"source": metadata, "seed": seed, "recordings": len(records),
-               "audio_seconds": sum(row["duration_s"] for row in records), "manifest_sha256": sha256(manifest)}
-    immutable_text(Path("datasets/manifests/fleurs_m0.summary.json"), json.dumps(summary, indent=2) + "\n")
+    summary = {"schema_version": 1, "seed": args.seed, "source": metadata,
+               "excluded_sentence_ids_sha256": sha256(args.exclude), "selection": "shared sentence IDs across languages; first recording per sentence; SHA256 rank v1; listed sentence IDs excluded globally",
+               "scope": "validation tuning/holdout; reserve official test split for final evaluation",
+               "cohorts": {}}
+    for cohort in ("tuning", "heldout_validation"):
+        rows = [row for row in records if row["cohort"] == cohort]
+        path = args.manifests / ("fleurs_tuning.jsonl" if cohort == "tuning" else "fleurs_validation.jsonl")
+        immutable_text(path, "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows))
+        summary["cohorts"][cohort] = {"manifest": str(path), "sha256": sha256(path), "recordings": len(rows),
+                                       "audio_seconds": sum(row["duration_s"] for row in rows),
+                                       "per_language": {lang: sum(row["language"] == lang for row in rows) for lang in CONFIGS}}
+    immutable_text(args.manifests / "fleurs.summary.json", json.dumps(summary, indent=2) + "\n")
     print(json.dumps(summary, indent=2))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--raw", type=Path, default=Path("datasets/raw/fleurs_m0"))
-    parser.add_argument("--output", type=Path, default=Path("datasets/prepared/fleurs_m0"))
+    parser.add_argument("--raw", type=Path, default=Path("datasets/raw/fleurs"))
+    parser.add_argument("--exclude", type=Path, default=Path("datasets/manifests/excluded_sentence_ids.json"))
+    parser.add_argument("--output", type=Path, default=Path("datasets/prepared/fleurs"))
+    parser.add_argument("--manifests", type=Path, default=Path("datasets/manifests"))
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--per-language", type=int, default=10)
+    parser.add_argument("--tuning", type=int, default=20)
+    parser.add_argument("--heldout", type=int, default=50)
     args = parser.parse_args()
-    if args.per_language < 2 or args.per_language % 2:
-        parser.error("per-language must be a positive even number >= 2")
-    prepare(args.raw, acquire(args.raw), args.output, args.seed, args.per_language)
+    if args.tuning < 1 or args.heldout < 1:
+        parser.error("cohort counts must be positive")
+    main(args)

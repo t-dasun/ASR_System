@@ -1,6 +1,7 @@
 #include <asr/engines/prefix_pool.hpp>
 #include <atomic>
 #include <future>
+#include <map>
 #include <stdexcept>
 using namespace asr;
 struct Sink : IRecognitionSink {
@@ -26,6 +27,40 @@ int main(int argc, char **argv) {
     if (argc != 2)
         return 1;
     SteadyClock clock;
+    {
+        PrefixProcessPool pool(argv[1], "stub", 8, 8, 4000, 4, 30000, 60000, 1000);
+        std::vector<std::unique_ptr<Sink>> sinks;
+        std::vector<std::unique_ptr<IASRSession>> sessions;
+        for (int i = 0; i < 64; ++i) {
+            auto sink = std::make_unique<Sink>();
+            sink->call = "capacity_" + std::to_string(i);
+            SessionConfig config;
+            config.run_id = "capacity_test";
+            config.call_id = sink->call;
+            auto result = pool.create_session(config, *sink, clock);
+            check(bool(result));
+            sessions.push_back(std::move(result.value));
+            sinks.push_back(std::move(sink));
+        }
+        auto workers = pool.workers();
+        check(workers.size() == 8);
+        std::map<std::string, int> assigned;
+        for (const auto &session : sessions)
+            ++assigned[session->snapshot().worker_id];
+        for (const auto &worker : workers)
+            check(worker.healthy && worker.status.max_calls == 8 && assigned[worker.worker_id] == 8);
+        SessionConfig overflow;
+        overflow.run_id = "capacity_test";
+        overflow.call_id = "overflow";
+        Sink overflow_sink;
+        overflow_sink.call = overflow.call_id;
+        check(!pool.create_session(overflow, overflow_sink, clock));
+        for (int i = 0; i < 64; ++i) {
+            check(bool(sessions[i]->finish_input()));
+            check(sinks[i]->finals == 1 && sinks[i]->failures == 0);
+        }
+    }
+
     {
         PrefixProcessPool pool(argv[1], "stub", 2, 2, 4000, 4, 30000, 60000, 1000);
         std::vector<std::unique_ptr<Sink>> sinks;

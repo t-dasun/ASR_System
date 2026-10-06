@@ -11,6 +11,7 @@ export interface Capabilities {
   languages: Language[]
   sample_rate_hz: number
   worker_processes: number
+  max_load_concurrency?: number
   manifest_inputs?: number
   worker_routing?: string
   decode_scheduling?: string
