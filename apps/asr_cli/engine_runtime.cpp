@@ -151,10 +151,9 @@ void validate_shared_suite(const asr::RunConfig &startup, const asr::RunConfig &
         startup.native_threads != selected.native_threads ||
         startup.max_sessions_per_process != selected.max_sessions_per_process ||
         startup.worker_processes != selected.worker_processes || startup.scheduler != selected.scheduler ||
-        startup.prefix_preview_ms != selected.prefix_preview_ms ||
         startup.idle_timeout_ms != selected.idle_timeout_ms ||
         startup.total_timeout_ms != selected.total_timeout_ms || startup.timeout_ms != selected.timeout_ms)
         throw std::invalid_argument("shared-model API suites must retain startup runtime, model, threads, "
-                                    "slots, and preview interval; use CLI sweeps for runtime changes");
+                                    "slots, and deadlines; use CLI sweeps for runtime changes");
 }
 } // namespace asr::app

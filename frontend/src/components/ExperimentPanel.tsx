@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { requestJson, type Capabilities, type JobStatus, type Language, type SuiteRequest } from '../api'
-import { asRecord, formatBytes, formatMs, numberAt, textAt } from '../metrics'
+import { summarizeAccuracy } from '../accuracy'
+import { callsFromSummary, asRecord, formatBytes, formatMs, numberAt, textAt } from '../metrics'
 import type { LogWriter } from '../types'
 
 interface Props { base: string; capabilities: Capabilities | null; log: LogWriter; onComplete: () => void }
@@ -17,6 +18,8 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const [strategy, setStrategy] = useState<'baseline' | 'oat' | 'matrix' | 'scale'>('baseline')
   const [axisKey, setAxisKey] = useState('audio.chunk_ms')
   const [axisValues, setAxisValues] = useState('100,200,500')
+  const [chunkMs, setChunkMs] = useState(200)
+  const [decodeMs, setDecodeMs] = useState(4000)
   const [extraOverrides, setExtraOverrides] = useState('')
   const [failureBound, setFailureBound] = useState('')
   const [finalBound, setFinalBound] = useState('')
@@ -30,6 +33,11 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const runnerLimit = capabilities?.max_load_concurrency || 64
   const activeLimit = sharedModel ? Math.min(runnerLimit, (capabilities?.max_sessions_per_process || 1) * (capabilities?.worker_processes || 1)) : runnerLimit
 
+  useEffect(() => {
+    setChunkMs(capabilities?.chunk_ms || 200)
+    setDecodeMs(sharedModel ? capabilities?.prefix_preview_ms || 4000 : capabilities?.decode_step_ms || 2000)
+  }, [capabilities?.chunk_ms, capabilities?.prefix_preview_ms, capabilities?.decode_step_ms, sharedModel])
+
   useEffect(() => { setProcesses(capabilities?.worker_processes || 1) }, [capabilities?.worker_processes])
 
   useEffect(() => {
@@ -37,9 +45,10 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   }, [manifestInputs])
 
   const overrides = useMemo(() => [
-    'audio.realtime_pacing=true', `workers.processes=${processes}`,
+    'audio.realtime_pacing=true', `workers.processes=${processes}`, `audio.chunk_ms=${chunkMs}`,
+    ...(!capabilities || capabilities.is_mock ? [] : [`model.${sharedModel ? 'prefix_preview_ms' : 'decode_step_ms'}=${decodeMs}`]),
     ...extraOverrides.split('\n').map(item => item.trim()).filter(Boolean),
-  ], [extraOverrides, processes])
+  ], [extraOverrides, processes, chunkMs, decodeMs, sharedModel, capabilities])
 
   const request = (): SuiteRequest => {
     const axes = strategy === 'baseline' ? [] :
@@ -114,6 +123,7 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
 
   const result = asRecord(job?.result)
   const metrics = asRecord(result.metrics)
+  const quality = summarizeAccuracy(callsFromSummary(result))
   const planRecord = asRecord(plan)
   const preflight = asRecord(planRecord.preflight)
   const cases = Array.isArray(planRecord.cases) ? planRecord.cases : []
@@ -128,7 +138,7 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
     {manifestInputs > 0 && <p className="fine-print">Dataset: {manifestInputs} configured WAV recordings. Calls cycle through recordings matching the selected languages; each call receives paced audio chunks.</p>}
     <div className="form-grid three">
       <label className="field">Suite
-        <select value={kind} onChange={event => setKind(event.target.value as 'load' | 'sweep')}>
+        <select aria-label="Suite" value={kind} onChange={event => setKind(event.target.value as 'load' | 'sweep')}>
           <option value="load">Load</option><option value="sweep" disabled={manifestInputs > 0}>Sweep</option>
         </select>
       </label>
@@ -139,6 +149,17 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
       </label>
       <label className="field">Worker processes
         <input type="number" min="1" max="16" value={processes} disabled={sharedModel} onChange={event => setProcesses(Number(event.target.value))} />
+      </label>
+      <label className="field">Suite chunk size
+        <select value={chunkMs} onChange={event => setChunkMs(Number(event.target.value))}>
+          {[50, 100, 200, 500, 1000].map(ms => <option key={ms} value={ms}>{ms} ms</option>)}
+        </select>
+      </label>
+      <label className="field">{sharedModel ? 'Suite prefix preview' : 'Suite decode step'}
+        <select value={decodeMs} disabled={capabilities?.is_mock} onChange={event => setDecodeMs(Number(event.target.value))}>
+          {(sharedModel ? [1000, 2000, 4000, 8000, 12000, 20000] : [1000, 2000, 4000, 8000]).map(ms =>
+            <option key={ms} value={ms}>{ms} ms</option>)}
+        </select>
       </label>
       <label className="field">Calls per repetition
         <input type="number" min="1" max="1000" value={calls} onChange={event => setCalls(Number(event.target.value))} />
@@ -211,10 +232,18 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
       {job.error && <p className="alert">{job.error}</p>}
       {job.result && <div className="stat-grid four">
         <div className="stat"><span>Completed calls</span><strong>{numberAt(result, 'completed_calls') ?? '—'}</strong></div>
+        <div className="stat"><span>First text mean / p95</span><strong>{formatMs(numberAt(metrics, 'first_usable_ms', 'mean'))} / {formatMs(numberAt(metrics, 'first_usable_ms', 'p95'))}</strong></div>
+        <div className="stat"><span>EOF to final mean / p95</span><strong>{formatMs(numberAt(metrics, 'finalization_ms', 'mean'))} / {formatMs(numberAt(metrics, 'finalization_ms', 'p95'))}</strong></div>
         <div className="stat"><span>p95 final</span><strong>{formatMs(numberAt(metrics, 'final_result_ms', 'p95'))}</strong></div>
         <div className="stat"><span>Peak tree RSS</span><strong>{formatBytes(numberAt(metrics, 'sampled_peak_tree_rss_bytes'))}</strong></div>
         <div className="stat"><span>SLO qualified</span><strong>{textAt(result, 'slo', 'qualified') || (asRecord(result.slo).qualified === true ? 'yes' : 'no')}</strong></div>
       </div>}
+      {quality.length > 0 && <div className="stat-grid three">{quality.map(group => <div className="stat" key={group.language}>
+        <span>{group.language.toUpperCase()} {group.metric} · completed calls</span>
+        <strong>{group.rate === null ? '—' : `${(group.rate * 100).toFixed(2)}%`}</strong>
+        <small>{group.scored}/{group.completed} completed calls scored; {group.offered - group.completed} failed/stopped</small>
+      </div>)}</div>}
+      {job.result && <p className="fine-print">Accuracy requires references in the server input manifest. Languages are scored separately; failures and calls without references are excluded from WER/CER.</p>}
     </div>}
     <p className="fine-print">Mock results are structural only. Fewer than 20 measured calls cannot qualify a tail estimate. A job can be stopped between calls; {capabilities?.hard_decode_watchdog ? 'active native decoding is watchdog-bounded.' : 'an active decode must finish before stop completes.'}</p>
   </section>

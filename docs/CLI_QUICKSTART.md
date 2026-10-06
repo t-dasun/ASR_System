@@ -79,7 +79,15 @@ build/release-cpu/asr-cli serve \
   --set output.directory=../results/service --port 8080
 ```
 
-The service prints its listening port once ready. `--port 0` selects a free port. Verify readiness with:
+The service prints its listening port once ready. `--port 0` selects a free port.
+
+The default service/UI port is now **8080**. Start the backend before connecting the dashboard; `npm run dev` starts only the frontend. If a saved UI origin points to another port, enter `http://127.0.0.1:8080` and click Connect.
+
+In **Streaming call**, choose transport chunk size, language and the runtime-specific decode control. Native mode exposes a 1–8 s progressive decode step; shared-prefix mode exposes a 1–20 s interval for its single preview. Each call can select its interval without reloading model weights. The default shared interval remains 4 s. These intervals do not guarantee matching text arrival latency.
+
+Paste a reference transcript to display completed-call WER (EN/ID) or CER (ZH). The UI shows first nonempty text arrival from session-ready and EOF-send to final-arrival delay using the browser clock. These include network delivery; suite/history worker timings remain separately labelled. Failed/cancelled calls are excluded from primary accuracy. Suites use saved manifest references and display per-language scores and scoring coverage.
+
+Verify readiness with:
 
 ```bash
 curl http://127.0.0.1:8080/v1/capabilities

@@ -761,6 +761,11 @@ void WebSocketServer::handle_client(int fd) {
     config.max_chunk_samples = start.at("max_chunk_samples").get<std::int64_t>();
     config.partial_every_ms = start.at("partial_every_ms").get<int>();
     config.sample_rate_hz = start.at("sample_rate_hz").get<int>();
+    config.decode_step_ms = start.value("decode_step_ms", 0);
+    config.prefix_preview_ms = start.value("prefix_preview_ms", 0);
+    if ((config.decode_step_ms != 0 && (config.decode_step_ms < 1000 || config.decode_step_ms > 8000)) ||
+        (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000)))
+        throw std::invalid_argument("invalid decode step or prefix preview interval");
     const auto safe_identity = [](const std::string &value) {
         return !value.empty() && value.size() <= 128 &&
                std::all_of(value.begin(), value.end(),
@@ -911,6 +916,8 @@ Result<std::unique_ptr<IASRSession>> WebSocketEngine::create_session(const Sessi
                     {"seed", config.seed},
                     {"max_chunk_samples", config.max_chunk_samples},
                     {"partial_every_ms", config.partial_every_ms},
+                    {"decode_step_ms", config.decode_step_ms},
+                    {"prefix_preview_ms", config.prefix_preview_ms},
                     {"sample_rate_hz", config.sample_rate_hz}},
                    true);
         while (true) {

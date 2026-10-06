@@ -139,6 +139,10 @@ struct PrefixShared {
             inference.join();
     }
 
+    int preview_samples_for(const Call &call) const {
+        return call.config.prefix_preview_ms ? call.config.prefix_preview_ms * 16 : preview_samples;
+    }
+
     struct Job {
         std::shared_ptr<Call> call;
         std::vector<float> samples;
@@ -159,7 +163,7 @@ struct PrefixShared {
                 now - call->created_ns >= std::int64_t(total_timeout_ms) * 1000000 ||
                 (!call->eof && now - call->last_audio_ns >= std::int64_t(idle_timeout_ms) * 1000000);
             if (expired || call->eof ||
-                (!call->preview_done && call->audio.size() >= static_cast<std::size_t>(preview_samples)))
+                (!call->preview_done && call->audio.size() >= static_cast<std::size_t>(preview_samples_for(*call))))
                 ready.push_back({index,
                                  expired     ? call->created_ns
                                  : call->eof ? call->eof_received_ns
@@ -182,7 +186,7 @@ struct PrefixShared {
         previews_since_final = job.final ? 0 : previews_since_final + 1;
         job.ready_ns = selected->ready_ns;
         job.eof_ns = call->eof_received_ns;
-        const auto count_samples = job.final ? call->audio.size() : static_cast<std::size_t>(preview_samples);
+        const auto count_samples = job.final ? call->audio.size() : static_cast<std::size_t>(preview_samples_for(*call));
         job.samples.assign(call->audio.begin(), call->audio.begin() + count_samples);
         return job;
     }
@@ -365,7 +369,7 @@ class PrefixSession final : public IASRSession {
         ++call_->next_sequence;
         call_->last_audio_ns = call_->clock->now_ns();
         if (!call_->preview_ready_ns &&
-            call_->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))
+            call_->audio.size() >= static_cast<std::size_t>(shared_->preview_samples_for(*call_)))
             call_->preview_ready_ns = call_->last_audio_ns;
         call_->snapshot.state = SessionState::streaming;
         call_->snapshot.consumed_samples = static_cast<std::int64_t>(call_->audio.size());
@@ -439,7 +443,7 @@ PrefixWorkerStatus PrefixMultiplexEngine::worker_status() const {
                                 static_cast<std::int64_t>(call->audio.size()), call->busy});
         if (!call->busy && !call->cancelled && !call->terminal &&
             (call->eof || (!call->preview_done &&
-                           call->audio.size() >= static_cast<std::size_t>(shared_->preview_samples))))
+                           call->audio.size() >= static_cast<std::size_t>(shared_->preview_samples_for(*call)))))
             ++status.queued_jobs;
     }
     return status;
@@ -472,6 +476,8 @@ PrefixMultiplexEngine::create_session(const SessionConfig &config, IRecognitionS
     if (config.run_id.empty() || config.call_id.empty() || config.max_chunk_samples < 1 ||
         config.max_chunk_samples > 16000)
         return {{ErrorCode::invalid_input, "invalid experimental session configuration"}, nullptr};
+    if (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
+        return {{ErrorCode::invalid_input, "prefix preview must be 1000..20000 ms"}, nullptr};
     std::lock_guard lock(shared_->mutex);
     if (shared_->draining)
         return {{ErrorCode::invalid_state, "shared worker is draining"}, nullptr};

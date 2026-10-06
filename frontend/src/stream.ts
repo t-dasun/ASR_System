@@ -25,6 +25,7 @@ export interface StreamSnapshot {
   totalChunks: number
   totalSamples: number
   clientFirstResultMs: number | null
+  clientEofToFinalMs: number | null
   clientMaxSendLagMs: number
   clientBufferedBytes: number
   observerDropped: number
@@ -42,6 +43,7 @@ export class PacedStream {
   private timer: ReturnType<typeof setTimeout> | null = null
   private token = 0
   private readyAt = 0
+  private eofAt: number | null = null
   private nextSequence = 0
   private credit = 0
   private observerCursor = 0
@@ -54,12 +56,13 @@ export class PacedStream {
   constructor(private readonly base: string, private readonly file: Blob,
               private readonly wav: PcmWav, private readonly chunkMs: number,
               language: Language, private readonly onUpdate: (value: StreamSnapshot) => void,
-              private readonly onLog: (level: string, message: string) => void) {
+              private readonly onLog: (level: string, message: string) => void,
+              private readonly decode: { decode_step_ms?: number; prefix_preview_ms?: number } = {}) {
     const runId = `ui_${crypto.randomUUID()}`
     this.snapshot = { state: 'idle', runId, callId: `${runId}_call_0`, language,
       workerId: '', sentChunks: 0, ackedChunks: 0,
       totalChunks: Math.ceil(wav.samples / (chunkMs * 16)), totalSamples: wav.samples,
-      clientFirstResultMs: null, clientMaxSendLagMs: 0, clientBufferedBytes: 0,
+      clientFirstResultMs: null, clientEofToFinalMs: null, clientMaxSendLagMs: 0, clientBufferedBytes: 0,
       observerDropped: 0, transcript: '', revisions: [], error: '' }
   }
 
@@ -90,7 +93,7 @@ export class PacedStream {
       this.send({ v: 1, type: 'start', run_id: this.snapshot.runId,
         call_id: this.snapshot.callId, language: this.snapshot.language,
         seed: 42, max_chunk_samples: this.chunkMs * 16,
-        partial_every_ms: 400, sample_rate_hz: 16000 })
+        partial_every_ms: 400, sample_rate_hz: 16000, ...this.decode })
     }
     socket.onmessage = (message) => {
       if (token !== this.token || typeof message.data !== 'string') return
@@ -135,12 +138,7 @@ export class PacedStream {
       this.schedule(token)
     } else if (message.type === 'event') {
       const event = message.event as TranscriptRevision
-      if (event.text && this.snapshot.clientFirstResultMs === null) {
-        this.update({ clientFirstResultMs: performance.now() - this.readyAt })
-      }
-      // The observer socket is authoritative for UI revisions. Use the audio
-      // socket only as a fallback if its independent subscription failed.
-      if (!this.observer || this.observer.readyState !== WebSocket.OPEN) this.acceptEvent(event)
+      this.acceptEvent(event)
     } else if (message.type === 'done') {
       const status = message.status as { code?: string; message?: string }
       if (status?.code === 'none') {
@@ -162,7 +160,12 @@ export class PacedStream {
     const key = `${event.sequence}:${event.revision}`
     if (this.seenRevisions.has(key)) return
     this.seenRevisions.add(key)
-    this.update({ transcript: event.text,
+    const arrival = performance.now()
+    this.update({
+      clientFirstResultMs: this.snapshot.clientFirstResultMs ?? (event.text.trim() ? arrival - this.readyAt : null),
+      clientEofToFinalMs: event.kind === 'final' && this.eofAt !== null
+        ? arrival - this.eofAt : this.snapshot.clientEofToFinalMs,
+      transcript: event.text || this.snapshot.transcript,
       revisions: [...this.snapshot.revisions.slice(-199), event],
       workerId: event.worker_id || this.snapshot.workerId })
   }
@@ -242,6 +245,7 @@ export class PacedStream {
   private finish(): void {
     if (this.eofSent) return
     this.eofSent = true
+    this.eofAt = performance.now()
     this.send({ v: 1, type: 'eof', expected_next_sequence: this.nextSequence,
       total_samples: this.wav.samples })
     this.update({ state: 'finalizing' })

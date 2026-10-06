@@ -82,6 +82,7 @@ int main(int argc, char **argv) {
                     config.language = command.at("language");
                     config.max_chunk_samples = command.at("max_chunk_samples");
                     config.sample_rate_hz = command.at("sample_rate_hz");
+                    config.prefix_preview_ms = command.value("prefix_preview_ms", 0);
                     auto call = std::make_shared<Call>(id);
                     auto result = engine.create_session(config, *call, clock);
                     if (result) {

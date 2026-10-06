@@ -26,6 +26,8 @@ The main C++ inference path remains intact. Python neither sends every PCM chunk
 
 Each call can receive one preview after the configured 4-second prefix, followed by whole-audio refinement at EOF. WAV chunks still arrive in real time. Preview frequency therefore differs from native streaming. Calls are bounded to 60 seconds of audio in this shared-prefix implementation.
 
+The 4-second prefix is the default and the setting used in the capacity study. Live sessions may now select a 1–20 second preview interval through `prefix_preview_ms`; native sessions may select a 1–8 second `decode_step_ms`. Optional fields propagate through WebSocket and worker IPC, with zero retaining defaults. Shared model weights and thread/worker settings stay persistent while the per-call preview threshold changes. Browser arrival metrics use browser timestamps, and optional reference scoring follows the report's normalization policy.
+
 ## Scheduling decisions
 
 - `least_active` routes new calls to the worker with fewer active sessions, spreading calls across free workers before sharing. `round_robin` is an alternative.

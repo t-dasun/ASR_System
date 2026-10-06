@@ -364,6 +364,8 @@ PrefixProcessPool::create_session(const SessionConfig &config, IRecognitionSink 
     if (config.sample_rate_hz != 16000 ||
         (config.language != "en" && config.language != "id" && config.language != "zh"))
         return {{ErrorCode::unsupported, "prefix pool supports en/id/zh at 16kHz"}, nullptr};
+    if (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
+        return {{ErrorCode::invalid_input, "prefix preview must be 1000..20000 ms"}, nullptr};
     if (clock.domain() != "host_steady")
         return {{ErrorCode::unsupported, "prefix pool requires host steady clock"}, nullptr};
     std::unique_lock pool_lock(mutex_);
@@ -403,6 +405,7 @@ PrefixProcessPool::create_session(const SessionConfig &config, IRecognitionSink 
                                    {"call_id", config.call_id},
                                    {"run_id", config.run_id},
                                    {"language", config.language},
+                                   {"prefix_preview_ms", config.prefix_preview_ms},
                                    {"max_chunk_samples", config.max_chunk_samples},
                                    {"sample_rate_hz", config.sample_rate_hz}});
     auto status = prefix_wire::status(response.at("status"));

@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
             SessionConfig config;
             config.run_id = "capacity_test";
             config.call_id = sink->call;
+            if (i == 0) config.prefix_preview_ms = 2000;
             auto result = pool.create_session(config, *sink, clock);
             check(bool(result));
             sessions.push_back(std::move(result.value));

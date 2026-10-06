@@ -38,6 +38,9 @@ export interface CallRecord {
   status: string
   worker: string
   finalMs: number | null
+  firstMs?: number | null
+  eofMs?: number | null
+  reference?: string
 }
 
 export function callsFromSummary(summary: unknown): CallRecord[] {
@@ -46,6 +49,9 @@ export function callsFromSummary(summary: unknown): CallRecord[] {
     return [{ label: textAt(root, 'run_id') || 'call', artifactId: '', language: '',
       transcript: root.transcript, status: textAt(root, 'status'),
       worker: textAt(root, 'worker_id'),
+      firstMs: numberAt(root, 'measurements', 'first_usable_transcript_ns') === null ? null : numberAt(root, 'measurements', 'first_usable_transcript_ns')! / 1e6,
+      eofMs: numberAt(root, 'measurements', 'finalization_ns') === null ? null : numberAt(root, 'measurements', 'finalization_ns')! / 1e6,
+      reference: textAt(root, 'audio', 'reference'),
       finalMs: numberAt(root, 'measurements', 'final_result_ns') === null ? null :
         numberAt(root, 'measurements', 'final_result_ns')! / 1e6 }]
   }
@@ -62,7 +68,10 @@ export function callsFromSummary(summary: unknown): CallRecord[] {
         artifactId: textAt(row, 'directory').split('/').filter(Boolean).at(-1) || '',
         language: textAt(row, 'call', 'language'),
         transcript: textAt(details, 'transcript'), status: textAt(row, 'status'),
-        worker: textAt(details, 'worker_id'), finalMs: ns === null ? null : ns / 1e6 })
+        worker: textAt(details, 'worker_id'),
+        firstMs: numberAt(details, 'measurements', 'first_usable_transcript_ns') === null ? null : numberAt(details, 'measurements', 'first_usable_transcript_ns')! / 1e6,
+        eofMs: numberAt(details, 'measurements', 'finalization_ns') === null ? null : numberAt(details, 'measurements', 'finalization_ns')! / 1e6,
+        reference: textAt(details, 'audio', 'reference'), finalMs: ns === null ? null : ns / 1e6 })
     }
   }
   return calls

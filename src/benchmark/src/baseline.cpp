@@ -104,6 +104,8 @@ nlohmann::json run_baseline(const RunConfig &config, IASREngine &engine, IAudioS
         session_config.language = config.language;
         session_config.seed = config.seed;
         session_config.partial_every_ms = config.partial_every_ms;
+        session_config.decode_step_ms = config.runtime == "qwen_native" ? config.decode_step_ms : 0;
+        session_config.prefix_preview_ms = config.runtime == "qwen_prefix" ? config.prefix_preview_ms : 0;
         const auto chunk_size = chunk_samples(config.chunk_ms, 16000);
         session_config.max_chunk_samples = chunk_size;
         measurements.session_requested_ns = clock.now_ns();

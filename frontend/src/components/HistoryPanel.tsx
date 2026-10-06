@@ -1,3 +1,5 @@
+import { scoreTranscript } from '../accuracy'
+import type { Language } from '../api'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { downloadArtifact, requestJson, type HistoryItem } from '../api'
 import { asRecord, callsFromSummary, formatMs, numberAt, textAt, type CallRecord } from '../metrics'
@@ -64,6 +66,10 @@ export function HistoryPanel({ base, connected, refresh, log }: Props) {
           <div className="subhead"><span className="mono">{call.label || `call ${index + 1}`}</span>
             <span>{call.language.toUpperCase()} · {formatMs(call.finalMs)}</span></div>
           <p>{call.transcript || <em>No transcript recorded</em>}</p>
+          <p className="fine-print">First text: {formatMs(call.firstMs)} · EOF to final: {formatMs(call.eofMs)}</p>
+          {call.status === 'COMPLETE' && call.reference && ['en', 'id', 'zh'].includes(call.language) && (() => {
+            try { const score = scoreTranscript(call.reference, call.transcript, call.language as Language); return score ? <p className="fine-print">{score.metric}: {(score.rate * 100).toFixed(2)}%</p> : null } catch { return null }
+          })()}
           <small>{call.status} · {call.worker || 'worker unavailable'}</small>
           {call.artifactId && <button className="text-button" onClick={() => void artifact(id, 'events.jsonl', call)}>events.jsonl ↓</button>}
         </div>)}</div>

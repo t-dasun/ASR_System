@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Capabilities, Language } from '../api'
+import { scoreTranscript } from '../accuracy'
 import { formatMs } from '../metrics'
 import { PacedStream, type StreamSnapshot } from '../stream'
 import type { LogWriter } from '../types'
@@ -13,17 +14,28 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
   const [wav, setWav] = useState<PcmWav | null>(null)
   const [language, setLanguage] = useState<Language>('en')
   const [chunkMs, setChunkMs] = useState(200)
+  const [decodeMs, setDecodeMs] = useState(4000)
+  const [reference, setReference] = useState('')
+  const sharedModel = capabilities?.engine.startsWith('qwen_prefix_') || false
+  useEffect(() => {
+    setChunkMs(capabilities?.chunk_ms || 200)
+    setDecodeMs(sharedModel ? capabilities?.prefix_preview_ms || 4000 : capabilities?.decode_step_ms || 2000)
+  }, [capabilities?.chunk_ms, capabilities?.prefix_preview_ms, capabilities?.decode_step_ms, sharedModel])
   const [snapshot, setSnapshot] = useState<StreamSnapshot | null>(null)
   const [error, setError] = useState('')
   const stream = useRef<PacedStream | null>(null)
 
-  useEffect(() => () => stream.current?.dispose(), [])
+  useEffect(() => {
+    stream.current?.dispose(); stream.current = null; setSnapshot(null)
+    return () => stream.current?.dispose()
+  }, [base])
 
   async function chooseFile(selected: File | null) {
     stream.current?.dispose()
     stream.current = null
     setSnapshot(null)
     setFile(selected)
+    setReference('')
     setWav(null)
     setError('')
     if (!selected) return
@@ -42,7 +54,9 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
     if (!capabilities || !file || !wav) return
     stream.current?.dispose()
     const controller = new PacedStream(base, file, wav, chunkMs, language, setSnapshot,
-      (level, message) => log(level as 'info' | 'warn' | 'error', 'stream', message))
+      (level, message) => log(level as 'info' | 'warn' | 'error', 'stream', message),
+      capabilities.session_decode_controls && !capabilities.is_mock
+        ? sharedModel ? { prefix_preview_ms: decodeMs } : { decode_step_ms: decodeMs } : {})
     stream.current = controller
     setSnapshot(controller.value)
     try {
@@ -61,6 +75,12 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
     setError('')
     log('info', 'stream', 'Session reset; next start receives a fresh call ID')
   }
+
+  const accuracy = useMemo(() => {
+    if (snapshot?.state !== 'completed' || !reference.trim()) return { value: null, error: '' }
+    try { return { value: scoreTranscript(reference, snapshot.transcript, snapshot.language), error: '' } }
+    catch (cause) { return { value: null, error: String(cause) } }
+  }, [reference, snapshot?.state, snapshot?.transcript, snapshot?.language])
 
   const active = snapshot && !['idle', 'completed', 'stopped', 'failed'].includes(snapshot.state)
   const progress = snapshot && snapshot.totalChunks
@@ -84,10 +104,22 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
       </label>
       <label className="field">Transport chunk
         <select value={chunkMs} disabled={Boolean(active)} onChange={event => setChunkMs(Number(event.target.value))}>
-          {[100, 200, 500, 1000].map(ms => <option key={ms} value={ms}>{ms} ms</option>)}
+          {[50, 100, 200, 500, 1000].map(ms => <option key={ms} value={ms}>{ms} ms</option>)}
         </select>
       </label>
+      <label className="field">{sharedModel ? 'Prefix preview interval' : 'Decode step'}
+        <select value={decodeMs} disabled={Boolean(active) || !capabilities?.session_decode_controls || capabilities?.is_mock}
+          onChange={event => setDecodeMs(Number(event.target.value))}>
+          {(sharedModel ? [1000, 2000, 4000, 8000, 12000, 20000] : [1000, 2000, 4000, 8000]).map(ms =>
+            <option key={ms} value={ms}>{ms} ms</option>)}
+        </select>
+        <span className="field-note">{sharedModel ? 'One preview after this much audio, then final at EOF.' : 'Native progressive decode interval.'}</span>
+      </label>
     </div>
+    <label className="field">Reference transcript (optional)
+      <textarea rows={3} maxLength={8000} value={reference} onChange={event => setReference(event.target.value)}
+        placeholder="Paste the correct transcript to calculate WER/CER after a successful final result." />
+    </label>
     <div className="actions">
       <button className="primary" disabled={!capabilities || !wav || Boolean(active)} onClick={start}>Start stream</button>
       <button disabled={!active || snapshot?.state === 'finalizing'} onClick={() => stream.current?.stop()}>Stop</button>
@@ -97,11 +129,15 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
     <div className="progress-label"><span>ACKed chunks</span><strong>{snapshot?.ackedChunks || 0} / {snapshot?.totalChunks || 0}</strong></div>
     <div className="progress-track"><div style={{ width: `${progress}%` }} /></div>
     <div className="stat-grid four">
-      <div className="stat"><span>Client first text</span><strong>{formatMs(snapshot?.clientFirstResultMs)}</strong></div>
+      <div className="stat"><span>First text arrival</span><strong>{formatMs(snapshot?.clientFirstResultMs)}</strong></div>
+      <div className="stat"><span>EOF to final text</span><strong>{formatMs(snapshot?.clientEofToFinalMs)}</strong></div>
+      <div className="stat"><span>{snapshot?.language === 'zh' || (!snapshot && language === 'zh') ? 'CER' : 'WER'} (completed call)</span><strong>{accuracy.value ? `${(accuracy.value.rate * 100).toFixed(2)}%` : '—'}</strong></div>
       <div className="stat"><span>Max client send lag</span><strong>{formatMs(snapshot?.clientMaxSendLagMs)}</strong></div>
       <div className="stat"><span>Browser socket buffer</span><strong>{snapshot?.clientBufferedBytes || 0} B</strong></div>
       <div className="stat"><span>Worker</span><strong>{snapshot?.workerId || '—'}</strong></div>
     </div>
+    {accuracy.error && <p className="alert">{accuracy.error}</p>}
+    <p className="fine-print">{accuracy.value ? `${accuracy.value.edits} edits / ${accuracy.value.referenceUnits} reference units. ` : ''}WER/CER requires a reference and a completed final result. Failed or cancelled calls are not scored here.</p>
     <div className="transcript-box">
       <div className="subhead"><h3>Transcript</h3><span>{snapshot?.revisions.length || 0} revisions</span></div>
       <p className={snapshot?.transcript ? '' : 'placeholder'}>{snapshot?.transcript || 'Waiting for a live transcript…'}</p>
@@ -113,6 +149,6 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
         <p>{event.text || '∅'}</p>
       </li>)}</ol>
     </details> : null}
-    <p className="fine-print">Client timing uses this browser’s clock. Server latency is shown separately in experiment results; the two clocks are never subtracted.</p>
+    <p className="fine-print">Arrival delays use this browser’s clock: first text from session ready; EOF delay from sending EOF to receiving final text. They include transport delay and differ from worker-side timings shown in experiments.</p>
   </section>
 }

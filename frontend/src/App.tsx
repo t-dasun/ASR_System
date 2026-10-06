@@ -8,8 +8,8 @@ import { StreamingPanel } from './components/StreamingPanel'
 import type { LogEntry, LogWriter } from './types'
 
 const initialBase = () => {
-  try { return normalizeBase(localStorage.getItem('asr-service-origin') || 'http://127.0.0.1:8765') }
-  catch { return 'http://127.0.0.1:8765' }
+  try { return normalizeBase(localStorage.getItem('asr-service-origin') || 'http://127.0.0.1:8080') }
+  catch { return 'http://127.0.0.1:8080' }
 }
 
 export default function App() {
@@ -27,16 +27,30 @@ export default function App() {
 
   useEffect(() => {
     let active = true
-    requestJson<Capabilities>(base, '/v1/capabilities').then(data => {
-      if (!active) return
-      setCapabilities(data); setConnectionError('')
-      log('info', 'service', `Connected to ${data.engine} (${data.device}, ${data.precision})`)
-    }).catch(cause => {
-      if (!active) return
-      setCapabilities(null)
-      setConnectionError(String(cause))
-    })
-    return () => { active = false }
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let signature = ''
+    const refresh = async () => {
+      try {
+        const data = await requestJson<Capabilities>(base, '/v1/capabilities')
+        if (!active) return
+        const next = JSON.stringify(data)
+        if (next !== signature) {
+          signature = next
+          setCapabilities(data)
+          log('info', 'service', `Connected to ${data.engine} (${data.device}, ${data.precision})`)
+        }
+        setConnectionError('')
+      } catch (cause) {
+        if (!active) return
+        signature = ''
+        setCapabilities(null)
+        setConnectionError(String(cause))
+      } finally {
+        if (active) timer = setTimeout(() => { void refresh() }, 3000)
+      }
+    }
+    void refresh()
+    return () => { active = false; if (timer) clearTimeout(timer) }
   }, [base, log])
 
   function connect() {
@@ -62,10 +76,13 @@ export default function App() {
         <div className="hero-meta"><span>LOCAL API</span><strong>{base}</strong><span>MODEL</span><strong>{capabilities?.engine || 'not connected'}</strong>
           <span>DEVICE</span><strong>{capabilities?.device || '—'}</strong></div></div>
       <section className="connection-panel" aria-label="Service connection">
-        <div><span className="eyebrow">SERVICE ENDPOINT</span><p>Connect to the loopback M7 service. Nothing is sent to a remote host.</p></div>
+        <div><span className="eyebrow">SERVICE ENDPOINT</span><p>Connect to the local C++ ASR service. Default port: 8080.</p></div>
         <div className="connection-form"><input aria-label="Service origin" value={address} onChange={event => setAddress(event.target.value)}
           onKeyDown={event => { if (event.key === 'Enter') connect() }} /><button onClick={connect}>Connect ↗</button></div>
         {connectionError && <p className="connection-error" role="alert">{connectionError}</p>}
+        {!capabilities && <div className="fine-print"><p>Start the backend from the project directory:</p>
+          <code>build/release-cpu/asr-cli serve --config configs/qwen_prefix_shared.yaml --port 8080</code>
+          <p>Use http://127.0.0.1:8080 above, then click Connect.</p></div>}
       </section>
       <div className="main-grid"><StreamingPanel base={base} capabilities={capabilities} log={log} />
         <RuntimePanel base={base} connected={Boolean(capabilities)} log={log} /></div>

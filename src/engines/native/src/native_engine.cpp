@@ -464,7 +464,13 @@ Result<std::unique_ptr<IASRSession>> NativeQwenEngine::create_session(const Sess
             acquisition.at("revision") != "5eb144179a02acc5e5ba31e748d22b0cf3e303b0")
             return {{ErrorCode::unsupported, "model acquisition is not the verified pinned revision"},
                     nullptr};
-        return {{}, std::make_unique<NativeSession>(options_, config, sink, clock)};
+        auto options = options_;
+        if (config.decode_step_ms) {
+            if (config.decode_step_ms < 1000 || config.decode_step_ms > 8000)
+                return {{ErrorCode::invalid_input, "decode step must be 1000..8000 ms"}, nullptr};
+            options.decode_step_ms = config.decode_step_ms;
+        }
+        return {{}, std::make_unique<NativeSession>(options, config, sink, clock)};
     } catch (const std::exception &error) {
         return {{ErrorCode::runtime_failure, error.what()}, nullptr};
     }

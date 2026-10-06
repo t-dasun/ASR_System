@@ -52,7 +52,7 @@ describe('summary projections', () => {
     const calls = callsFromSummary({ phases: [{ calls: [{ run_id: 'r0',
       directory: '/tmp/suite/call_0', call: { language: 'id' }, status: 'COMPLETE',
       summary: { transcript: 'Halo', worker_id: 'w1', measurements: { final_result_ns: 2e9 } } }] }] })
-    expect(calls).toEqual([{ label: 'r0', artifactId: 'call_0', language: 'id',
+    expect(calls).toMatchObject([{ label: 'r0', artifactId: 'call_0', language: 'id',
       transcript: 'Halo', status: 'COMPLETE', worker: 'w1', finalMs: 2000 }])
     expect(formatMs(calls[0].finalMs)).toBe('2000 ms')
     expect(formatBytes(1024)).toBe('1.00 KiB')

@@ -49,6 +49,8 @@ int main(int argc, char **argv) {
         return 19;
     const auto *mode = std::getenv("ASR_NATIVE_STUB_MODE");
     const std::string behavior = mode ? mode : "normal";
+    if (behavior == "expect_step" && std::string(argv[4]) != "4000")
+        return 20;
     const std::string language = argv[2];
     send_json({{"type", "ready"}, {"produced_ns", now_ns()}});
     std::uint64_t sequence = 0;

@@ -27,6 +27,10 @@ int main(int argc, char **argv) {
         };
         auto id = j.value("call_id", std::string{});
         if (op == "create") {
+            if (id == "capacity_0" && j.value("prefix_preview_ms", 0) != 2000) {
+                reply({ErrorCode::invalid_input, "missing preview override"});
+                continue;
+            }
             ids[id] = j.at("run_id");
             reply();
         } else if (op == "audio") {

@@ -458,7 +458,7 @@ Json run_load(const RunConfig &config, IASREngine &engine, const LoadPlan &plan,
         }
         int measured_offered = 0, measured_completed = 0;
         double measured_audio_seconds = 0, measured_wall_seconds = 0;
-        std::vector<double> final_ms, first_ms, lag_ms, rtf;
+        std::vector<double> final_ms, first_ms, eof_ms, lag_ms, rtf;
         std::uint64_t peak_rss = 0;
         bool rss_measured = false;
         for (const auto &phase : phases) {
@@ -484,6 +484,8 @@ Json run_load(const RunConfig &config, IASREngine &engine, const LoadPlan &plan,
                     final_ms.push_back(m["final_result_ns"].get<double>() / 1e6);
                 if (!m["first_usable_transcript_ns"].is_null())
                     first_ms.push_back(m["first_usable_transcript_ns"].get<double>() / 1e6);
+                if (m.contains("finalization_ns") && !m["finalization_ns"].is_null())
+                    eof_ms.push_back(m["finalization_ns"].get<double>() / 1e6);
                 if (!m["effective_rtf"].is_null())
                     rtf.push_back(m["effective_rtf"].get<double>());
                 lag_ms.push_back(summary["max_send_lag_ns"].get<double>() / 1e6);
@@ -502,6 +504,7 @@ Json run_load(const RunConfig &config, IASREngine &engine, const LoadPlan &plan,
              measured_wall_seconds > 0 ? measured_completed * 60.0 / measured_wall_seconds : 0.0},
             {"final_result_ms", distribution(final_ms, "completed calls", "ms")},
             {"first_usable_ms", distribution(first_ms, "completed calls with text", "ms")},
+            {"finalization_ms", distribution(eof_ms, "completed calls with finalization timing", "ms")},
             {"call_max_send_lag_ms", distribution(lag_ms, "completed-call maxima", "ms")},
             {"effective_rtf", distribution(rtf, "completed calls", "ratio")},
             {"sampled_peak_tree_rss_bytes", rss_measured ? Json(peak_rss) : Json(nullptr)}};

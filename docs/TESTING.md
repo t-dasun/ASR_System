@@ -40,7 +40,7 @@ C++: 19 tests covering audio, scheduling, worker/session lifecycles, prefix queu
 
 Python: 17 checks for input selection/checksums, acquisition pins, Unicode scoring, failed/empty transcripts, descriptive timing distributions, verified model reuse and safe cleanup boundaries. The JiWER parity test skips unless `jiwer==4.0.0` is installed. The existing local `.venv-reference` can run it; Python inference dependencies are unnecessary for the matrix driver.
 
-Frontend: four unit tests, TypeScript/build checks, and browser workflows. `test:e2e` starts its own mock service and Vite. It needs Chrome (default `/usr/bin/google-chrome`, override `ASR_CHROME`). Do not run another Vite on port 5173 during that test.
+Frontend: seven unit tests, TypeScript/build checks, and browser workflows. `test:e2e` starts its own mock service and Vite. It needs Chrome (default `/usr/bin/google-chrome`, override `ASR_CHROME`). Do not run another Vite on port 5173 during that test.
 
 ## Real-model pool experiment
 
@@ -138,3 +138,12 @@ All normal run outputs are under the configured `output.directory` (defaults to 
 | `effective_rtf` | Stream start to final publication / WAV duration, including pacing |
 
 EOF delay is **not** first-text-to-last-text time. Server publication timing excludes browser rendering; browser tests measure their own arrival boundaries. Active inference compute RTF and stable-prefix latency remain unavailable when the runtime cannot expose them; nulls must not be treated as zeros. Small-sample p95 uses type-7 interpolation and is descriptive.
+
+## Shared-runtime live controls check
+
+```bash
+cd frontend
+ASR_DEMO_EVIDENCE_DIR=../results/ui-controls-new npm run test:e2e:shared
+```
+
+This starts its own two-worker C++ shared service and browser preview on port 4173, sends three short language recordings using 100 ms chunks and a 2 s preview, and checks partial sample counts, arrival delays and reference-based WER/CER. Save evidence in a new directory; stop other preview instances on port 4173 first. Known timeout recordings are excluded from this demonstration selection, so this is integration evidence rather than a replacement quality benchmark.

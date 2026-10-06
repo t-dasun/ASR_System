@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
         options.worker_executable = argv[1];
         options.model_directory = fixture;
         options.timeout_ms = 1000;
-        unsetenv("ASR_NATIVE_STUB_MODE");
+        setenv("ASR_NATIVE_STUB_MODE", "expect_step", 1);
         setenv("OMP_NUM_THREADS", "31", 1);
         asr::NativeQwenEngine engine(options);
         check(!engine.capabilities().is_mock && !engine.capabilities().cooperative_cancellation,
@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
         asr::SessionConfig cfg;
         cfg.run_id = "stub_run";
         cfg.call_id = "normal";
+        cfg.decode_step_ms = 4000;
         auto result = engine.create_session(cfg, normal, clock);
         check(static_cast<bool>(result), "stub session creation failed");
         check(std::string(std::getenv("OMP_NUM_THREADS")) == "31", "worker changed parent thread budget");

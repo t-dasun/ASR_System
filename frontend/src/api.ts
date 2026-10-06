@@ -10,6 +10,10 @@ export interface Capabilities {
   precision: string
   languages: Language[]
   sample_rate_hz: number
+  session_decode_controls?: boolean
+  decode_step_ms?: number
+  prefix_preview_ms?: number
+  chunk_ms?: number
   worker_processes: number
   max_load_concurrency?: number
   manifest_inputs?: number
@@ -82,11 +86,13 @@ export interface JobStatus {
 export function normalizeBase(input: string): string {
   const url = new URL(input.trim())
   if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(url.hostname)) {
-    throw new Error('The M7 service is loopback-only. Use http://127.0.0.1:<port>.')
+    throw new Error('The ASR service is local. Use http://127.0.0.1:<port>.')
   }
   if (!url.port || url.pathname !== '/' || url.search || url.hash) {
     throw new Error('Enter only the service origin, including its port.')
   }
+  // The C++ service binds IPv4; avoid localhost resolving to IPv6 ::1.
+  url.hostname = '127.0.0.1'
   return url.origin
 }
 
@@ -95,12 +101,16 @@ export function socketUrl(base: string, path: string): string {
 }
 
 export async function requestJson<T>(base: string, path: string, body?: unknown): Promise<T> {
-  const response = await fetch(`${base}${path}`, {
+  let response: Response
+  try { response = await fetch(`${base}${path}`, {
     method: body === undefined ? 'GET' : 'POST',
     headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),
     cache: 'no-store',
-  })
+    signal: AbortSignal.timeout(10000),
+  }) } catch {
+    throw new Error(`Cannot reach the ASR service at ${base}. Start asr-cli serve on this port, then click Connect. Starting the UI alone does not start the model service.`)
+  }
   const data: unknown = await response.json()
   if (!response.ok) {
     const message =

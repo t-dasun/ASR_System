@@ -22,7 +22,7 @@ The current model and WAV simulation paths are C++. The main runtime choices are
 
 ### Q5. What did the actual three-language browser demo show?
 
-**Demo remains an evidence gap.** The native three-language browser test and pool UI/service checks exist, but no fresh saved three-language browser demo is cited in the current report. Capture screenshots or a short recording; current C++ direct/network experiments do not substitute for that UI artifact.
+**Current UI evidence is saved** in [ui-controls-20261006/demo.json](../results/ui-controls-20261006/demo.json) and its screenshots. Three main C++ shared-prefix calls completed with two workers, 100 ms chunks and a selected 2 s preview, showing first-text/EOF arrival delays and completed-call WER/CER. Browser errors were zero; scores matched the Python evaluator. This short-input controls demo deliberately avoids the three known timeout clips and is not an accuracy/capacity study; the full curves still retain those failures.
 
 ### Q6. Why 16 kHz mono PCM16, 200 ms chunks, and a 2-second decode step?
 
@@ -138,7 +138,7 @@ The current model and WAV simulation paths are C++. The main runtime choices are
 
 ### Q33. Where are the requested code, instructions, report, sizing, architecture, and alternatives?
 
-**Current deliverables:** [final technical report](FINAL_REPORT.md), [sizing guide](CAPACITY_SIZING.md), [run guide](CLI_QUICKSTART.md), [architecture](ARCHITECTURE.md), [testing](TESTING.md) and this Q&A. The report embeds current plots and references saved raw artifacts, pins and source hashes. Current demo/aggregate regression evidence gaps and reliability failures are explicitly listed; documentation does not mark those activities complete.
+**Current deliverables:** [final technical report](FINAL_REPORT.md), [sizing guide](CAPACITY_SIZING.md), [run guide](CLI_QUICKSTART.md), [architecture](ARCHITECTURE.md), [testing](TESTING.md) and this Q&A. The report embeds current plots and references saved raw artifacts, pins and source hashes. Current demo evidence, aggregate regression gaps and reliability failures are explicitly listed; documentation does not mark those activities complete.
 
 ### Q34. Can the important results be reproduced, and what verification passed?
 

@@ -69,6 +69,9 @@ struct SessionConfig {
     int sample_rate_hz = 16000;
     int partial_every_ms = 400;
     std::int64_t max_chunk_samples = 16000;
+    // Zero retains engine defaults; optional per-call controls do not reload weights.
+    int decode_step_ms = 0;
+    int prefix_preview_ms = 0;
 };
 struct SessionSnapshot {
     SessionState state = SessionState::ready;

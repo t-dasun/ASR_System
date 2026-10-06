@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
         std::filesystem::path wav_manifest;
         std::string preset;
         int endurance_seconds = 1800;
-        int serve_port = 0;
+        int serve_port = 8080;
         for (int i = 2; i < argc; ++i) {
             const std::string option = argv[i];
             if (i + 1 >= argc)

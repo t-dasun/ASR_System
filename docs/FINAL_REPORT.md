@@ -452,7 +452,7 @@ Report-only regenerates the generic experiment report; manually finalized interr
 
 ### Demo and regression status
 
-The dashboard controls and browser tests exist. Historical screenshots were cleared during cleanup; **no fresh retained three-language browser demonstration is cited as completed here**. A current demo recording/screenshots is a remaining submission artifact, even though C++ multilingual inference is measured.
+A subsequent focused UI verification is now retained in [ui-controls-20261006/demo.json](../results/ui-controls-20261006/demo.json), with English/Indonesian/Mandarin screenshots in that directory. It used the main shared-prefix C++ service with two workers/two slots each, 100 ms browser chunks and a selected 2 s preview. All three calls completed, displayed first-text/EOF arrival timings and reference-based WER/CER, and generated no browser errors. Preview events consumed 32,000 samples, verifying that the override reached the worker. This short-input integration demo excludes the three known timeout recordings from its selection; it does not replace the unbiased failure accounting or 4 s preview capacity curves above. Browser scores were checked against the Python evaluator.
 
 Existing fast C++/Python/frontend checks were exercised during development. However, the retained aggregate [regression record](../results/regression_20261006T111148_159166Z/regression.json) is FAIL after setup because the default test Python was missing. It does not establish a complete passing regression. Available test coverage includes 19 C++ checks, Python scoring/guard/input checks, frontend unit checks and browser workflows; mocks verify integration rather than model quality.
 
@@ -469,7 +469,7 @@ Full regression additionally runs paced audio, real-model browser/service checks
 | Requirement | Current evidence / status | Remaining action or limitation |
 |---|---|---|
 | CPU/C++ Qwen and three languages | Implemented and measured | Small FLEURS cohort; not domain quality |
-| WAV UI, pacing, partial/final, controls | Implemented; C++ direct/network artifacts | Capture fresh three-language UI demo |
+| WAV UI, pacing, partial/final, controls | Implemented; direct/network artifacts and subsequent three-language UI demo | Demo is focused integration evidence, not a capacity run |
 | At least two sensible configurations | Measured one-/two-worker and session occupancy curves | Native/shared or thread sweep would strengthen runtime selection |
 | Latency, RTF, CPU, memory, accuracy | Saved raw values, tables, percentile examples and plots | Stable words / internal active compute unavailable; survivor bias documented |
 | Cold vs warm behavior | Load metadata, idle baseline and warmups separated | True cache-controlled cold-start distribution missing |
@@ -478,9 +478,9 @@ Full regression additionally runs paced audio, real-model browser/service checks
 | Production architecture/design | Diagram and policies above | Telephony/VAD/long calls/security/distributed recovery proposed |
 | At least two alternatives | Sourced Whisper and Zipformer/runtime comparison | No local alternative-model performance benchmark |
 | Regression and reproducibility | Source snapshot, pins, inputs, hashes, commands | Aggregate passing regression still needs a saved run |
-| Demo and submission package | Code/run guides/report/figures/sizing available | Fresh demo and document/evidence checks before submission |
+| Demo and submission package | Code/run guides/report/figures/sizing plus current UI screenshots/metrics | Complete aggregate regression and remaining evidence checks before submission |
 
-A practical finishing sequence on this laptop is: (1) investigate the two reliability failures with targeted reproductions, (2) save a three-language UI demo, (3) complete a controlled same-input runtime/thread comparison if time allows, (4) record fast/full regression outcomes, and (5) run one modest, bounded sustained network test after reliability fixes. None of these results is invented by documenting the plan.
+A practical finishing sequence on this laptop is: (1) investigate the two reliability failures with targeted reproductions, (2) retain the newly saved three-language UI demo, (3) complete a controlled same-input runtime/thread comparison if time allows, (4) record fast/full regression outcomes, and (5) run one modest, bounded sustained network test after reliability fixes. None of these results is invented by documenting the plan.
 
 The assignment allows well-supported negative findings and qualified extrapolation. It does not require the laptop to execute 1,000 calls or a production telephony cluster. Remaining evidence gaps can be disclosed at submission; this report addresses their status and proposed resolution without presenting them as achieved.
 
