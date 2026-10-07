@@ -1,6 +1,6 @@
-# Resumable streaming: implementation and pilot results
+# Resumable streaming: implementation and verification
 
-**Completed full study:** [Final resumable report](FINAL_REPORT_RESUMABLE.md) covers all twelve layouts, 1,170 direct calls, network failures, language-separated graphs and updated sizing. The pilot evidence below remains a separate focused check.
+**Completed full study:** [Final resumable report](../report.md) covers all twelve layouts, 1,170 direct calls, network failures, language-separated graphs and updated sizing. The pilot evidence below remains a separate focused check.
 
 ## What changed
 
@@ -81,7 +81,7 @@ The separate one-call Indonesian refinement check completed, changed WER from 16
 
 Browser arrival delays include transport and browser scheduling, and use browser timestamps. They are separate from worker EOF timing. Late observer events cannot overwrite newer/final text. Incomplete trailing UTF-8 bytes stay in state until complete; malformed or final-incomplete text fails explicitly.
 
-The original 900-call curves remain a **legacy prefix** study. Same-ten-WAV/language accuracy/capacity curves, sustained runs, overload recovery and large-node sizing have not been revalidated for this mode. Demo inputs do not establish resolution of the previously failing recordings. Automatic respawn, hard kernel preemption and long-call segmentation are not added by this implementation.
+The complete resumable matrix measures twelve layouts with ten distinct WAVs per language: **1,170/1,170 direct calls** and **55/60 WebSocket calls**. Primary direct quality is EN WER **10.24%**, ID WER **35.20%**, ZH CER **12.43%**. The five network admission failures are documented separately in [report.md](../report.md). Prefix measurements remain a labelled baseline configuration. Sustained production-shaped load, overload recovery and large-node fleet sizing are not validated; automatic respawn, hard kernel preemption and long-call segmentation are not implemented.
 
 ## Files and reproducibility
 

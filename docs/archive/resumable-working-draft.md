@@ -1,12 +1,12 @@
-# CPU-Only Real-Time Multilingual ASR
+# Archived resumable evaluation draft
 
-## Technical Evaluation, Streaming Architecture and Capacity Sizing
+**ARCHIVED / SUPERSEDED.** This document is retained as dated development evidence. The only canonical final report is [report.md](../../report.md). Values below must not be presented as the current resumable study.
 
 **Assignment:** AIML CPP LEAD ASR Technical Assignment v2, sections 1–13.  
 **Report date:** 7 October 2026. **Primary evidence:** `results/resumable-matrix`, collected across interrupted/resumed runs.  
-**Runtime:** Qwen3-ASR-0.6B through the main C/C++ resumable worker path. **Status:** all twelve requested benchmark layouts completed; detailed outcomes are presented in the results sections.
+**Runtime:** Qwen3-ASR-0.6B through the main C/C++ resumable worker path. **Status:** all requested layouts measured; direct tests passed, maximum two-worker WebSocket reliability remains unresolved.
 
-The evaluation covers English, Mandarin Chinese and Bahasa Indonesia using Qwen3-ASR on CPU. It reports implemented streaming behavior, reproducible measurements, architecture decisions, conditional fleet sizing and production limitations. Prefix decoding provides a baseline configuration for comparison with independently resumable streaming; the two configurations use different finalization policies and must be assessed separately.
+This is the current report. The [previous report](../FINAL_REPORT.md) describes the legacy prefix experiment and remains historical evidence. Its accuracy, throughput and sizing coefficients must not be applied to this runtime.
 
 ## 1. Executive summary
 
@@ -36,15 +36,15 @@ The runtime is a working streaming POC. Indonesian quality, network admission/fa
 | Audio | 16 kHz mono PCM16; 200 ms chunks; approximately real-time pacing |
 | Decode settings | 2,000 ms steps; 32 maximum new tokens per step; zero initial chunks withheld; refine_final=false |
 | Configuration | configs/qwen_stream_shared.yaml; resolved per-call config.json and per-layout capabilities.json |
-| Artifact provenance | Source archive, evaluated executable archive, file-level SHA-256 manifests and recorded model/config/input identities |
+| Source provenance | Plan git HEAD 24d34d9f8d6a978521cd4ba7e6b0b524b84363c8; uncommitted implementation, so HEAD alone is insufficient |
 
-Dependency versions are pinned in [revisions.lock](third_party/revisions.lock) and [frontend/package.json](frontend/package.json): yaml-cpp **0.8.0**, nlohmann-json **3.11.3**, React **19.3.0**, TypeScript **7.0.2**, Vite **8.3.2**, Vitest **5.0.3** and Playwright Core **1.63.0**. The C++ path uses OpenBLAS; the inspected host package was **0.3.29-2.fc43**. Package/configuration identities describe the evaluated software stack; a separately controlled cold-deployment environment was not captured. Model/data identities and per-call kernel/compiler records remain the benchmark provenance.
+Dependency versions are pinned in [revisions.lock](../../third_party/revisions.lock) and [frontend/package.json](../../frontend/package.json): yaml-cpp **0.8.0**, nlohmann-json **3.11.3**, React **19.3.0**, TypeScript **7.0.2**, Vite **8.3.2**, Vitest **5.0.3** and Playwright Core **1.63.0**. The C++ path uses OpenBLAS; the previously inspected host package was **0.3.29-2.fc43**. The historical report records build-tool versions inspected on the same host; these package/configuration identities do not prove a separately captured cold-deployment environment. Model/data identities and per-call kernel/compiler records remain the benchmark provenance.
 
-Qwen 0.6B was selected to make native CPU evaluation practical on this laptop while covering EN/ID/ZH. The primary path remains C/C++; transport and worker interfaces are modular. The model family and inference wrapper are distinct: wrapper limitations do not establish that the Qwen model family universally lacks streaming. Official model/language/streaming and Apache-2.0 documentation: [Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR). The native runtime is MIT; the generated extension retains its notices.
+Qwen 0.6B was selected to make native CPU evaluation practical on this laptop while covering EN/ID/ZH. The primary path remains C/C++; transport and worker interfaces are modular. The model family and inference wrapper are distinct: the previous prefix limitation was not proof that Qwen universally lacks streaming. Official model/language/streaming and Apache-2.0 documentation: [Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR). The native runtime is MIT; the generated extension retains its notices.
 
 Two sensible measured configurations are one and two workers, with different per-worker session occupancy. This is a process/scheduling comparison using the same model, precision and four-thread budget per worker. Model sizes, integer quantization, alternative models and thread counts were not benchmarked in this matrix.
 
-The final measured grid contains twelve layouts, recorded in the [effective experiment plan](results/resumable-matrix/curve.json). The [initial plan](results/resumable-matrix/plan.json) requested sixteen layouts; collection was reduced to twelve to retain one-worker concurrency 1–8 and two-worker total concurrency 2/4/8/16. [Resume history](results/resumable-matrix/resume_history) preserves earlier statuses, plans, driver identities and interrupted attempts. Completed layouts were retained; incomplete layouts were restarted in separate attempt directories and excluded from combined curves to avoid double weighting. Current CLI and worker binary SHA-256 values match the evaluated plan. Inputs, model acquisition identity, configuration and binary hashes are retained. The [reproduction package](results/resumable-matrix/reproducibility/README.md) includes a source archive assembled at report finalization, the exact evaluated executables and file-level integrity records. The source archive documents the implementation available at finalization; the evaluated executables are preserved separately rather than claiming a retrospectively captured original source state.
+The [original plan](../../results/resumable-matrix/plan.json) retains its initial sixteen-layout request. The [effective curve plan](../../results/resumable-matrix/curve.json) records the reduced twelve-layout grid. [Resume history](../../results/resumable-matrix/resume_history) preserves earlier statuses, plans, driver identities and interrupted attempts. Completed layouts were retained; incomplete layouts were restarted in separate attempt directories and excluded from combined curves to avoid double weighting. Current CLI and worker binary SHA-256 values match the evaluated plan. Inputs, model acquisition identity, configuration and binary hashes are retained; source modifications are represented by a diff hash, not a fully archived original working tree.
 
 Some environment metadata retains the legacy label `purpose: native single-call diagnostic`; engine, config and suite requests identify the actual resumable run. Host applications, clock speeds and thermals were not controlled. The abrupt speed change between one-worker six/seven-session points spans resumed collection and must not be interpreted as a beneficial seven-session algorithm.
 
@@ -82,7 +82,7 @@ One worker runs inside the service process. Two workers run in persistent helper
 | Cooperative cancellation / deadlines | Guard checks at token boundaries; a blocking native kernel is not forcibly preempted |
 | Generated native extension | Vendor checkout remains unchanged; explicit create/step/text/destroy API isolates state lifetime |
 
-Implementation and introduced files: [RESUMABLE_STREAMING.md](docs/RESUMABLE_STREAMING.md). Main changes are the generated C state API, existing shared engine/pool/IPC factory, new YAML preset, streaming metrics and UI decode-step handling. Automatic worker restart, distributed routing, multi-call batching and strict incremental encoder execution are not implemented.
+Implementation and introduced files: [RESUMABLE_STREAMING.md](../RESUMABLE_STREAMING.md). Main changes are the generated C state API, existing shared engine/pool/IPC factory, new YAML preset, streaming metrics and UI decode-step handling. Automatic worker restart, distributed routing, multi-call batching and strict incremental encoder execution are not implemented.
 
 ## 4. Streaming/media behavior
 
@@ -113,7 +113,7 @@ The retained measured call summaries contain **six late chunks and zero audio ov
 | network | id | 1017 | 0.181 | 0.087 | 0.131 | 0.391 | 22.754 | 41.407 |
 | network | zh | 1065 | 0.095 | 0.088 | 0.122 | 0.341 | 0.848 | 41.581 |
 
-All delay distributions, including controller queue and submission wall time, are retained in [delivery_delay_distributions.json](results/resumable-matrix/delivery_delay_distributions.json). Local delivery jitter and worker queueing should not be conflated: a worker can accumulate tens of seconds of decode backlog while PCM still arrives close to its schedule.
+All delay distributions, including controller queue and submission wall time, are retained in [delivery_delay_distributions.json](../../results/resumable-matrix/delivery_delay_distributions.json). Local delivery jitter and worker queueing should not be conflated: a worker can accumulate tens of seconds of decode backlog while PCM still arrives close to its schedule.
 
 **Proposed production policy:** retain sequence numbers, sample timestamps and call IDs at the media gateway. RTP/provider media needs a bounded jitter buffer with a validated playout allowance; reorder packets within the deadline, detect gaps, and apply a documented codec packet-loss concealment/discontinuity policy. Expose late/lost packets and any inserted silence to telemetry. WebSocket/TCP preserves byte ordering but retransmission can delay subsequent audio; reconnect should create explicit sequence/session recovery semantics. Choose buffer allowance from measured network tails and the latency budget rather than assuming a fixed universal size. WAN impairment, loss/reordering and reconnect tests remain unperformed.
 
@@ -167,7 +167,7 @@ Initial one-worker context-load metadata was **0.344 s**, reused across all its 
 
 ## 7. Full direct concurrency results
 
-Every row completed all offered calls, reported zero measurement failures and passed the saved delivery/event contract checks. Pre-EOF text counts below expose overload that completion alone hides. Accuracy is identical across these direct layouts: EN 10.24% WER, ID 35.20% WER, ZH 12.43% CER. Detailed stream wall/queue/counter and additional timing distributions remain in the [generated report](results/resumable-matrix/report.md), [CSV](results/resumable-matrix/curve.csv) and [JSON](results/resumable-matrix/curve.json).
+Every row completed all offered calls, reported zero measurement failures and passed the saved delivery/event contract checks. Pre-EOF text counts below expose overload that completion alone hides. Accuracy is identical across these direct layouts: EN 10.24% WER, ID 35.20% WER, ZH 12.43% CER. Detailed stream wall/queue/counter and additional timing distributions remain in the [generated report](../../results/resumable-matrix/report.md), [CSV](../../results/resumable-matrix/curve.csv) and [JSON](../../results/resumable-matrix/curve.json).
 
 ### EN
 
@@ -186,9 +186,9 @@ Every row completed all offered calls, reported zero measurement failures and pa
 | 2 × 4 | 8 | 30/30 | 25/30 | 5.127 / 7.610 | 14.611 / 21.636 | 2.563 | 7.477 / 8.948 | 3.531 |
 | 2 × 8 | 16 | 60/60 | 35/60 | 8.835 / 17.935 | 33.447 / 46.556 | 2.594 | 7.622 / 9.230 | 4.056 |
 
-![en resumable capacity curves](results/resumable-matrix/figures/en_capacity.png)
+![en resumable capacity curves](../../results/resumable-matrix/figures/en_capacity.png)
 
-[Standalone PDF](results/resumable-matrix/figures/en_capacity.pdf).
+[Standalone PDF](../../results/resumable-matrix/figures/en_capacity.pdf).
 
 ### ID
 
@@ -207,9 +207,9 @@ Every row completed all offered calls, reported zero measurement failures and pa
 | 2 × 4 | 8 | 30/30 | 30/30 | 4.837 / 7.493 | 23.145 / 31.012 | 2.072 | 7.172 / 9.287 | 3.581 |
 | 2 × 8 | 16 | 60/60 | 45/60 | 8.988 / 21.665 | 53.679 / 73.217 | 2.089 | 7.586 / 9.374 | 4.157 |
 
-![id resumable capacity curves](results/resumable-matrix/figures/id_capacity.png)
+![id resumable capacity curves](../../results/resumable-matrix/figures/id_capacity.png)
 
-[Standalone PDF](results/resumable-matrix/figures/id_capacity.pdf).
+[Standalone PDF](../../results/resumable-matrix/figures/id_capacity.pdf).
 
 ### ZH
 
@@ -228,9 +228,9 @@ Every row completed all offered calls, reported zero measurement failures and pa
 | 2 × 4 | 8 | 30/30 | 30/30 | 4.206 / 5.864 | 14.108 / 20.802 | 3.052 | 7.641 / 9.558 | 3.545 |
 | 2 × 8 | 16 | 60/60 | 52/60 | 6.889 / 12.714 | 36.093 / 52.753 | 2.924 | 7.539 / 9.923 | 4.110 |
 
-![zh resumable capacity curves](results/resumable-matrix/figures/zh_capacity.png)
+![zh resumable capacity curves](../../results/resumable-matrix/figures/zh_capacity.png)
 
-[Standalone PDF](results/resumable-matrix/figures/zh_capacity.pdf).
+[Standalone PDF](../../results/resumable-matrix/figures/zh_capacity.pdf).
 
 Solid timing lines are means; dashed lines are p95. Colors distinguish worker counts. These panels show language-separated **direct** suites; the zero failure curves do not include WebSocket failures. Accuracy/latency use completed calls; throughput and process-tree resource measurements include the full phase. Four threads/worker is a configured compute budget, not a hard OS quota: sampled peaks above four/eight include service, pacer, transport and other process threads. CPU equivalents are not process counts.
 
@@ -264,19 +264,19 @@ Two persistent helper processes were chosen to isolate mutable runtime state and
 
 The final grid keeps one-worker targets 1–8 and two-worker targets 2/4/8/16. This compares equal total concurrency at 2/4/8, includes a sixteen-call stress endpoint and limits the experiment to the authorized laptop scope. Each language uses the same unique files and balanced cohort replay. The pool was observed at the requested [1..8] and [1,1]/[2,2]/[4,4]/[8,8] occupancy peaks; those finite peaks are not continuous steady occupancy.
 
-**Operational recommendation:** low occupancy is appropriate for an interactive demonstration. Additional workers/hosts should be evaluated before all session slots are filled when queue age or EOF tails exceed the deployment latency budget. No numerical p95 acceptance target was selected, so this report gives the curve rather than declaring a maximum “usable” call count. Overload protection must account for compute backlog, not only free session slots. Production capacity planning depends on resolving network lifecycle admission reliability.
+**Operational choice from these data:** use low occupancy for an interactive demonstration; scale additional workers/hosts before filling every session slot if queue age or EOF tails become unacceptable. No numerical p95 acceptance target was selected, so this report gives the curve rather than declaring a maximum “usable” call count. Overload protection must account for compute backlog, not only free session slots. Fix network lifecycle admission before production capacity planning.
 
 ### 8.2. Why WER/CER increased relative to the prefix study
 
 The fast resumable policy changes the final hypothesis construction: it accumulates 2-second streaming outputs, enables past-text conditioning, allows rollback of the last five tokens and performs no full-audio final correction. Zero initially withheld chunks permits early output from limited audio context. An early wrong word can become retained context and influence later output; future audio can resolve boundaries that were ambiguous at the first step. These are plausible mechanisms supported by code, **not isolated causes proven by this matrix**.
 
-The prefix mode decoded the full recording at EOF, with more complete acoustic context. Its completed-only accuracy also excluded failed recordings, so the two completion populations differ. Different preview/refinement policies and collection conditions prevent a causal runtime-only comparison. The 32-new-token step cap could matter, but truncation has not been demonstrated as the cause. Transport jitter is not shown to explain the quality change.
+The old prefix mode decoded the full recording at EOF, with more complete acoustic context. Its completed-only accuracy also excluded failed recordings, so old/new survivor populations differ. Different preview/refinement policies and collection conditions prevent a causal runtime-only comparison. The 32-new-token step cap could matter, but truncation has not been demonstrated as the cause. Transport jitter is not shown to explain the quality change.
 
 Concurrency itself did not change direct quality here: all 1,170 direct final transcripts matched the same-recording single-call baseline. The high Indonesian error remains at concurrency one and therefore cannot be blamed on shared-worker contention in this cohort. Completion only means the final protocol succeeded; it is not a quality pass.
 
-A controlled follow-up should reuse all ten WAVs per language, change one refinement/withholding setting at a time and preserve threads, step size, references and normalization. Its evaluation should include failures and additional EOF cost. An isolated Indonesian refinement experiment improved WER from 16.67% to 8.33% with full refinement and added 3.42 s of decode work; that one-recording result is not a general improvement guarantee. **The full matrix in this report was not rerun with final refinement.**
+A controlled accuracy follow-up would reuse all ten WAVs per language and change only `refine_final`, then only initial withholding/rollback settings where supported, while preserving threads, step size, references and normalization. Count failures and measure the extra EOF cost. One previous ID pilot improved WER from 16.67% to 8.33% with full refinement and added 3.42 s of decode work; that one-recording result is not a general improvement guarantee. **The full matrix in this report was not rerun with final refinement.**
 
-## 9. WebSocket Reliability and Decoder Configuration Comparison
+## 9. WebSocket failure analysis and historical comparison
 
 | Network layout | Language | Complete | First mean / p95 s | EOF mean / p95 s | Completed WER/CER % | Failure-inclusive % |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -293,11 +293,11 @@ For those five records, `one_final` was false because the expected terminal fail
 
 The bundle's status `COMPLETE` means the driver finished the requested grid. It also records five call failures; it is not an all-tests-pass claim. Direct measured calls have no call failures; network checks do not all pass.
 
-The prefix-decoding baseline used four-second previews plus whole-file final refinement and had 900 direct calls with 90 failures. Their baseline completed-only quality was EN 6.52% WER, ID 4.93% WER and ZH 3.25% CER, with different survivor populations. The resumable early-emission/no-refinement mode completes all direct calls and provides repeated progress, but current quality is worse on this small cohort. Different policies, failures and collection conditions prevent an isolated runtime speed or accuracy comparison. A matched native benchmark was not added to this full matrix. Optional final refinement improved one earlier Indonesian pilot, but must be re-evaluated on all ten files and under load before claiming a general remedy.
+Historical prefix results used four-second previews plus whole-file final refinement and had 900 direct calls with 90 failures. Their baseline completed-only quality was EN 6.52% WER, ID 4.93% WER and ZH 3.25% CER, with different survivor populations. The new early-emission/no-refinement mode completes all direct calls and provides repeated progress, but current quality is worse on this small cohort. Different policies, failures and collection conditions prevent an isolated runtime speed or accuracy comparison. A matched native benchmark was not added to this full matrix. Optional final refinement improved one earlier Indonesian pilot, but must be re-evaluated on all ten files and under load before claiming a general remedy.
 
 ### 9.1. Completed calls versus the common completed-recording subset
 
-Independent rescoring of saved final transcripts confirms the completed-only scores for both decoder configurations. WAV hashes and references match between the studies. However, “completed calls only” selects different recordings: the prefix baseline completed nine of ten EN files, while the resumable baseline completes all ten.
+Independent rescoring of raw baseline transcripts confirms both historical and current completed-only values. WAV hashes and references match between the studies. However, “completed calls only” selects different recordings: the old prefix baseline completed nine of ten EN files, while the new resumable baseline completes all ten.
 
 | Language | Distinct recordings completed in both studies | Old prefix score on those recordings | New resumable score on those recordings | New resumable score on all completed recordings |
 |---|---|---|---|---|
@@ -337,7 +337,7 @@ Memory/node: measured two-worker idle PSS is 2.413 GiB; active peak at two calls
 | 500 | 893 | 7152 | 7152 | 447 | Sustained compute <1; unverified | Not selected / not predicted | q=1, e=.8, u=.7, d=1 |
 | 1000 | 1786 | 14288 | 14288 | 893 | Sustained compute <1; unverified | Not selected / not predicted | q=1, e=.8, u=.7, d=1 |
 
-These counts are not a procurement recommendation. For a validated language mix, the processing-demand equation is `W_compute=ceil(N × sum(fraction[l] × d[l]/q[l])/(e×u))`, using comparable sustained rates. A hypothetical VAD duty factor d=0.1 gives 9/18/36/90/179 nodes under unchanged q, but VAD is not implemented and would change input lengths/compute behavior, requiring q to be remeasured. No batching gain is credited. The proposed deployment uses session affinity, NUMA-local allocation and tested worker density per host; extrapolating eight workers on one node is unsupported.
+These counts are not a procurement recommendation. For a validated language mix, use `W_compute=ceil(N × sum(fraction[l] × d[l]/q[l])/(e×u))` with comparable sustained rates. A hypothetical VAD duty factor d=0.1 gives 9/18/36/90/179 nodes under unchanged q, but VAD is not implemented and would change input lengths/compute behavior; remeasure q. No batching gain is credited. Use session affinity, NUMA-local allocation and only tested worker density per host; extrapolating eight workers on one node is unsupported.
 
 Cost equation: `cost = H × node_hourly_cost × operating_hours + storage/network/operations`. No currency or hardware price is asserted. Scaling workers cannot fix bad transcripts or missing network failure events. Above capacity, queue age and EOF tails rise, then deadlines/admission fail; p95 cannot be predicted from mean RTF alone. Validate the assumed 30% headroom using bursts, sustained arrivals and worker-loss tests.
 
@@ -360,7 +360,7 @@ flowchart LR
 
 Preload pinned models; mark ready after warm health checks. Balance using healthy free capacity and queue age, keep each call on one worker/node, and drain existing calls before shutdown. Supervise failed workers and use bounded replay with event deduplication rather than silently migrating a live cache. Distinguish idle-media, step-decode, total-call and transport timeouts. Bound PCM, sessions, call duration and queue age; reject overload before unlimited buffering.
 
-The proposed security controls are TLS, authenticated tenant authorization, bounded payloads, restricted file access, encrypted storage, configurable voice/transcript retention and audited access. These are production requirements, not an implemented compliance claim. Production observability should capture per-language failures/accuracy, first/EOF/final p50/p95/p99, queue age, dropped/late chunks, CPU, PSS, swap activity, load/warm times and restarts. Horizontal admission, telephony gateways, durable recovery, TLS/auth and autoscaling are not implemented in the POC.
+Use TLS, authenticated tenant authorization, bounded payloads, restricted file access, encrypted storage, configurable voice/transcript retention and audited access. These are production requirements, not an implemented compliance claim. Observe per-language failures/accuracy, first/EOF/final p50/p95/p99, queue age, dropped/late chunks, CPU, PSS, swaps, load/warm times and restarts. Horizontal admission, telephony gateways, durable recovery, TLS/auth and autoscaling are not implemented in the POC.
 
 ## 12. Alternatives and independent recommendation
 
@@ -376,9 +376,9 @@ Whisper.cpp documents CPU execution, integer quantization, VAD and MIT licensing
 
 Sherpa's documented bilingual Zipformer models cover EN/ZH and include checkpoint-specific float/int8 packages. Model size, model license, decoder/timestamp/hotword support and maintenance must be checked for the selected checkpoint; the runtime license does not establish every model's license. ID needs a separate suitable route. [Official Zipformer model documentation](https://k2-fsa.github.io/sherpa/onnx/pretrained_models/online-transducer/zipformer-transducer-models.html).
 
-Recommended next work is to reproduce and resolve WebSocket admission/failure events, evaluate full-cohort quality with withholding/refinement settings, and profile remaining encoder work. A same-input comparison should include multilingual Whisper and a streaming Zipformer EN/ZH route with an ID-capable recognizer. Smaller quantized kernels may improve CPU cost but quality must be remeasured; no speedup is assumed. Licensing, checkpoint updates, hotwords and accurate word timestamps matter as well as WER.
+First fix and reproduce WebSocket admission/failure events; then evaluate full-cohort quality with withholding/refinement settings and profile remaining encoder work. Benchmark multilingual Whisper with the same inputs, and a true streaming Zipformer EN/ZH route plus an ID-capable recognizer. Smaller quantized kernels may improve CPU cost but quality must be remeasured; no speedup is assumed. Licensing, checkpoint updates, hotwords and accurate word timestamps matter as well as WER.
 
-For strict sub-second partials at hundreds of calls, this 2-second-step preset has an availability floor exceeding the target. Smaller media chunks alone cannot meet it. Meeting that requirement would require evaluation of a recognizer with appropriate incremental state and short steps, bounded scheduling/batching waits, VAD and target-node load tests. Independent per-call state is now implemented, but it does not remove CPU contention or guarantee useful text within a deadline.
+For strict sub-second partials at hundreds of calls, this 2-second-step preset has an availability floor exceeding the target. Smaller media chunks alone cannot meet it. Evaluate a recognizer with appropriate incremental state and short steps, bounded scheduling/batching waits, VAD and target-node load tests. Independent per-call state is now implemented, but it does not remove CPU contention or guarantee useful text within a deadline.
 
 ## 13. Reproduction, demo and regression
 
@@ -405,11 +405,11 @@ build/release-cpu/asr-cli serve --config configs/qwen_stream_shared.yaml \
 # Separate terminal: cd frontend && npm run dev
 ```
 
-The dashboard runs at http://127.0.0.1:5173 and connects to the service at http://127.0.0.1:8081. The report environment is prepared with `python3 scripts/setup.py --reports`. Report-only processing scores saved transcripts without inference. Repeat measurements require unrelated inference services to be stopped to reduce resource contention.
+Select http://127.0.0.1:8081 in the UI and connect. See [run/implementation guide](../RESUMABLE_STREAMING.md) and [complete testing guide](../TESTING.md). Report-only uses saved transcripts and does not rerun the model. Stop unrelated ASR servers for new measurement runs. The report environment is prepared with `python3 scripts/setup.py --reports`.
 
-The [three-language UI demonstration](results/resumable-ui-20261006/demo.json) and language screenshots show six to eight revisions/call and no browser errors. The [state-isolation test](results/resumable-comparison/state-isolation.log) verifies alternating EN/ID states against the separately configured native loop, cache reuse and cancellation isolation. The [two-worker focused service check](results/resumable-check-2w2s-v2/status.json) passed four simultaneous calls. These pilots supplement the full matrix; they are not an extra ten-file accuracy study or capacity measurement.
+The earlier [real UI evidence](../../results/resumable-ui-20261006/demo.json) and language screenshots show six to eight revisions/call and no browser errors. The [state-isolation test](../../results/resumable-comparison/state-isolation.log) verifies alternating EN/ID states against the separately configured native loop, cache reuse and cancellation isolation. The [two-worker focused service check](../../results/resumable-check-2w2s-v2/status.json) passed four simultaneous calls. These pilots supplement the full matrix; they are not an extra ten-file accuracy study or capacity measurement.
 
-Development verification included nineteen C++ CTest checks, frontend unit/build checks and Python guard/scoring tests. Those results are separate from actual inference reliability. A complete all-in-one full regression is not established by the available evidence; development checks and actual model reliability are assessed separately. A clean-machine setup, sustained telephony-like load, recovery and production security remain unverified.
+Development verification included nineteen C++ CTest checks, frontend unit/build checks and Python guard/scoring tests. Those results are separate from actual inference reliability. No fresh all-in-one full regression was run while preparing this report; the historical failed aggregate regression must not be relabelled as passing. A clean-machine setup, sustained telephony-like load, recovery and production security remain unverified.
 
 ## 14. Assignment coverage and remaining gaps
 
@@ -418,33 +418,32 @@ The source assignment's functional, media, model, measurement, sizing, architect
 
 | Assignment area | Current answer / evidence | Limit |
 | --- | --- | --- |
-| Sections 1–3 CPU Qwen POC / UI | C/C++ CPU Qwen, WAV UI, three languages, evolving partial/final, start/stop/reset and telemetry | No production readiness claim |
-| Section 4 media assumptions | 16 kHz PCM, paced chunks, EOF/cancel, bounded buffering; proposed telephony/VAD/jitter | Long calls limited to 60 s; production VAD/media adapter missing |
-| Section 5 model configurations / cold-warm | One/two workers and occupancy measured; same 0.6B precision; load/idle/warm artifacts | No size/quantization/native matched matrix or cold-cache distribution |
-| Section 6 accuracy and performance | Language tables, timing mean/percentiles, RTF, CPU/RSS/PSS, raw transcripts and graphs | Ten unique files/language; stable useful-word/active compute unavailable |
-| Section 7 concurrency / 50–1000 sizing | 12 layouts; direct 1170/1170; conditional formulas/table and 30% headroom | Network 55/60; no sustained usable capacity or predicted p95 |
-| Section 8 architecture / operations | POC and production diagrams; scheduling, affinity, draining/recovery/backpressure/security proposals | Distributed lifecycle/security/recovery not implemented |
-| Section 9 alternatives | Qwen versus Whisper.cpp and streaming Zipformer/sherpa-onnx | Alternatives locally unmeasured; bilingual checkpoint lacks ID |
-| Sections 10–13 deliverables and conclusions | Source, setup/run/test guides, UI evidence, report/figures/raw data and sizing | Complete passing aggregate regression and long-call domain evidence missing |
+| §§1–3 CPU Qwen POC / UI | C/C++ CPU Qwen, WAV UI, three languages, evolving partial/final, start/stop/reset and telemetry | No production readiness claim |
+| §4 media assumptions | 16 kHz PCM, paced chunks, EOF/cancel, bounded buffering; proposed telephony/VAD/jitter | Long calls limited to 60 s; production VAD/media adapter missing |
+| §5 model configurations / cold-warm | One/two workers and occupancy measured; same 0.6B precision; load/idle/warm artifacts | No size/quantization/native matched matrix or cold-cache distribution |
+| §6 accuracy and performance | Language tables, timing mean/percentiles, RTF, CPU/RSS/PSS, raw transcripts and graphs | Ten unique files/language; stable useful-word/active compute unavailable |
+| §7 concurrency / 50–1000 sizing | 12 layouts; direct 1170/1170; conditional formulas/table and 30% headroom | Network 55/60; no sustained usable capacity or predicted p95 |
+| §8 architecture / operations | POC and production diagrams; scheduling, affinity, draining/recovery/backpressure/security proposals | Distributed lifecycle/security/recovery not implemented |
+| §9 alternatives | Qwen versus Whisper.cpp and streaming Zipformer/sherpa-onnx | Alternatives locally unmeasured; bilingual checkpoint lacks ID |
+| §§10–13 deliverables and conclusions | Source, setup/run/test guides, UI evidence, report/figures/raw data and sizing | Complete passing aggregate regression and long-call domain evidence missing |
 
 ## 15. Conclusion
 
 The new runtime demonstrates independently resumable calls sharing model weights in the main CPU C/C++ path. All requested direct layouts completed without transcript changes across concurrency, and the full result set includes queueing, CPU/memory and language quality. The strongest benefit is progressive per-call state reuse and reliable direct completion on this cohort.
 
-The limitations are concrete: Indonesian WER is 35.20%, high occupancy delays first/final text substantially, and maximum two-worker WebSocket replenishment rejects five calls without the expected terminal failure event. The measured scope is limited to one and two workers, the selected Qwen model and the documented decoder policies. Production selection requires stronger accuracy evidence and reliable network admission/failure delivery. The sizing table remains a qualified planning model, not validated production capacity.
+The limitations are concrete: Indonesian WER is 35.20%, high occupancy delays first/final text substantially, and maximum two-worker WebSocket replenishment rejects five calls without the expected terminal failure event. No extra worker count, model family, quantization gain or production capacity is invented. Fix network lifecycle reliability and validate accuracy before production selection; use the sizing table only as a qualified planning model.
 
 ## Evidence index
 
-- [Effective curves and plan](results/resumable-matrix/curve.json), [CSV](results/resumable-matrix/curve.csv), [generated report](results/resumable-matrix/report.md).
-- [Input WAVs/references/hashes](results/resumable-matrix/inputs.jsonl), [raw-job index](results/resumable-matrix/jobs.json), [driver completion status](results/resumable-matrix/status.json), [checksums](results/resumable-matrix/checksums.json).
-- [Reproduction package](results/resumable-matrix/reproducibility/README.md), [source archive](results/resumable-matrix/reproducibility/source_snapshot.zip), [evaluated executables](results/resumable-matrix/reproducibility/evaluated_binaries.zip).
-- [Resume/guard history](results/resumable-matrix/resume_history), [figure metadata](results/resumable-matrix/figures/metadata.json).
-- [Implementation and run guide](docs/RESUMABLE_STREAMING.md), [architecture/code map](docs/ARCHITECTURE.md), [testing](docs/TESTING.md).
-- [Prefix baseline raw curves](results/capacity_cpu_20261006_curves/curve.json) and [per-recording scores](results/capacity_cpu_20261006_curves/per_wav_accuracy.json); decoder comparison and completion-population differences are explained in section 9.
+- [Effective curves and plan](../../results/resumable-matrix/curve.json), [CSV](../../results/resumable-matrix/curve.csv), [generated report](../../results/resumable-matrix/report.md).
+- [Input WAVs/references/hashes](../../results/resumable-matrix/inputs.jsonl), [raw-job index](../../results/resumable-matrix/jobs.json), [driver completion status](../../results/resumable-matrix/status.json), [checksums](../../results/resumable-matrix/checksums.json).
+- [Resume/guard history](../../results/resumable-matrix/resume_history), [figure metadata](../../results/resumable-matrix/figures/metadata.json).
+- [Implementation and run guide](../RESUMABLE_STREAMING.md), [architecture/code map](../ARCHITECTURE.md), [testing](../TESTING.md).
+- [Historical prefix report](../FINAL_REPORT.md), [historical assignment Q&A](../ASSIGNMENT_QUESTIONS_AND_ANSWERS.md); their old measurements/sizing remain mode-specific. Sections 3–5 and 14 above answer the current design/assignment requirements.
 
 ## Appendix A. Sampled resource percentiles
 
-CPU statistics below are sample-weighted over measured phases, including pacing and failures. Section 7 uses time-weighted process-tree CPU means. Host utilization includes unrelated programs and is a percentage of all 32 logical CPUs. Samples are temporally correlated; these percentiles are descriptive. All layouts are retained in [resource_percentiles.json](results/resumable-matrix/resource_percentiles.json).
+CPU statistics below are sample-weighted over measured phases, including pacing and failures. Section 7 uses time-weighted process-tree CPU means. Host utilization includes unrelated programs and is a percentage of all 32 logical CPUs. Samples are temporally correlated; these percentiles are descriptive. All layouts are retained in [resource_percentiles.json](../../results/resumable-matrix/resource_percentiles.json).
 
 | Layout | Language | Process-tree CPU mean / p50 / p95 / p99 equivalents | Whole-host CPU mean / p95 % | PSS mean / p95 / peak GiB |
 |---|---|---|---|---|
@@ -474,27 +473,30 @@ Across the 1,230 retained measured direct/network call summaries, late_chunks to
 
 | Assignment question / decision | Answer and evidence |
 |---|---|
-| Why Qwen3-ASR and which variant? | Required primary family; 0.6B selected for a feasible CPU/C++ prototype and EN/ID/ZH. Variant/precision superiority is unproven (Section 2). |
-| Is this C++ inference or a Python test? | C++ service/simulator and C model kernels perform recognition. Python only orchestrates, scores and plots (Sections 1–3,13). |
-| Is delivery actually live-like? | Paced 200 ms PCM chunks become available against monotonic deadlines; resumable model steps run during arrival. No one-shot file upload is used for the main test (Section 4). |
-| What media is accepted and how is it normalized? | Baseline 16 kHz mono PCM16; C++ preparation records input/output format and resampler, browser uses baseline PCM (Section 4). |
-| What does the UI show and control? | WAV/language, start/stop/reset/state, provisional/final transcript, chunk/decode controls, first/EOF arrival and reference WER/CER (Section 4.2, UI evidence). |
-| How are jitter, buffering and backpressure handled? | Bounded delivery queue, absolute pacing, 5 ms late flag and 1 s delivery limit; production timestamped jitter buffer/codec loss policy proposed, not WAN-tested (Section 4.1). |
-| How will silence, long speech and interruptions work? | Current explicit EOF/cancel and 60 s cap; proposed validated VAD, bounded utterances, pre-roll/hangover and segment revision/replay policy (Sections 4,11). |
-| How are sessions scheduled and weights shared? | Independent mutable call states share immutable weights; least-active admission, call affinity, one oldest-ready quantum/worker then requeue (Section 8.1). |
-| Why compare one and two workers? | Same model/precision/thread budget per worker isolates process/occupancy trade-offs within available hardware; direct grid 12 layouts and 36 language points (Section 7). |
-| What are cold versus warm costs? | Saved cold plans, load metadata, idle observations and separate warmups; no controlled cold-cache distribution (Section 6). |
-| What are the exact latency/RTF/CPU/memory definitions? | Monotonic server boundaries, completed timing population, streaming wall versus queue/pacing distinction, process-tree CPU equivalents and PSS/RSS (Section 5, Appendix A). |
-| How is quality scored? | Labelled references; corpus EN/ID WER and ZH CER under explicit M0 normalization; failed calls separate and supplemental empty hypotheses (Section 5). |
-| What is the concurrency/saturation result? | Direct 1170/1170; diminishing goodput and growing queues/tails; full 16-call occupancy does not sustain sixteen real-time calls (Sections 7–8). |
-| What errors occurred and was audio dropped? | Five 2×8 WebSocket admission failures with missing expected failure events; zero recorded overflow, six late chunks. Rejected metadata does not prove PCM delivery (Section 9, Appendices A/B). |
-| What is sizing for 50/100/200/500/1000? | Explicit admission/processing/node formulas with language-aware demand, shared-memory envelope, 30% headroom and conditional table; no predicted p95 or validated fleet capacity (Section 10). |
-| How does one host scale to production? | Affine gateway routing, node-local workers/NUMA, warm readiness, draining, supervised recovery, bounded replay and queue-age admission; cluster features proposed (Section 11). |
-| What about security/privacy? | Proposed TLS/auth/tenant isolation, restricted media access, payload limits, encryption, retention and audit; no compliance claim (Section 11). |
-| Are there two alternative ASR families? | Multilingual Whisper via whisper.cpp and streaming Zipformer via sherpa-onnx; bilingual checkpoint requires an ID-capable route. CPU performance/quality locally unmeasured (Section 12). |
-| How would strict sub-second partials at hundreds of calls change the design? | Current 2 s step has an availability floor; evaluate suitable incremental recognizers, short bounded steps, quality-controlled quantization/VAD, bounded batching and target-node tests (Section 12). |
-| Are all deliverables present? | Source/pins, setup/run/test docs, three-language UI evidence, complete data/plots/report, architecture/alternatives and conditional sizing. Passing aggregate full regression, production-shaped soak, alternative benchmarks and security validation remain gaps (Sections 13–14). |
+| Why Qwen3-ASR and which variant? | Required primary family; 0.6B selected for a feasible CPU/C++ prototype and EN/ID/ZH. Variant/precision superiority is unproven (§2). |
+| Is this C++ inference or a Python test? | C++ service/simulator and C model kernels perform recognition. Python only orchestrates, scores and plots (§§1–3,13). |
+| Is delivery actually live-like? | Paced 200 ms PCM chunks become available against monotonic deadlines; resumable model steps run during arrival. No one-shot file upload is used for the main test (§4). |
+| What media is accepted and how is it normalized? | Baseline 16 kHz mono PCM16; C++ preparation records input/output format and resampler, browser uses baseline PCM (§4). |
+| What does the UI show and control? | WAV/language, start/stop/reset/state, provisional/final transcript, chunk/decode controls, first/EOF arrival and reference WER/CER (§4.2, UI evidence). |
+| How are jitter, buffering and backpressure handled? | Bounded delivery queue, absolute pacing, 5 ms late flag and 1 s delivery limit; production timestamped jitter buffer/codec loss policy proposed, not WAN-tested (§4.1). |
+| How will silence, long speech and interruptions work? | Current explicit EOF/cancel and 60 s cap; proposed validated VAD, bounded utterances, pre-roll/hangover and segment revision/replay policy (§§4,11). |
+| How are sessions scheduled and weights shared? | Independent mutable call states share immutable weights; least-active admission, call affinity, one oldest-ready quantum/worker then requeue (§8.1). |
+| Why compare one and two workers? | Same model/precision/thread budget per worker isolates process/occupancy trade-offs within available hardware; direct grid 12 layouts and 36 language points (§7). |
+| What are cold versus warm costs? | Saved cold plans, load metadata, idle observations and separate warmups; no controlled cold-cache distribution (§6). |
+| What are the exact latency/RTF/CPU/memory definitions? | Monotonic server boundaries, completed timing population, streaming wall versus queue/pacing distinction, process-tree CPU equivalents and PSS/RSS (§5, Appendix A). |
+| How is quality scored? | Labelled references; corpus EN/ID WER and ZH CER under explicit M0 normalization; failed calls separate and supplemental empty hypotheses (§5). |
+| What is the concurrency/saturation result? | Direct 1170/1170; diminishing goodput and growing queues/tails; full 16-call occupancy does not sustain sixteen real-time calls (§§7–8). |
+| What errors occurred and was audio dropped? | Five 2×8 WebSocket admission failures with missing expected failure events; zero recorded overflow, six late chunks. Rejected metadata does not prove PCM delivery (§9, Appendices A/B). |
+| What is sizing for 50/100/200/500/1000? | Explicit admission/processing/node formulas with language-aware demand, shared-memory envelope, 30% headroom and conditional table; no predicted p95 or validated fleet capacity (§10). |
+| How does one host scale to production? | Affine gateway routing, node-local workers/NUMA, warm readiness, draining, supervised recovery, bounded replay and queue-age admission; cluster features proposed (§11). |
+| What about security/privacy? | Proposed TLS/auth/tenant isolation, restricted media access, payload limits, encryption, retention and audit; no compliance claim (§11). |
+| Are there two alternative ASR families? | Multilingual Whisper via whisper.cpp and streaming Zipformer via sherpa-onnx; bilingual checkpoint requires an ID-capable route. CPU performance/quality locally unmeasured (§12). |
+| How would strict sub-second partials at hundreds of calls change the design? | Current 2 s step has an availability floor; evaluate suitable incremental recognizers, short bounded steps, quality-controlled quantization/VAD, bounded batching and target-node tests (§12). |
+| Are all deliverables present? | Source/pins, setup/run/test docs, three-language UI evidence, complete data/plots/report, architecture/alternatives and conditional sizing. Passing aggregate full regression, production-shaped soak, alternative benchmarks and security validation remain gaps (§§13–14). |
 
+## Submission conclusion
+
+Submit this report with source/version files, [README](../../README.md), [testing/run guidance](../TESTING.md), the complete `results/resumable-matrix` bundle and the retained resumable UI screenshots/demo JSON. The new direct matrix is complete. The conclusion remains conditional on quality and network reliability: independently resumable CPU calls work, but high occupancy is queued work, Indonesian quality is insufficiently validated, and maximum WebSocket admission/failure delivery still needs correction. No production SLO or compliance certification is asserted.
 
 ## Appendix D. Mean accuracy for each WAV across five concurrency setups
 
@@ -551,83 +553,4 @@ Per-file scores must not be averaged unweighted to replace the main corpus WER/C
 
 **Observed result:** every WAV has the same error score in all five selected setups, including the difficult English recording. Concurrency changed timings and resource use, but did not change these final hypotheses. This is evidence for this fixed configuration and cohort, not a guarantee for other model settings or live-call inputs.
 
-[Per-WAV CSV](results/resumable-matrix/per_wav_accuracy.csv) · [Per-WAV means, repetition counts and edit totals](results/resumable-matrix/per_wav_accuracy.json).
-
-## Appendix E. Prefix Baseline: Per-WAV Accuracy
-
-The five concurrency setups match Appendix D. Headers mean **workers / total concurrent calls**. Values are arithmetic mean WER (EN/ID) or CER (ZH), in percent, over completed repetitions of each WAV. The first four columns offer three observations per WAV; the last offers six. Failed cells show **Failed (completed/offered)** rather than treating an absent final transcript as a measured transcription. Completion counts and supplementary failure-inclusive scores are retained in the CSV/JSON.
-
-Per-file means are not an unweighted replacement for corpus WER/CER. The original prefix policy used a four-second preview and whole-audio EOF refinement; these results describe the prefix baseline configuration.
-
-### EN: mean WER (%) per WAV
-
-| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
-|---|---:|---:|---:|---:|---:|
-| fleurs_en_us_validation_1523_142 | 5.26 | 5.26 | 5.26 | 5.26 | 5.26 |
-| fleurs_en_us_validation_1626_141 | 15.15 | 15.15 | 15.15 | 15.15 | 15.15 |
-| fleurs_en_us_validation_1654_60 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_en_us_validation_1607_28 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_en_us_validation_1521_51 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_en_us_validation_1518_26 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
-| fleurs_en_us_validation_1520_42 | 11.54 | 11.54 | 11.54 | 11.54 | 11.54 |
-| fleurs_en_us_validation_1549_14 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_en_us_validation_1510_2 | 9.52 | 9.52 | 9.52 | 9.52 | 9.52 |
-| fleurs_en_us_validation_1581_159 | 7.14 | 7.14 | 7.14 | 7.14 | 7.14 |
-
-### ID: mean WER (%) per WAV
-
-| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
-|---|---:|---:|---:|---:|---:|
-| fleurs_id_id_validation_1523_32 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_id_id_validation_1626_67 | 17.86 | 17.86 | 17.86 | 17.86 | 17.86 |
-| fleurs_id_id_validation_1654_84 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_id_id_validation_1607_141 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_id_id_validation_1521_214 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_id_id_validation_1518_37 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_id_id_validation_1520_4 | 8.33 | 8.33 | 8.33 | 8.33 | 8.33 |
-| fleurs_id_id_validation_1549_131 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
-| fleurs_id_id_validation_1510_256 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
-| fleurs_id_id_validation_1581_36 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-
-### ZH: mean CER (%) per WAV
-
-| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
-|---|---:|---:|---:|---:|---:|
-| fleurs_cmn_hans_cn_validation_1523_8 | 22.58 | 22.58 | 22.58 | 22.58 | 22.58 |
-| fleurs_cmn_hans_cn_validation_1626_27 | 1.75 | 1.75 | 1.75 | 1.75 | 1.75 |
-| fleurs_cmn_hans_cn_validation_1654_53 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_cmn_hans_cn_validation_1607_137 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_cmn_hans_cn_validation_1521_86 | 4.55 | 4.55 | 4.55 | 4.55 | 4.55 |
-| fleurs_cmn_hans_cn_validation_1518_114 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_cmn_hans_cn_validation_1520_32 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_cmn_hans_cn_validation_1549_96 | 2.94 | 2.94 | 2.94 | 2.94 | 2.94 |
-| fleurs_cmn_hans_cn_validation_1510_56 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| fleurs_cmn_hans_cn_validation_1581_2 | 3.85 | 3.85 | 3.85 | 3.85 | 3.85 |
-
-**Selected-layout population:** 486/540 completed observations. Failed calls are excluded from primary per-WAV accuracy; they remain visible in counts and supplementary failure-inclusive values. This is only the five selected layouts, not the whole 900-call prefix baseline study.
-
-[Baseline CSV](results/capacity_cpu_20261006_curves/per_wav_accuracy.csv) · [Baseline scores, counts and errors](results/capacity_cpu_20261006_curves/per_wav_accuracy.json).
-
-## Appendix F. Three-Language UI Demonstration
-
-The browser demonstration used the same native C/C++ resumable path with two workers/two slots each, 100 ms PCM transport chunks and 2-second decode steps. It is a focused end-to-end check, separate from the 200 ms-chunk capacity study. All three calls completed with nonempty output before EOF and no browser errors. Client timings include delivery to the browser and are not substituted for the server benchmark timestamps.
-
-| Language | Transcript revisions | First text arrival ms | EOF-to-final arrival | WER/CER |
-|---|---:|---:|---|---|
-| en | 6 | 2693 | 1011 ms | 0.00% |
-| id | 8 | 2842 | 1189 ms | 16.67% |
-| zh | 8 | 2508 | 1480 ms | 10.71% |
-
-### EN UI
-
-![EN streaming transcript and latency](results/resumable-ui-20261006/en-stream-complete.png)
-
-### ID UI
-
-![ID streaming transcript and latency](results/resumable-ui-20261006/id-stream-complete.png)
-
-### ZH UI
-
-![ZH streaming transcript and latency](results/resumable-ui-20261006/zh-stream-complete.png)
-
-[Browser demonstration record](results/resumable-ui-20261006/demo.json).
+[Per-WAV CSV](../../results/resumable-matrix/per_wav_accuracy.csv) · [Per-WAV means, repetition counts and edit totals](../../results/resumable-matrix/per_wav_accuracy.json).

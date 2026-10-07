@@ -44,7 +44,14 @@
   },
   "submission_report": {
     "path": "report.md",
-    "sha256": "88844ad936c173d4d37afdc3f4bbf32d029125fe4ccc80b722545c7b7f7214d7",
+    "sha256": "eb9d37225a0af3e8e685cc04a3a848a434831673da0c6e43aa2aff30075b1377",
     "scope": "Standalone assignment report; measurements unchanged."
+  },
+  "canonical_report": "report.md",
+  "reproduction_package": {
+    "source_archive_sha256": "400b6b383abab54071f5de066f7f7321532adac099908dfd19ae1d126ba1c8a9",
+    "evaluated_binary_archive_sha256": "0984054010d048bfc1c4b6f772ffb12068ad578e57da68f6dae19d82971c5749",
+    "source_files": 1734,
+    "capture_scope": "implementation available at report finalization; not a retrospectively captured original source state"
   }
 }

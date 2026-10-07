@@ -120,7 +120,7 @@ The default scaling grid up to eight workers has 39 concurrency/layout points. T
 
 Services are monitored during context loading, idle and active work. The guard reserves 2 GiB of available RAM. Low free host swap alone does not stop a run: the swap-headroom check also requires benchmark swapping and sustained memory stalls. It also stops escalation when PSI full avg10 stays at least 10% for 15 seconds together with more than 64 MiB of swap I/O in the last minute. Host swap and per-process swapped bytes/major faults are recorded separately. Model load is recorded separately from warm calls. Conservative cold CLI estimates are retained; the warm suite memory gate remains enforced. Host swap without memory stalls is recorded without stopping the run. Actual resource limits may stop the sweep before eight workers. All call failures stay in the curve; no latency acceptance target is imposed. Resource aborts and untouched higher layouts are labelled separately from model failures.
 
-Output: `report.md`, `curve.csv`, `curve.json`, raw `jobs.json`, per-worker host/swap/process-tree telemetry, runtime snapshots, C++ suite/call artifacts, model/binary/input identities and final checksums. Language tables are separate, including mixed-network subgroups. Curves report achieved occupancy, CPU, RSS/PSS, available RAM, failures, WER/CER, first text, finalization, queue/decode stages and throughput. Stress tables and accuracy plots now use completed-call WER/CER as primary quality, with failures separate and supplementary failure-inclusive scores retained. Maximum observed throughput is not a claim of maximum usable production capacity. The current partial study and its known gaps are summarized in [FINAL_REPORT.md](FINAL_REPORT.md).
+Output: `report.md`, `curve.csv`, `curve.json`, raw `jobs.json`, per-worker host/swap/process-tree telemetry, runtime snapshots, C++ suite/call artifacts, model/binary/input identities and final checksums. Language tables are separate, including mixed-network subgroups. Curves report achieved occupancy, CPU, RSS/PSS, available RAM, failures, WER/CER, first text, finalization, queue/decode stages and throughput. Stress tables and accuracy plots now use completed-call WER/CER as primary quality, with failures separate and supplementary failure-inclusive scores retained. Maximum observed throughput is not a claim of maximum usable production capacity. The completed resumable study and its validation scope are summarized in the canonical [report.md](../report.md).
 
 To export standalone plots after a run:
 
@@ -194,3 +194,11 @@ build/release-cpu/resumable-state-test models/qwen3-asr-0.6b \
 ```
 
 `npm run test:e2e:resumable` uses the existing shared browser driver in resumable mode. Actual results and limitations are in [RESUMABLE_STREAMING.md](RESUMABLE_STREAMING.md); these pilots do not replace the original capacity experiment.
+
+## Frozen reproduction artifacts
+
+```bash
+python3 tools/testing/freeze_reproduction.py --results results/resumable-matrix
+```
+
+The packager checks executable identities against the saved effective plan, archives finalization-time project/native dependency and generated extension source, saves evaluated executables, records file-level SHA-256 identities, and verifies every archived payload. It distinguishes source capture time from evaluated binary identity. Model/data/runtime shared-library dependencies and full raw-call records remain separate; see the package README for scope.

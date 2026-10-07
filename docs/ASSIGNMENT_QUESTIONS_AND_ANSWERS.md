@@ -1,153 +1,151 @@
-# Assignment questions and current implementation answers
+# Assignment questions and answers
 
-**Latest evidence:** [Resumable final report](FINAL_REPORT_RESUMABLE.md) supersedes the older prefix measurements and sizing in this historical Q&A. It includes the current implementation decisions and assignment coverage.
+**Canonical evidence:** [report.md](../report.md). This companion uses the same completed resumable measurements and does not define a competing final report.
 
-A subsequent opt-in [resumable streaming implementation](RESUMABLE_STREAMING.md) now supplies repeated per-call updates over shared weights. Legacy prefix/capacity answers below still describe the original measured mode; new pilot measurements are separate.
+**Measured scope:** twelve layouts; 1,170/1,170 direct calls; sixteen separate warmups; 55/60 WebSocket calls. Primary direct accuracy: English WER 10.24%, Indonesian WER 35.20%, Mandarin CER 12.43%. Ten unique WAVs per language are reused with balanced repetitions. Completed protocol status is not an accuracy threshold.
 
-This guide retains the assignment's question set and requested design decisions, updated for `dev-clean`. **Implemented** means code exists; **proposed** means additional production work; numerical capacity/quality claims require saved measurements. Historical result bundles were intentionally cleared during cleanup. Current evidence is summarized in the [final technical report](FINAL_REPORT.md); the saved capacity study is partial, with failures retained. New experiments write to `results/` and are documented in [Testing](TESTING.md).
-
-The current model and WAV simulation paths are C++. The main runtime choices are native one-call workers and shared-prefix workers with multiple active sessions. See [Architecture](ARCHITECTURE.md) and [Run commands](CLI_QUICKSTART.md).
+Implemented, measured, proposed and conditional statements are distinguished below. Baseline prefix values appear only as a labelled configuration comparison in the canonical report and the archive.
 
 ### Q1. Was a CPU-only, real-time, multilingual Qwen3-ASR proof of concept built?
 
-**Implemented.** The main executable and inference path are C++20/C CPU code. WAV chunks can be paced through direct calls or WebSockets, with English, Indonesian and Mandarin language selection. The native runtime produces progressive revisions; the shared-prefix runtime produces one prefix preview and an EOF refinement. This is a working prototype, not a demonstrated production capacity guarantee.
+Implemented. The primary runtime is Qwen3-ASR-0.6B on CPU through C inference kernels, C++20 service/worker integration and a React UI. EN/ID/ZH were measured using paced audio. The resumable runtime preserves independent call state while sharing model weights; production capacity is not inferred from completion alone.
 
 ### Q2. Does the user load a Linear PCM WAV, and does the system avoid one-shot offline transcription?
 
-**Implemented, with different decoder semantics.** Browser WAV upload requires 16 kHz mono PCM16. The C++ reader can prepare other supported WAV formats before pacing. Media is released in chunks rather than submitted at time zero. Native streaming decodes progressively; shared-prefix inference performs a prefix pass while audio arrives and a whole-audio pass after EOF. The latter uses offline invocations inside a streaming transport and should be described that way.
+Implemented. Browser audio uses 16 kHz mono PCM16. Supported WAV formats can be prepared by the C++ reader. Audio becomes available progressively in 200 ms chunks; resumable recognition steps execute during arrival. The main experiment is not a one-shot upload followed by offline transcription.
 
 ### Q3. Are partial and final results distinguished in the UI?
 
-**Implemented.** Events distinguish provisional partial snapshots from final text. The dashboard shows revisions and terminal status. Partial text can change; stable-prefix/word alignment is not available from this runtime.
+Implemented. The UI distinguishes provisional partial snapshots and final output, with revisions and stream state. Older observer revisions cannot overwrite newer/final text. Stable word timing is not supplied by the runtime.
 
 ### Q4. Are start, stop, reset, and visible stream state available?
 
-**Implemented.** The browser has start, stop and reset, plus call state, acknowledgements and transcript events. Cancellation terminates the call; a new call has a new identity and independent buffers. Suite jobs can also be stopped through REST.
+Implemented. Start, stop and reset manage explicit call identity, cancellation and independent buffers. The UI shows acknowledgements, transcript revisions and terminal state. REST suite jobs also support cancellation.
 
 ### Q5. What did the actual three-language browser demo show?
 
-**Current UI evidence is saved** in [ui-controls-20261006/demo.json](../results/ui-controls-20261006/demo.json) and its screenshots. Three main C++ shared-prefix calls completed with two workers, 100 ms chunks and a selected 2 s preview, showing first-text/EOF arrival delays and completed-call WER/CER. Browser errors were zero; scores matched the Python evaluator. This short-input controls demo deliberately avoids the three known timeout clips and is not an accuracy/capacity study; the full curves still retain those failures.
+The [resumable browser demonstration](../results/resumable-ui-20261006/demo.json) completed EN/ID/ZH calls with two workers/two slots each, 100 ms browser chunks and 2-second decode steps. It displayed six to eight revisions per call and no browser errors. These focused UI examples are separate from the ten-file-per-language capacity study.
 
 ### Q6. Why 16 kHz mono PCM16, 200 ms chunks, and a 2-second decode step?
 
-**Design decisions.** 16 kHz mono signed PCM16 matches the runtime input contract. A 200 ms chunk contains 3,200 samples (6,400 PCM bytes), balancing transport overhead and pacing granularity. Native `decode_step_ms=2000` is independent of the transport chunk size. Shared `prefix_preview_ms=4000` produces a single preview and limits repeated prefix recomputation. Neither chunk interval implies a matching text-latency guarantee.
+16 kHz mono PCM16 matches the model/media contract. A 200 ms chunk is 3,200 samples or 6,400 bytes, balancing delivery granularity and overhead. A 2-second decode step controls model readiness, not transport pacing. Four compute threads per worker, zero initial withheld chunks and no EOF whole-audio refinement define the measured preset; text latency is not guaranteed by chunk size.
 
 ### Q7. How are pacing, buffering, backpressure, and EOF handled?
 
-**Implemented.** C++ uses monotonic absolute sample-availability deadlines, bounded delivery queues and explicit lag/overflow failure. WebSocket acknowledgements provide flow control; sequence and sample counts validate EOF. An overload is surfaced rather than silently dropping media. EOF schedules final refinement; cancellation/timeouts are separate terminal outcomes.
+Monotonic absolute readiness deadlines preserve the media clock. The measured delivery caps are eight chunks, 1,000 ms and 32,000 bytes; the effective time/byte cap holds about five full 200 ms chunks. Lateness above 5 ms is counted; delivery lag above 1,000 ms or queue overflow fails explicitly. EOF drains remaining resumable steps and produces final output; the measured preset does not perform whole-audio refinement.
 
 ### Q8. What is one call leg, and how are calls isolated and scheduled?
 
-**Implemented.** A leg is one input stream with its own call ID, language, PCM buffer, sequence/sample watermark and event lifecycle. Native workers hold one active call/context. Shared workers hold several independent call sessions while serializing their decode jobs through one persistent context. New calls use least-active routing by default and retain worker affinity.
+A call leg is one independently streamed source with its own ID, language, audio cursor, mutable caches/tokens, sequence watermarks and event lifecycle. Least-active admission spreads calls across healthy workers and maintains affinity. Each worker executes one oldest-ready quantum then requeues the call; at most one model step runs per worker at a time.
 
 ### Q9. How would real telephony replace the WAV simulator?
 
-**Proposed.** A SIP/RTP or platform media gateway would decode negotiated codecs, restore media timing with a jitter buffer, normalize to 16 kHz mono PCM16 and submit the existing streaming contract. The current source is WAV/browser PCM; it does not implement telephony termination or codec negotiation.
+A proposed SIP/RTP/provider gateway would decode negotiated codecs, restore timestamped media timing through a bounded jitter buffer, normalize PCM and use the streaming API. Codec negotiation, telephony termination and network packet-loss concealment are not implemented in the WAV/browser POC.
 
 ### Q10. What happens with silence, VAD, end-of-utterance, long speech, interruptions, and jitter?
 
-**Partially implemented.** There are buffer/lag limits, ordered chunks, explicit EOF, cancellation and session timeouts. General VAD, utterance segmentation, diarization and telephony jitter handling are absent. Shared-prefix calls accept at most 60 seconds of PCM; long conversations need bounded utterance segments and an evaluated VAD policy. Silence and interruptions require language-specific accuracy tests rather than an assumption that nonempty output is correct.
+Explicit EOF, cancellation, ordered chunks, buffer/lag limits and session timeouts are implemented. General VAD, long-call segmentation, diarization and RTP jitter buffering are proposed. The shared input limit is 60 seconds; long conversations need bounded utterances, evaluated VAD pre-roll/hangover and overlap/deduplication. Six late chunks and zero audio overflows were recorded in measured summaries; loopback tests do not establish WAN-jitter tolerance.
 
 ### Q11. Which Qwen variant, precision, and runtime were chosen, and why?
 
-**Chosen baseline:** official pinned Qwen3-ASR-0.6B, BF16 CPU weights, pinned `antirez/qwen-asr` C runtime and OpenBLAS. Four compute threads per worker are the default. The smaller model and C integration meet the CPU/C++ prototype requirement. Exact revisions and weight hash remain in `third_party/revisions.lock`. This is a practical baseline, not a claim that this runtime/model is optimal.
+The selected baseline is pinned Qwen3-ASR-0.6B with official BF16 weights, a pinned antirez/qwen-asr CPU C runtime and OpenBLAS. C++ wrappers own transport, scheduling and processes. Four compute threads per worker provide a reproducible budget. Model/runtime identity is recorded in third_party/revisions.lock; this selection is not a demonstrated optimum over model sizes or quantization.
 
 ### Q12. Was a C++ inference path feasible, and what are its limitations?
 
-**Feasible and implemented.** Native C inference is wrapped by C++ engines and process helpers. The native context cannot be used concurrently without owning/isolating mutable state. The shared-prefix wrapper serializes independent offline prefix/final jobs, sharing weights without independent per-call streaming caches. It does not add batching, parallel decoder slots, stable-word alignment or GPU execution.
+C/C++ inference is implemented. Generated native streaming state borrows immutable weights while owning each call’s mutable encoder/decoder buffers and token history. Completed encoder windows and unchanged decoder prefills are reused; growing partial windows can be re-encoded. Multi-call tensor batching, stable words and per-call word timestamps are not implemented.
 
 ### Q13. Were at least two sensible Qwen configurations compared?
 
-**Measured process/scheduling configurations:** one shared worker at total concurrency 1/2/4/8 and two workers at 1/2/4/8/16, on the same ten distinct WAVs per language. Results are in [FINAL_REPORT.md](FINAL_REPORT.md). Native/shared presets remain, but no current matched native/shared or thread-count performance comparison is claimed. A controlled comparison would strengthen runtime selection.
+The complete resumable study compares one worker at total concurrency 1–8 and two workers at total concurrency 2/4/8/16, with the same model/precision and four compute threads per worker. These twelve layouts produce thirty-six direct language points. No matched native-runtime, model-size, quantization or thread sweep is claimed.
 
 ### Q14. Are cold start and model load separated from steady recognition?
 
-**Implemented measurement separation.** Session startup, model load and shared model load are distinct fields. Persistent shared services load contexts before admitting suites; shared model-load metadata is not a per-call cost. Cold CLI plans and service startup logs are saved by the experiment driver. Keep cold-start data separate from warm-call percentiles.
+Cold dry-run plans, service startup/load metadata, loaded idle observations and warmups are separate from measured suites. The initial one-worker context-load metadata is 0.344 s; idle PSS is about 1.269–1.271 GiB for one worker and 2.413 GiB for two. Mapped weights and cached pages mean these values are not a controlled cold-cache startup distribution.
 
 ### Q15. What Qwen streaming or CPU limitations were found, and what workaround was used?
 
-**Runtime limitation and workaround.** The native streaming invocation owns mutable context/state and is not an independently resumable per-call cache scheduler. Shared-prefix workers buffer calls independently and serialize prefix/EOF invocations through one loaded context. This enables multiple active calls per worker, with lower model duplication, but changes streaming semantics and introduces queueing. Token-boundary cancellation/decode deadlines are generated in build sources; they cannot preempt a kernel.
+The original monolithic native streaming loop was adapted to explicit create/step/text/destroy state so calls can alternate without replaying complete prefixes. One ready quantum releases the worker after advancing call state. Growing-window recomputation, kernel-level blocking and bounded token work remain; cooperative cancellation checks do not forcibly interrupt a matrix kernel.
 
 ### Q16. What exactly do the latency and RTF metrics mean?
 
-**Definitions are in [Testing](TESTING.md).** First usable text is stream start to first nonempty partial or final. First partial excludes final-only calls. EOF delay is worker EOF receipt to final publication (controller request fallback), not first-to-last-text time. Effective RTF includes paced waiting and finalization; offline invocation wall RTF excludes pacing/ready-job wait. Internal active-compute RTF and stable-word timing are unavailable and remain null.
+First text is stream start to the first nonempty partial or final; this does not prove semantic correctness. Final latency is stream start to final publication. EOF delay is worker EOF receipt to final publication. Streaming invocation RTF sums step wall time and optional refinement over input duration, excluding ready-queue wait; effective RTF includes pacing and queueing. Server and browser arrival timestamps are separate. Stable-word and vendor active-compute measurements remain unavailable.
 
 ### Q17. What hardware, OS, software, and baseline settings produced the numbers?
 
-**Current measured environment:** Ryzen 9 9955HX, 16 physical/32 logical CPUs, approximately 14.78 GiB total RAM, Linux CPU inference, BF16 weights and four compute threads per worker. The [final report](FINAL_REPORT.md) records kernel/compiler, inspected software versions and source/binary/model/input identities. Available RAM is not total RAM, and git HEAD alone does not identify the uncommitted source; use the saved source snapshot.
+AMD Ryzen 9 9955HX, 16 physical cores/32 logical CPUs, approximately 14.78 GiB total RAM, Linux kernel 7.2.7-200.fc44.x86_64 and GCC 16.2.1 20260819. BF16 weights, four runtime/BLAS threads per worker, no CPU affinity, 200 ms chunks and 2-second decode steps. Report Section 2 lists software pins, environment evidence and hashed reproduction artifacts.
 
 ### Q18. What did the labelled accuracy evaluation show, and how was it scored?
 
-**Primary accuracy uses completed calls only**, with failures reported separately. One worker/concurrency one: EN WER 6.52% (27/30 completed), ID WER 4.93% (24/30), ZH CER 3.25% (30/30). Supplementary failure-inclusive scores are 16.10%, 24.58%, 3.25%. Scores aggregate edits/reference units per language, not per-file percentage means. NFC, EN/ID casefold, punctuation/whitespace policy and edit alignments are retained. See the [final report](FINAL_REPORT.md); this ten-file validation cohort is not a production accuracy guarantee.
+Primary completed-only quality is **EN WER 10.24%, ID WER 35.20%, ZH CER 12.43%**. All direct calls complete, so direct failure-inclusive scores equal completed-only scores. Corpus edits/reference units are computed separately per language under NFC/casefold/punctuation policy M0. The common nine-recording English subset scores 5.98%; that is a labelled subset rather than the ten-recording primary score. See report Sections 5, 9.1 and Appendix D.
 
 ### Q19. What are the single/two-worker latency, throughput, RTF, and memory results?
 
-**Current results are retained.** The [final report](FINAL_REPORT.md) includes all direct curves, per-language baseline/tail/resource tables, network failures and plots. One worker/concurrency one is the shared-runtime control. The measured study has 900 direct offered calls, 810 completions and 90 failures. No current native performance table is fabricated.
+The final direct study contains **1,170 offered / 1,170 completed calls**, with sixteen separate warmups. Network suites complete **55/60 calls**. One-worker/one-call first-text means are 2.678 s EN, 2.638 s ID and 2.546 s ZH. Peak measured process-tree PSS is 4.157 GiB. Full latency/resource/throughput tables, figures and per-WAV means are in report Sections 6–9 and Appendices A/D.
 
 ### Q20. Are CPU utilization, process CPU, cores, memory, queueing, errors, and dropped/late chunks observable?
 
-**Implemented, with labelled limits.** Artifacts expose pacing lag, controller queues, submit/publication delays, runtime stages, process/host CPU and memory, worker/call status, errors and overflow counters. Shared workers expose active sessions and ready decode queues. Samples are periodic observations; summed process RSS is not unique physical memory. Vendor internal active-compute boundaries, alignment and stable text are unavailable.
+Raw artifacts retain host/process CPU, RSS/PSS, pacing/submit/publication delays, call/worker state, queue waiting, errors and overflow counters. Process-tree CPU equivalents include all process threads and service/simulator overhead; four configured compute threads is not a hard CPU quota. Appendix A supplies resource percentiles. RSS can double-count mapped pages; PSS apportions shared physical memory.
 
 ### Q21. Does the system stay below real time under load, and was a saturation point found?
 
-**Curves are measured; production saturation is not established.** Up to two workers/16 target concurrent calls were tested. Queueing and finalization tails worsened with occupancy. The study ended after an unhealthy worker in the network test, before workers 3–8 or a sustained run. No latency acceptance target was selected, so results describe the curve rather than maximum usable calls. Effective RTF includes pacing; invocation RTF is a different measure. See [failure/saturation analysis](FINAL_REPORT.md).
+Configured worker compute budgets saturate while throughput reaches diminishing returns; the full 32-logical-CPU host ceiling was not tested. At two workers/sixteen calls, EOF p95 is 46.56 s EN, 73.22 s ID and 52.75 s ZH, despite completed finals. No latency pass/fail target was selected. The finite WAV study is not a continuous steady-state capacity guarantee; effective RTF and invocation RTF must be distinguished.
 
 ### Q22. Is there a repeatable multi-call load mechanism?
 
-**Implemented in C++.** `load` prepares WAVs, generates call plans and paces PCM for bounded concurrent sessions. `--manifest` allows distinct recordings; absent a manifest, calls repeat one configured WAV. Direct mode calls the engine; network mode uses C++ WebSocket clients and an internal server. `serve` runs the same simulator through REST jobs. Python starts services and scores outputs, rather than running model inference.
+C++ load/serve prepares WAVs, paces independent calls and performs inference directly or through internal WebSocket clients. A manifest supplies distinct recordings. The Python matrix driver starts services and scores saved results; --resumable-matrix selects the twelve-layout grid with ten unique WAVs per language and three repetitions. At sixteen concurrent calls, complete cohorts repeat twice per repetition for equal file weighting.
 
 ### Q23. What CPU/vCPU, RAM, nodes, RTF, and p95 should be planned for 50, 100, 200, 500, and 1,000 concurrent legs?
 
-**Conditional estimates are documented** in [CAPACITY_SIZING.md](CAPACITY_SIZING.md) and the [final report](FINAL_REPORT.md). Required workers are the maximum of admission demand and processing demand: `max(ceil(N/(k*u)), ceil(N*d/(q*e*u)))`; nodes are `ceil(W/workers_per_node)`. The guide includes all five requested call counts, shared memory, CPU/RAM/headroom assumptions and a hypothetical VAD sensitivity case. Finite-test goodput is only a provisional proxy; sustained RTF and p95 remain unvalidated. No production fleet count or market price is asserted.
+The canonical conditional sizing is report Section 10: W=max(ceil(N/(k*u)),ceil(N*d/(q*e*u))) and H=ceil(W/2). With k=8, u=.70, q=1.0, e=.80 and d=1, the 50/100/200/500/1000 scenarios give 45/90/179/447/893 nodes, each provisionally 16 comparable logical CPUs and 16 GiB RAM. q is a finite-test goodput proxy; fleet capacity and p95 are not validated or predicted.
 
 ### Q24. How should a valid sizing model account for shared memory, batching, contention, queues, NUMA, headroom, and diminishing returns?
 
-**Use the separate slot and processing constraints in [CAPACITY_SIZING.md](CAPACITY_SIZING.md).** Memory sharing is local to a node; private contexts/buffers grow with workers/sessions, and weights are replicated across hosts. Four threads/worker are configured, not dedicated cores. There is no measured batching benefit. The guide reserves 30% headroom, states an unmeasured contention allowance, and uses two workers/node to avoid dense-host extrapolation. Current code submits silence, so submitted-audio demand cannot be reduced without a validated VAD/segmentation pipeline. NUMA, burst queues and p95 require target-hardware testing.
+Session admission and processing demand are independent constraints. Weights share physical pages within a host; mutable state grows with workers/calls and weights replicate across nodes. The sizing model credits no batching gain, reserves 30% headroom, includes an unmeasured efficiency allowance and limits worker density to two/node. Silence demand remains d=1 until VAD actually avoids inference and its goodput is remeasured. NUMA, CPU equivalence, bursts and long calls need target-hardware validation.
 
 ### Q25. What happens when capacity is exceeded, and how would horizontal scaling work?
 
-**Implemented locally; horizontal scaling is proposed.** Full session slots reject admission; timeouts/queue failures surface terminal errors. Preflight can reject unsafe run plans before inference. Production needs a gateway with bounded admission, session affinity, health routing, drain-before-restart and multiple service nodes. A shared worker context is not automatically migrated after failure.
+Full slots reject admission, and queue/lag/deadline failures are explicit. Preflight and live resource guards bound unsafe experiments. Proposed horizontal scaling uses admission by healthy capacity and queue age, call affinity, warm readiness, graceful draining and supervised worker recovery. Live decoder state is not automatically migrated across workers/nodes.
 
 ### Q26. What is the implemented POC architecture, and what is proposed for production?
 
-**Implemented:** C++ WAV preparation/pacing, interchangeable engines, worker/session scheduling, WebSocket/REST transport, artifacts/metrics and a React dashboard. **Proposed production:** telephony ingress, VAD/segmentation, durable job/session metadata, authenticated routing, supervision/recovery, distributed affinity and SLO-based scaling. The current source map and flow are in [Architecture](ARCHITECTURE.md).
+Implemented: React dashboard, C++ API/transport and paced WAV simulator, persistent model workers, per-call resumable state, routing/scheduling and resource/timing artifacts. Proposed: telephony ingress, validated VAD/utterance segmentation, supervised recovery, authenticated multi-node routing and queue-age scaling. Report Sections 3/11 contain both diagrams and distinguish POC from production design.
 
 ### Q27. Why WebSocket, and what are the API/result-delivery contracts?
 
-**Design decision.** WebSocket provides bidirectional chunk acknowledgements, cancellation and revisions over one connection and integrates with a browser. `/v1/asr` carries live PCM and result events; `/v1/observe` carries observation data. REST plans/submits suites, exposes jobs/runtime/history and serves allowlisted artifacts. Text snapshots are provisional until final, with explicit call identity and sequencing. The obsolete report registry API was removed during cleanup.
+WebSocket supports browser-compatible bidirectional PCM, acknowledgements, cancellation and result revisions. REST handles configuration, plans, suite jobs and status. Results carry call identity and event sequencing. At two workers/sixteen sessions, five network calls are admission failures and lack the expected terminal failure event; these outcomes remain distinct from direct inference and transcript quality.
 
 ### Q28. How are worker lifecycle, health, draining, failure recovery, and session affinity designed?
 
-**Implemented lifecycle; limited recovery.** Calls are admitted onto fixed worker slots, keep affinity, and terminate explicitly on EOF, cancel, timeout or failure. Runtime status exposes health/process/session counts. Draining rejects new work. Native contexts are call-isolated children; shared contexts persist per worker. Shared worker failures affect assigned calls; automatic respawn/replay, durable resume and cross-node migration are not implemented.
+Workers retain session affinity and expose process, health, active-session and ready-queue counts. One worker is in-process; two workers use persistent helper processes. Calls terminate on EOF/cancel/timeout/failure; draining rejects new admission. Automatic worker respawn, durable replay and cross-node state transfer are not implemented. A worker failure affects its assigned calls.
 
 ### Q29. What production security and privacy controls are required?
 
-**Proposed production controls.** Deploy behind authenticated TLS, tenant-aware admission/authorization and resource limits; protect transcript/audio storage with retention and access policies; audit artifact access; redact sensitive logs; manage model/dependency provenance and licenses. The loopback prototype and input/path bounds are not a production security boundary. No production security claim is made.
+Proposed controls include TLS, authenticated tenant authorization, bounded payloads, restricted media/artifact access, encrypted storage, configurable retention, redacted logs and audit records. Local path/size limits and loopback operation are not a production security/compliance certification.
 
 ### Q30. What observability and operational signals are available or needed?
 
-**Current signals:** call outcomes, event/runtime timelines, pacing/queue/submit/publication delays, per-worker session/queue/thread status, host/process CPU and memory, and persisted errors. **Needed operationally:** centralized metrics/traces, per-language SLO dashboards, queue age and saturation alerts, model/version rollout tracking, supervised worker restarts and retention controls. Null vendor measurements remain explicit.
+Available signals include call outcomes, revisions/timelines, chunk delivery and model-ready queue delays, worker occupancy/thread budgets, host/process CPU and memory, and errors. Production needs centralized traces, per-language quality/failure dashboards, queue-age/utilization alerts, lifecycle/restart telemetry and retention controls. Missing vendor metrics are not represented as zero.
 
 ### Q31. Is Qwen3-ASR automatically the best production choice? Which alternatives were compared?
 
-**Qwen is not declared the production winner.** The [final report](FINAL_REPORT.md) provides a sourced design comparison of multilingual Whisper base/small through whisper.cpp and streaming bilingual Zipformer through sherpa-onnx. The named Zipformer covers EN/ZH, so ID needs a separate recognizer. Neither alternative was benchmarked locally. Current llama.cpp documentation lists Qwen3-ASR GGUF support; it is a candidate runtime experiment, not another ASR model family or demonstrated multiplexing gain.
+Qwen is not declared the production winner. Report Section 12 compares multilingual Whisper via whisper.cpp with streaming Zipformer via sherpa-onnx. The named bilingual Zipformer covers EN/ZH, requiring a separate ID route. Neither alternative was benchmarked locally; quantization, domain vocabulary, timestamps, model licensing and deployment maintenance need checkpoint-specific assessment.
 
 ### Q32. What would change for strict sub-second partials at hundreds of calls?
 
-**Additional runtime work is required.** The current shared 4-second preview cannot meet strict sub-second first-text requirements. A runtime with independently resumable per-call streaming state, efficient incremental decode/batching, bounded queues and suitable hardware is needed; lowering the transport chunk interval alone is insufficient. Validate the resulting model/runtime on representative multilingual telephony audio before fleet sizing.
+The measured 2-second audio step has an availability floor above a strict sub-second target; smaller transport chunks alone cannot solve it. A suitable incremental recognizer, short bounded compute turns, quality-tested quantization/VAD and bounded batching waits need evaluation on production-shaped multilingual audio and target nodes.
 
 ### Q32a. What code and design changes are required to share a loaded Qwen model across calls?
 
-**Already implemented for prefix/EOF sharing.** New components are `src/engines/prefix/` (shared context, scheduling and process pool), `apps/asr_prefix_worker/` (persistent worker entry), runtime selection/service wiring in `apps/asr_cli/`, strict config/manifest support, pool status in the UI, and matrix/service checks in `tools/testing/`. Per-call buffers/state are isolated; model invocation is serialized; admission, cancellation, deadlines and bounded preview/EOF priority are explicit. Resumable native per-call caches are now implemented in opt-in `qwen_stream`; simultaneous batching remains future work. See [implementation and pilot checks](RESUMABLE_STREAMING.md).
+Independent resumable caches are implemented through the generated C state API, existing shared engine/pool/IPC, persistent worker helper, qwen_stream preset, factory/config wiring, streaming metrics and UI decode-step control. Per-call mutable state is isolated while weights are shared. Steps alternate serially within a worker; simultaneous tensor batching is a separate future change.
 
 ### Q33. Where are the requested code, instructions, report, sizing, architecture, and alternatives?
 
-**Current deliverables:** [final technical report](FINAL_REPORT.md), [sizing guide](CAPACITY_SIZING.md), [run guide](CLI_QUICKSTART.md), [architecture](ARCHITECTURE.md), [testing](TESTING.md) and this Q&A. The report embeds current plots and references saved raw artifacts, pins and source hashes. Current demo evidence, aggregate regression gaps and reliability failures are explicitly listed; documentation does not mark those activities complete.
+[report.md](../report.md) is the sole canonical final report, including results, sizing, architecture, alternatives, per-WAV tables and UI evidence. README, CLI_QUICKSTART, ARCHITECTURE, TESTING and RESUMABLE_STREAMING are implementation/run companions. Superseded narratives and prefix coefficients are explicitly retained under [archive](archive/README.md).
 
 ### Q34. Can the important results be reproduced, and what verification passed?
 
-**Reproduction paths are retained.** The clean build has 19 C++ contract tests, 17 Python checks (JiWER parity optional for manual runs), four frontend unit tests and browser checks. Pinned inputs/model identity remain. `scripts/regression.py --full` combines the maintained checks and real-model workflows with per-step logs and aggregate status; see [Testing](TESTING.md). Contract tests are distinct from model-quality evidence, and old result numbers are not carried forward as new measurements.
+The [reproduction package](../results/resumable-matrix/reproducibility/README.md) preserves source available at report finalization, evaluated executables, generated native sources and file-level hashes, alongside pinned model/input/config identities. Development checks include nineteen C++ CTest checks plus frontend and Python validation. No complete all-in-one full regression or controlled clean-machine startup is established. Source capture at finalization is distinguished from evaluated binary identity.
 
 ### Q35. What is the final recommendation, and which assignment requirements remain open?
 
-**Recommendation:** use the shared-prefix pool as the current multi-call prototype, with explicit preview/final semantics and measured safe slot counts. Keep the native preset for progressive-streaming comparisons. Re-run per-language experiments for any performance report. Open assignment conclusions include production saturation/fleet sizing, strict sub-second text, long telephony conversations, production VAD/gateway/security/recovery and a controlled alternative-model comparison. The source is runnable; these deployment conclusions require additional evidence.
+The resumable C/C++ runtime is the measured multi-call prototype. Lower occupancy gives faster first/final text; extra slots increase queued work rather than compute capacity. Production selection requires stronger language/domain quality evidence, robust network admission/failure delivery, sustained/long-call testing and evaluated telephony/VAD/security/recovery. These are explicit validation requirements, not claimed completed features.
