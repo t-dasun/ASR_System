@@ -28,15 +28,16 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
   const [job, setJob] = useState<JobStatus | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const sharedModel = capabilities?.engine?.startsWith('qwen_prefix_') || false
+  const previewMode = capabilities?.engine?.startsWith('qwen_prefix_') || false
+  const sharedModel = capabilities?.shared_model || previewMode || capabilities?.engine?.startsWith('qwen_stream_') || false
   const manifestInputs = capabilities?.manifest_inputs || 0
   const runnerLimit = capabilities?.max_load_concurrency || 64
   const activeLimit = sharedModel ? Math.min(runnerLimit, (capabilities?.max_sessions_per_process || 1) * (capabilities?.worker_processes || 1)) : runnerLimit
 
   useEffect(() => {
     setChunkMs(capabilities?.chunk_ms || 200)
-    setDecodeMs(sharedModel ? capabilities?.prefix_preview_ms || 4000 : capabilities?.decode_step_ms || 2000)
-  }, [capabilities?.chunk_ms, capabilities?.prefix_preview_ms, capabilities?.decode_step_ms, sharedModel])
+    setDecodeMs(previewMode ? capabilities?.prefix_preview_ms || 4000 : capabilities?.decode_step_ms || 2000)
+  }, [capabilities?.chunk_ms, capabilities?.prefix_preview_ms, capabilities?.decode_step_ms, previewMode])
 
   useEffect(() => { setProcesses(capabilities?.worker_processes || 1) }, [capabilities?.worker_processes])
 
@@ -46,9 +47,9 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
 
   const overrides = useMemo(() => [
     'audio.realtime_pacing=true', `workers.processes=${processes}`, `audio.chunk_ms=${chunkMs}`,
-    ...(!capabilities || capabilities.is_mock ? [] : [`model.${sharedModel ? 'prefix_preview_ms' : 'decode_step_ms'}=${decodeMs}`]),
+    ...(!capabilities || capabilities.is_mock ? [] : [`model.${previewMode ? 'prefix_preview_ms' : 'decode_step_ms'}=${decodeMs}`]),
     ...extraOverrides.split('\n').map(item => item.trim()).filter(Boolean),
-  ], [extraOverrides, processes, chunkMs, decodeMs, sharedModel, capabilities])
+  ], [extraOverrides, processes, chunkMs, decodeMs, previewMode, capabilities])
 
   const request = (): SuiteRequest => {
     const axes = strategy === 'baseline' ? [] :
@@ -155,9 +156,9 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
           {[50, 100, 200, 500, 1000].map(ms => <option key={ms} value={ms}>{ms} ms</option>)}
         </select>
       </label>
-      <label className="field">{sharedModel ? 'Suite prefix preview' : 'Suite decode step'}
+      <label className="field">{previewMode ? 'Suite prefix preview' : 'Suite decode step'}
         <select value={decodeMs} disabled={capabilities?.is_mock} onChange={event => setDecodeMs(Number(event.target.value))}>
-          {(sharedModel ? [1000, 2000, 4000, 8000, 12000, 20000] : [1000, 2000, 4000, 8000]).map(ms =>
+          {(previewMode ? [1000, 2000, 4000, 8000, 12000, 20000] : [1000, 2000, 4000, 8000]).map(ms =>
             <option key={ms} value={ms}>{ms} ms</option>)}
         </select>
       </label>
@@ -201,7 +202,7 @@ export function ExperimentPanel({ base, capabilities, log, onComplete }: Props) 
             <option value="audio.chunk_ms">audio.chunk_ms</option>
             <option value="model.threads" disabled={capabilities?.is_mock || sharedModel}>model.threads</option>
             <option value="workers.processes" disabled={sharedModel}>workers.processes</option>
-            <option value="model.decode_step_ms" disabled={capabilities?.is_mock || sharedModel}>model.decode_step_ms</option>
+            <option value="model.decode_step_ms" disabled={capabilities?.is_mock || previewMode}>model.decode_step_ms</option>
           </>}
         </select>
       </label><label className="field">Values

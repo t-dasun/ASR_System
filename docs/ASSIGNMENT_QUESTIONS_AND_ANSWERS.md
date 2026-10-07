@@ -1,5 +1,9 @@
 # Assignment questions and current implementation answers
 
+**Latest evidence:** [Resumable final report](FINAL_REPORT_RESUMABLE.md) supersedes the older prefix measurements and sizing in this historical Q&A. It includes the current implementation decisions and assignment coverage.
+
+A subsequent opt-in [resumable streaming implementation](RESUMABLE_STREAMING.md) now supplies repeated per-call updates over shared weights. Legacy prefix/capacity answers below still describe the original measured mode; new pilot measurements are separate.
+
 This guide retains the assignment's question set and requested design decisions, updated for `dev-clean`. **Implemented** means code exists; **proposed** means additional production work; numerical capacity/quality claims require saved measurements. Historical result bundles were intentionally cleared during cleanup. Current evidence is summarized in the [final technical report](FINAL_REPORT.md); the saved capacity study is partial, with failures retained. New experiments write to `results/` and are documented in [Testing](TESTING.md).
 
 The current model and WAV simulation paths are C++. The main runtime choices are native one-call workers and shared-prefix workers with multiple active sessions. See [Architecture](ARCHITECTURE.md) and [Run commands](CLI_QUICKSTART.md).
@@ -134,7 +138,7 @@ The current model and WAV simulation paths are C++. The main runtime choices are
 
 ### Q32a. What code and design changes are required to share a loaded Qwen model across calls?
 
-**Already implemented for prefix/EOF sharing.** New components are `src/engines/prefix/` (shared context, scheduling and process pool), `apps/asr_prefix_worker/` (persistent worker entry), runtime selection/service wiring in `apps/asr_cli/`, strict config/manifest support, pool status in the UI, and matrix/service checks in `tools/testing/`. Per-call buffers/state are isolated; model invocation is serialized; admission, cancellation, deadlines and bounded preview/EOF priority are explicit. Independently resumable native streaming caches or batched simultaneous decoding remain separate future work.
+**Already implemented for prefix/EOF sharing.** New components are `src/engines/prefix/` (shared context, scheduling and process pool), `apps/asr_prefix_worker/` (persistent worker entry), runtime selection/service wiring in `apps/asr_cli/`, strict config/manifest support, pool status in the UI, and matrix/service checks in `tools/testing/`. Per-call buffers/state are isolated; model invocation is serialized; admission, cancellation, deadlines and bounded preview/EOF priority are explicit. Resumable native per-call caches are now implemented in opt-in `qwen_stream`; simultaneous batching remains future work. See [implementation and pilot checks](RESUMABLE_STREAMING.md).
 
 ### Q33. Where are the requested code, instructions, report, sizing, architecture, and alternatives?
 

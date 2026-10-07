@@ -11,7 +11,8 @@
     "test:e2e": "node tests/dashboard.e2e.mjs",
     "test:e2e:native": "node tests/dashboard.native.e2e.mjs",
     "test:e2e:pool": "node tests/dashboard.pool.e2e.mjs",
-    "test:e2e:shared": "node tests/dashboard.shared.e2e.mjs"
+    "test:e2e:shared": "node tests/dashboard.shared.e2e.mjs",
+    "test:e2e:resumable": "ASR_SHARED_MODE=stream node tests/dashboard.shared.e2e.mjs"
   },
   "dependencies": {
     "react": "19.3.0",

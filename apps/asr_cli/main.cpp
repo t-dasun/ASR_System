@@ -282,7 +282,7 @@ int main(int argc, char **argv) {
         config.resolved["audio"]["effective_samples"] = samples;
         config.resolved["audio"]["effective_duration_seconds"] = static_cast<double>(samples) / 16000;
         std::unique_ptr<asr::IASREngine> engine = make_engine(config);
-        config.shared_model_loaded = config.runtime == "qwen_prefix";
+        config.shared_model_loaded = config.runtime == "qwen_prefix" || config.runtime == "qwen_stream";
         if (action == "load") {
             auto plan = asr::plan_load(config, load_spec, samples, asr::linux_available_memory_bytes());
             std::unique_ptr<asr::WebSocketServer> server;

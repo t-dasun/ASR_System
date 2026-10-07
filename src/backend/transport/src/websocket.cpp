@@ -317,6 +317,7 @@ RuntimeObservation parse_observation(const Json &value) {
             target = value[key].get<std::int64_t>();
     };
     optional("duration_ns", result.duration_ns);
+    optional("counter_value", result.counter_value);
     optional("sequence", result.sequence);
     optional("buffered_samples", result.buffered_samples);
     optional("cpu_ns", result.cpu_ns);
@@ -764,7 +765,8 @@ void WebSocketServer::handle_client(int fd) {
     config.decode_step_ms = start.value("decode_step_ms", 0);
     config.prefix_preview_ms = start.value("prefix_preview_ms", 0);
     if ((config.decode_step_ms != 0 && (config.decode_step_ms < 1000 || config.decode_step_ms > 8000)) ||
-        (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000)))
+        (config.prefix_preview_ms != 0 &&
+         (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000)))
         throw std::invalid_argument("invalid decode step or prefix preview interval");
     const auto safe_identity = [](const std::string &value) {
         return !value.empty() && value.size() <= 128 &&

@@ -62,6 +62,7 @@ struct RuntimeObservation {
     std::int64_t timestamp_ns = 0;
     std::optional<std::int64_t> duration_ns, sequence, buffered_samples, cpu_ns, peak_rss_bytes;
     int process_id = 0;
+    std::optional<std::int64_t> counter_value;
 };
 struct SessionConfig {
     std::string run_id, call_id, language = "en";

@@ -1,3 +1,4 @@
+#include <asr/core/utf8.hpp>
 #include <asr/engines/prefix_engine.hpp>
 #include <asr/engines/prefix_scheduler.hpp>
 extern "C" {
@@ -26,6 +27,11 @@ std::mutex native_runtime_owner;
 
 struct Call {
     SessionConfig config;
+    std::unique_ptr<qwen_resumable_state, decltype(&qwen_resumable_destroy)> stream{nullptr,
+                                                                                    qwen_resumable_destroy};
+    std::int64_t decoded_samples = 0, step_ready_ns = 0;
+    int steps = 0;
+    std::int64_t reused_prefill = 0;
     IRecognitionSink *sink;
     IClock *clock;
     std::vector<float> audio;
@@ -88,6 +94,7 @@ struct PrefixShared {
     unsigned previews_since_final = 0;
     std::string worker_id;
     int max_calls, preview_samples, runtime_threads, idle_timeout_ms, total_timeout_ms, decode_timeout_ms;
+    SharedStreamOptions streaming;
     int blas_threads = 0;
     std::uint64_t failures = 0;
     std::string last_error;
@@ -95,11 +102,16 @@ struct PrefixShared {
     bool stopping = false, draining = false;
 
     PrefixShared(const std::string &directory, int limit, int preview_ms, int threads, int idle_ms,
-                 int total_ms, int decode_ms, std::string id)
+                 int total_ms, int decode_ms, std::string id, SharedStreamOptions stream_options)
         : runtime_owner(native_runtime_owner, std::try_to_lock), max_calls(limit), preview_samples(0),
           runtime_threads(threads), idle_timeout_ms(idle_ms), total_timeout_ms(total_ms),
           decode_timeout_ms(decode_ms) {
         worker_id = std::move(id);
+        streaming = stream_options;
+        if (streaming.enabled &&
+            (streaming.step_ms < 1000 || streaming.step_ms > 8000 || streaming.max_tokens < 1 ||
+             streaming.max_tokens > 256 || streaming.unfixed_chunks < 0 || streaming.unfixed_chunks > 4))
+            throw std::invalid_argument("invalid resumable stream options");
         if (!runtime_owner.owns_lock())
             throw std::runtime_error("a shared Qwen context already owns this process runtime");
         if (limit < 1 || limit > 8 || preview_ms < 1000 || preview_ms > 20000 || threads < 1 ||
@@ -137,6 +149,18 @@ struct PrefixShared {
         wake.notify_all();
         if (inference.joinable())
             inference.join();
+        calls.clear(); // Release borrowed per-call contexts before their model weights.
+    }
+
+    int step_samples_for(const Call &call) const {
+        return (call.config.decode_step_ms ? call.config.decode_step_ms : streaming.step_ms) * 16;
+    }
+    bool decode_ready(const Call &call) const {
+        return streaming.enabled
+                   ? call.audio.size() >=
+                         static_cast<std::size_t>(call.decoded_samples + step_samples_for(call))
+                   : !call.preview_done &&
+                         call.audio.size() >= static_cast<std::size_t>(preview_samples_for(call));
     }
 
     int preview_samples_for(const Call &call) const {
@@ -162,13 +186,13 @@ struct PrefixShared {
             const bool expired =
                 now - call->created_ns >= std::int64_t(total_timeout_ms) * 1000000 ||
                 (!call->eof && now - call->last_audio_ns >= std::int64_t(idle_timeout_ms) * 1000000);
-            if (expired || call->eof ||
-                (!call->preview_done && call->audio.size() >= static_cast<std::size_t>(preview_samples_for(*call))))
+            if (expired || call->eof || decode_ready(*call))
                 ready.push_back({index,
-                                 expired     ? call->created_ns
-                                 : call->eof ? call->eof_received_ns
-                                             : call->preview_ready_ns,
-                                 call->eof, expired});
+                                 expired             ? call->created_ns
+                                 : streaming.enabled ? std::max(call->step_ready_ns, call->eof_received_ns)
+                                 : call->eof         ? call->eof_received_ns
+                                                     : call->preview_ready_ns,
+                                 call->eof && !streaming.enabled, expired});
         }
         const auto selected = select_prefix_job(ready, previews_since_final);
         if (!selected)
@@ -182,11 +206,19 @@ struct PrefixShared {
             job.status = {ErrorCode::deadline_expired, "shared call idle or total deadline expired"};
             return job;
         }
-        job.final = selected->final;
+        job.final = streaming.enabled ? call->eof : selected->final;
         previews_since_final = job.final ? 0 : previews_since_final + 1;
         job.ready_ns = selected->ready_ns;
         job.eof_ns = call->eof_received_ns;
-        const auto count_samples = job.final ? call->audio.size() : static_cast<std::size_t>(preview_samples_for(*call));
+        const auto count_samples =
+            streaming.enabled
+                ? std::min(call->audio.size(),
+                           static_cast<std::size_t>(call->decoded_samples + step_samples_for(*call)))
+            : job.final ? call->audio.size()
+                        : static_cast<std::size_t>(preview_samples_for(*call));
+        // Only pass EOF on the iteration consuming the final delivered sample.
+        if (streaming.enabled)
+            job.final = call->eof && count_samples == call->audio.size();
         job.samples.assign(call->audio.begin(), call->audio.begin() + count_samples);
         return job;
     }
@@ -213,6 +245,8 @@ struct PrefixShared {
                 }
             }
             std::string text;
+            std::int64_t stream_step_end = 0;
+            bool did_refine = false;
             Status status = job.status;
             const auto decode_started_ns = job.call->clock->now_ns();
             const auto decode_start = std::chrono::steady_clock::now();
@@ -233,18 +267,57 @@ struct PrefixShared {
             };
             try {
                 if (status && !job.samples.empty()) {
-                    if (qwen_set_force_language(model.get(), language_name(job.call->config.language)) != 0)
-                        throw std::runtime_error("native language selection failed");
-                    std::unique_ptr<char, decltype(&std::free)> result(
-                        qwen_transcribe_audio(model.get(), job.samples.data(),
-                                              static_cast<int>(job.samples.size())),
-                        std::free);
-                    if (!result)
-                        throw std::runtime_error("native prefix decode failed");
-                    text = result.get();
-                    if (model->offline_decode_aborted) {
-                        text.clear();
-                        status = {ErrorCode::deadline_expired, "prefix decode interrupted at token boundary"};
+                    if (streaming.enabled) {
+                        auto &call = *job.call;
+                        if (!call.stream)
+                            call.stream.reset(qwen_resumable_create(
+                                model.get(), language_name(call.config.language), step_samples_for(call) / 16,
+                                streaming.max_tokens, streaming.unfixed_chunks));
+                        if (!call.stream)
+                            throw std::runtime_error("cannot create resumable call state");
+                        const int progress =
+                            qwen_resumable_step(call.stream.get(), job.samples.data(),
+                                                static_cast<int>(job.samples.size()), job.final);
+                        stream_step_end = call.clock->now_ns();
+                        if (progress < 0)
+                            throw std::runtime_error(progress == -2
+                                                         ? "stream step interrupted at token boundary"
+                                                         : "resumable step failed");
+                        job.final = progress == 2;
+                        text = qwen_resumable_text(call.stream.get());
+                        const auto complete = complete_utf8_prefix(text);
+                        if (job.final && complete != text.size())
+                            throw std::runtime_error("incomplete UTF-8 at stream EOF");
+                        text.resize(complete); // State retains unfinished bytes for the next step.
+                        if (job.final && streaming.refine_final) {
+                            did_refine = true;
+                            if (qwen_set_force_language(model.get(), language_name(call.config.language)) !=
+                                0)
+                                throw std::runtime_error("invalid refinement language");
+                            std::unique_ptr<char, decltype(&std::free)> refined(
+                                qwen_transcribe_audio(model.get(), job.samples.data(),
+                                                      static_cast<int>(job.samples.size())),
+                                std::free);
+                            if (!refined || model->offline_decode_aborted)
+                                throw std::runtime_error("stream EOF refinement interrupted or failed");
+                            text = refined.get();
+                        }
+                    } else {
+                        if (qwen_set_force_language(model.get(), language_name(job.call->config.language)) !=
+                            0)
+                            throw std::runtime_error("native language selection failed");
+                        std::unique_ptr<char, decltype(&std::free)> result(
+                            qwen_transcribe_audio(model.get(), job.samples.data(),
+                                                  static_cast<int>(job.samples.size())),
+                            std::free);
+                        if (!result)
+                            throw std::runtime_error("native prefix decode failed");
+                        text = result.get();
+                        if (model->offline_decode_aborted) {
+                            text.clear();
+                            status = {ErrorCode::deadline_expired,
+                                      "prefix decode interrupted at token boundary"};
+                        }
                     }
                 }
             } catch (const std::exception &error) {
@@ -267,6 +340,13 @@ struct PrefixShared {
                 if (!call.cancelled) {
                     model_info = !call.model_info_sent;
                     call.model_info_sent = true;
+                    if (streaming.enabled && call.stream) {
+                        call.decoded_samples = qwen_resumable_cursor(call.stream.get());
+                        call.steps = qwen_resumable_steps(call.stream.get());
+                        call.reused_prefill = qwen_resumable_reused_prefill(call.stream.get());
+                        // Reinsert this call behind already waiting calls after a quantum.
+                        call.step_ready_ns = (call.eof || decode_ready(call)) ? decode_finished_ns : 0;
+                    }
                     const bool pre_eof = !job.final && !call.eof && !text.empty();
                     event = make_event(
                         call,
@@ -275,7 +355,7 @@ struct PrefixShared {
                                     : EventKind::partial,
                         static_cast<std::int64_t>(job.status ? job.samples.size() : call.audio.size()),
                         !status && text.empty() ? call.snapshot.text : std::move(text), status, pre_eof);
-                    if (!job.final)
+                    if (!job.final && !streaming.enabled)
                         call.preview_done = true;
                     call.snapshot.state = !status     ? SessionState::failed
                                           : job.final ? SessionState::completed
@@ -287,13 +367,15 @@ struct PrefixShared {
             if (publish) {
                 try {
                     const auto observe = [&](const char *stage, std::int64_t timestamp,
-                                             std::optional<std::int64_t> duration) {
+                                             std::optional<std::int64_t> duration,
+                                             std::optional<std::int64_t> counter = {}) {
                         RuntimeObservation value;
                         value.stage = stage;
                         value.worker_id = worker_id;
                         value.process_id = getpid();
                         value.timestamp_ns = timestamp;
                         value.duration_ns = duration;
+                        value.counter_value = counter;
                         value.sequence = job.final ? 1 : 0;
                         value.buffered_samples = static_cast<std::int64_t>(job.samples.size());
                         job.call->sink->on_observation(value);
@@ -302,11 +384,22 @@ struct PrefixShared {
                         observe("shared_model_load", model_loaded_ns, model_load_ns);
                     if (job.final)
                         observe("worker_eof_received", job.eof_ns, std::nullopt);
-                    if (job.status && !job.samples.empty()) {
+                    if (!streaming.enabled && job.status && !job.samples.empty()) {
                         observe(job.final ? "eof_decode_queue_wait" : "prefix_decode_queue_wait",
                                 decode_started_ns, decode_started_ns - job.ready_ns);
                         observe(job.final ? "eof_refinement" : "prefix_decode", decode_finished_ns,
                                 decode_finished_ns - decode_started_ns);
+                    }
+                    if (streaming.enabled && stream_step_end) {
+                        observe("stream_step_queue_wait", decode_started_ns,
+                                decode_started_ns - job.ready_ns);
+                        observe("stream_step", stream_step_end, stream_step_end - decode_started_ns);
+                        observe("stream_steps", decode_finished_ns, std::nullopt, job.call->steps);
+                        observe("stream_reused_prefill_tokens", decode_finished_ns, std::nullopt,
+                                job.call->reused_prefill);
+                        if (did_refine)
+                            observe("eof_refinement", decode_finished_ns,
+                                    decode_finished_ns - stream_step_end);
                     }
                     job.call->sink->on_event(event);
                 } catch (...) {
@@ -368,6 +461,8 @@ class PrefixSession final : public IASRSession {
             call_->audio.push_back(static_cast<float>(sample) / 32768.0f);
         ++call_->next_sequence;
         call_->last_audio_ns = call_->clock->now_ns();
+        if (shared_->streaming.enabled && !call_->step_ready_ns && shared_->decode_ready(*call_))
+            call_->step_ready_ns = call_->last_audio_ns;
         if (!call_->preview_ready_ns &&
             call_->audio.size() >= static_cast<std::size_t>(shared_->preview_samples_for(*call_)))
             call_->preview_ready_ns = call_->last_audio_ns;
@@ -424,9 +519,9 @@ class PrefixSession final : public IASRSession {
 
 PrefixMultiplexEngine::PrefixMultiplexEngine(std::string directory, int max_calls, int preview_ms,
                                              int threads, int idle_ms, int total_ms, int decode_ms,
-                                             std::string worker_id)
+                                             std::string worker_id, SharedStreamOptions streaming)
     : shared_(std::make_shared<PrefixShared>(directory, max_calls, preview_ms, threads, idle_ms, total_ms,
-                                             decode_ms, std::move(worker_id))) {}
+                                             decode_ms, std::move(worker_id), streaming)) {}
 PrefixMultiplexEngine::~PrefixMultiplexEngine() = default;
 
 PrefixWorkerStatus PrefixMultiplexEngine::worker_status() const {
@@ -441,9 +536,7 @@ PrefixWorkerStatus PrefixMultiplexEngine::worker_status() const {
     for (const auto &call : shared_->calls) {
         status.calls.push_back({call->config.call_id, call->config.language, call->snapshot.state,
                                 static_cast<std::int64_t>(call->audio.size()), call->busy});
-        if (!call->busy && !call->cancelled && !call->terminal &&
-            (call->eof || (!call->preview_done &&
-                           call->audio.size() >= static_cast<std::size_t>(shared_->preview_samples_for(*call)))))
+        if (!call->busy && !call->cancelled && !call->terminal && (call->eof || shared_->decode_ready(*call)))
             ++status.queued_jobs;
     }
     return status;
@@ -456,9 +549,11 @@ void PrefixMultiplexEngine::begin_draining() {
 
 EngineCapabilities PrefixMultiplexEngine::capabilities() const {
     EngineCapabilities value;
-    value.engine_id = "qwen_prefix_multiplex_experimental";
-    value.revision = "prefix_v2_preview_fair";
-    value.streaming_kind = "causal_prefix_redecode";
+    value.engine_id =
+        shared_->streaming.enabled ? "qwen_stream_shared" : "qwen_prefix_multiplex_experimental";
+    value.revision = shared_->streaming.enabled ? "resumable_v1_step_fair" : "prefix_v2_preview_fair";
+    value.streaming_kind =
+        shared_->streaming.enabled ? "resumable_windowed_streaming" : "causal_prefix_redecode";
     value.is_mock = false;
     value.device = "cpu";
     value.precision = "bf16_weights";
@@ -476,8 +571,11 @@ PrefixMultiplexEngine::create_session(const SessionConfig &config, IRecognitionS
     if (config.run_id.empty() || config.call_id.empty() || config.max_chunk_samples < 1 ||
         config.max_chunk_samples > 16000)
         return {{ErrorCode::invalid_input, "invalid experimental session configuration"}, nullptr};
-    if (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
+    if (config.prefix_preview_ms != 0 &&
+        (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
         return {{ErrorCode::invalid_input, "prefix preview must be 1000..20000 ms"}, nullptr};
+    if (config.decode_step_ms != 0 && (config.decode_step_ms < 1000 || config.decode_step_ms > 8000))
+        return {{ErrorCode::invalid_input, "decode step must be 1000..8000 ms"}, nullptr};
     std::lock_guard lock(shared_->mutex);
     if (shared_->draining)
         return {{ErrorCode::invalid_state, "shared worker is draining"}, nullptr};

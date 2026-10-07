@@ -1,4 +1,6 @@
-# Final technical report: CPU multilingual ASR prototype
+# Historical technical report: shared-prefix CPU multilingual ASR prototype
+
+**Current report:** [Resumable streaming final report, full matrix and updated sizing](FINAL_REPORT_RESUMABLE.md). The measurements below describe the previous prefix runtime.
 
 **Assignment:** AIML CPP LEAD ASR Technical Assignment v2, sections 1–13.  
 **Evaluation date:** 6 October 2026. **Report basis:** current `dev-clean` implementation and retained laptop experiments.  
@@ -489,3 +491,13 @@ The assignment allows well-supported negative findings and qualified extrapolati
 The prototype demonstrates CPU multilingual Qwen integration, paced C++ media delivery and active-session sharing with per-call isolation. Its measured resource/latency curves and failure artifacts are reproducible. Completed-call quality is encouraging for these ten-file language cohorts, while deadline and network failures prevent a reliability or production-capacity claim.
 
 The strongest current conclusion is a trade-off: sharing persistent contexts reduces duplication across active sessions, but serial decoding and growing queues limit responsiveness. Extra slots do not create compute capacity, and extra workers do not resolve intrinsic failed decodes. A bounded utterance pipeline, verified recovery and controlled runtime/model comparisons are the next evidence needed for defensible production sizing.
+
+## 16. Subsequent implementation: resumable shared streaming
+
+The opt-in `qwen_stream` mode now retains independent call state while borrowing one model weight set per worker. Each scheduled turn processes one native streaming quantum, preserves caches/tokens, then releases the worker for another call. It reuses completed encoder windows and unchanged decoder prefills; current partial windows can still be re-encoded. It is not a strictly incremental encoder or inference batching.
+
+Focused real C++ checks completed four calls sharing one worker and four simultaneous calls across two workers/two slots each. Cache reuse, call identity/sample counts and repeated partials were verified. Interleaved English/Indonesian results matched the separately configured native streaming loop, including an isolated cancellation check. Real browser EN/ID/ZH calls showed six to eight revisions with no browser errors.
+
+The fast preset uses early emission and no full-audio final refinement. Matched four-recording pilot results show shorter EOF delays but variable first-text and accuracy results; Indonesian and Mandarin errors were higher on the tested files. Optional refinement restored the tested Indonesian final WER from 16.67% to 8.33%, with 3.42 seconds of added decode work. This is not a general quality/performance guarantee.
+
+See [RESUMABLE_STREAMING.md](RESUMABLE_STREAMING.md) for commands, design, paired tables, settings, screenshots and raw evidence. The original 900-call prefix curves and conditional fleet coefficients are preserved as a different-mode study; no full new capacity curve or production scaling claim is made. New implementation is on `resumable-streaming`, with uncommitted source changes at report time.

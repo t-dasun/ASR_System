@@ -113,7 +113,7 @@ export function StreamingPanel({ base, capabilities, log }: Props) {
           {(sharedModel ? [1000, 2000, 4000, 8000, 12000, 20000] : [1000, 2000, 4000, 8000]).map(ms =>
             <option key={ms} value={ms}>{ms} ms</option>)}
         </select>
-        <span className="field-note">{sharedModel ? 'One preview after this much audio, then final at EOF.' : 'Native progressive decode interval.'}</span>
+        <span className="field-note">{sharedModel ? 'One preview after this much audio, then final at EOF.' : capabilities?.shared_model ? 'Resumable steps share one worker; each call keeps its own decoding state.' : 'Native progressive decode interval.'}</span>
       </label>
     </div>
     <label className="field">Reference transcript (optional)

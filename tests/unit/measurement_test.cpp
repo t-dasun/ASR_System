@@ -86,13 +86,14 @@ int main() {
         observe("prefix_decode_queue_wait", 2000000);
         observe("eof_decode_queue_wait", 3000000);
         const auto shared_metrics = shared.summary();
-        check(shared_metrics["model_load_ns"].is_null() && shared_metrics["shared_model_load_ns"] == 750000000 &&
-              shared_metrics["startup_ns"] == 100000000,
+        check(shared_metrics["model_load_ns"].is_null() &&
+                  shared_metrics["shared_model_load_ns"] == 750000000 &&
+                  shared_metrics["startup_ns"] == 100000000,
               "reused context load was counted as per-call startup");
         check(shared_metrics["runtime_queue_wait_ns"] == 5000000 &&
-              shared_metrics["offline_decode_wall_ns"] == 1200000000 &&
-              std::abs(shared_metrics["offline_decode_wall_rtf"].get<double>() - 1.2) < 1e-12 &&
-              shared_metrics["inference_compute_rtf"].is_null(),
+                  shared_metrics["offline_decode_wall_ns"] == 1200000000 &&
+                  std::abs(shared_metrics["offline_decode_wall_rtf"].get<double>() - 1.2) < 1e-12 &&
+                  shared_metrics["inference_compute_rtf"].is_null(),
               "shared decode wall, scheduling wait, and active-compute definitions conflated");
         asr::LinuxSystemSampler sampler;
         const auto sample = sampler.sample();
@@ -130,6 +131,23 @@ int main() {
         close(control[0]);
         close(control[1]);
         check(found, "sampler missed a child forked from a runner thread");
+        auto streamed = m;
+        streamed.audio_samples = 16000;
+        for (const auto duration : {100000000LL, 200000000LL}) {
+            asr::RuntimeObservation step;
+            step.stage = "stream_step";
+            step.duration_ns = duration;
+            streamed.runtime.push_back(step);
+        }
+        asr::RuntimeObservation count;
+        count.stage = "stream_steps";
+        count.counter_value = 2;
+        streamed.runtime.push_back(count);
+        const auto stream_metrics = streamed.summary();
+        check(stream_metrics["stream_decode_wall_ns"] == 300000000 &&
+                  stream_metrics["stream_decode_steps"] == 2 &&
+                  stream_metrics["offline_decode_wall_rtf"].is_null(),
+              "stream step totals or offline/stream metric separation incorrect");
         asr::ResourceMonitor fixture(std::make_unique<FixtureSampler>(false), 200);
         fixture.stop();
         check(fixture.summary()["sampled_peak_tree_rss_bytes"] == 100 &&

@@ -39,6 +39,7 @@ Json observation_json(const RuntimeObservation &value) {
                 {"process_id", value.process_id}};
     auto optional = [&](const char *key, auto item) { result[key] = item ? Json(*item) : Json(nullptr); };
     optional("duration_ns", value.duration_ns);
+    optional("counter_value", value.counter_value);
     optional("sequence", value.sequence);
     optional("buffered_samples", value.buffered_samples);
     optional("cpu_ns", value.cpu_ns);
@@ -118,10 +119,23 @@ Json CallMeasurements::summary() const {
                 result["effective_rtf"] = double(published - stream_start_ns) / double(audio_samples * 62500);
         }
     }
+    std::int64_t stream_wall = 0, stream_wait = 0;
+    bool has_stream = false;
     for (const auto &item : runtime) {
+        if (item.stage == "stream_step" && item.duration_ns) {
+            has_stream = true;
+            stream_wall += *item.duration_ns;
+        }
+        if (item.stage == "stream_step_queue_wait" && item.duration_ns)
+            stream_wait += *item.duration_ns;
+        if (item.stage == "stream_steps" && item.counter_value)
+            result["stream_decode_steps"] = *item.counter_value;
+        if (item.stage == "stream_reused_prefill_tokens" && item.counter_value)
+            result["stream_reused_prefill_tokens"] = *item.counter_value;
         if (item.stage == "shared_model_load" && item.duration_ns) {
             result["shared_model_load_ns"] = *item.duration_ns;
-            result["shared_model_load_definition"] = "one context load before call admission; reused metadata, not per-call startup";
+            result["shared_model_load_definition"] =
+                "one context load before call admission; reused metadata, not per-call startup";
         }
         if (item.stage == "prefix_decode" && item.duration_ns)
             result["prefix_decode_wall_ns"] = *item.duration_ns;
@@ -144,13 +158,41 @@ Json CallMeasurements::summary() const {
         const auto amount = [&](const char *key) -> std::int64_t {
             return result[key].is_null() ? 0 : result[key].get<std::int64_t>();
         };
-        result["runtime_queue_wait_ns"] = amount("prefix_decode_queue_wait_ns") + amount("eof_decode_queue_wait_ns");
+        result["runtime_queue_wait_ns"] =
+            amount("prefix_decode_queue_wait_ns") + amount("eof_decode_queue_wait_ns");
         result["offline_decode_wall_ns"] = amount("prefix_decode_wall_ns") + amount("eof_refinement_wall_ns");
-        if (audio_samples && (!result["prefix_decode_wall_ns"].is_null() || !result["eof_refinement_wall_ns"].is_null()))
-            result["offline_decode_wall_rtf"] = double(amount("offline_decode_wall_ns")) / double(audio_samples * 62500);
-        result["offline_decode_wall_definition"] = "sum of prefix and EOF offline invocation wall time, divided by unique source duration for RTF; excludes call pacing and ready-job wait";
-        result["unavailable_reason"] = "Prefix wrapper measures ready-to-decode wait and offline invocation wall time; vendor internal decode/word alignment and stable text remain unavailable.";
+        if (audio_samples &&
+            (!result["prefix_decode_wall_ns"].is_null() || !result["eof_refinement_wall_ns"].is_null()))
+            result["offline_decode_wall_rtf"] =
+                double(amount("offline_decode_wall_ns")) / double(audio_samples * 62500);
+        result["offline_decode_wall_definition"] =
+            "sum of prefix and EOF offline invocation wall time, divided by unique source duration for RTF; "
+            "excludes call pacing and ready-job wait";
+        result["unavailable_reason"] =
+            "Prefix wrapper measures ready-to-decode wait and offline invocation wall time; vendor internal "
+            "decode/word alignment and stable text remain unavailable.";
     }
+    if (has_stream) {
+        const auto refinement = result["eof_refinement_wall_ns"].is_null()
+                                    ? 0
+                                    : result["eof_refinement_wall_ns"].get<std::int64_t>();
+        result["stream_decode_wall_ns"] = stream_wall;
+        result["stream_decode_queue_wait_ns"] = stream_wait;
+        result["runtime_queue_wait_ns"] = stream_wait;
+        result["stream_invocation_wall_ns"] = stream_wall + refinement;
+        result["stream_invocation_wall_rtf"] =
+            audio_samples ? Json(double(stream_wall + refinement) / double(audio_samples * 62500))
+                          : Json(nullptr);
+        result["offline_decode_wall_ns"] = nullptr;
+        result["offline_decode_wall_rtf"] = nullptr;
+        result["offline_decode_wall_definition"] =
+            "Not a prefix/offline metric; use stream_invocation_wall_rtf (all serialized streaming steps "
+            "plus optional EOF refinement).";
+        result["unavailable_reason"] =
+            "Resumable steps retain per-call encoder/token/decoder caches. Invocation wall includes kernels; "
+            "internal active-compute and word alignment remain unavailable.";
+    }
+
     result["send_lag"] = distribution(lag, "delivered chunks", "ns");
     result["controller_queue_wait"] = distribution(queue, "delivered chunks", "ns");
     result["submit_wall"] = distribution(submit, "submitted chunks", "ns");

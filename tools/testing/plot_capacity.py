@@ -16,6 +16,8 @@ def main():
 
     directory = args.directory.resolve()
     data = json.loads((directory/'curve.json').read_text())
+    resumable = data['plan'].get('runtime') == 'qwen_stream'
+    invocation_key = 'stream_invocation_wall_rtf' if resumable else 'offline_decode_wall_rtf'
     images = directory/'figures'; images.mkdir(exist_ok=True)
     plt.rcParams.update({'font.size':10, 'axes.grid':True, 'grid.alpha':.25})
     captions=[]
@@ -31,7 +33,7 @@ def main():
                 ('Physical memory',lambda p:p['sampled_peak_pss_bytes']/2**30, 'Sampled peak PSS GiB'),
                 ('Final accuracy error',lambda p:None if p['accuracy']['completed_only']['rate'] is None else p['accuracy']['completed_only']['rate']*100, 'WER/CER percent (completed calls)'),
                 ('Text before EOF',lambda p:p['pre_eof_text']/p['completed']*100 if p['completed'] else None, 'Percent of completed calls'),
-                ('Offline invocation RTF',lambda p:p['timings']['offline_decode_wall_rtf']['mean'], 'Invocation wall / audio duration')]
+                ('Streaming invocation RTF' if resumable else 'Offline invocation RTF',lambda p:p['timings'].get(invocation_key, {}).get('mean'), 'Invocation wall / audio duration')]
         fig,axes=plt.subplots(3,3,figsize=(14,11),layout='constrained')
         for workers in sorted({p['workers'] for p in points}):
             selected=sorted((p for p in points if p['workers']==workers),key=lambda p:p['concurrency'])
@@ -52,7 +54,8 @@ def main():
             ax.set_ylim(bottom=0)
             if title in ('Call failures','Text before EOF'): ax.set_ylim(0,100)
         axes.flat[0].legend()
-        fig.suptitle(f'{language.upper()}: Qwen shared-prefix CPU capacity\n'
+        runtime_label = 'resumable streaming' if resumable else 'shared-prefix'
+        fig.suptitle(f'{language.upper()}: Qwen {runtime_label} CPU capacity\n'
                      f"{data['plan']['per_language']} distinct WAVs, {data['plan']['repetitions']} repetitions; timings: solid mean / dashed p95 (completed calls)")
         for extension in ('png','pdf'):
             fig.savefig(images/f'{language}_capacity.{extension}',dpi=160)

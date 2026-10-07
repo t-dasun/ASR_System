@@ -21,7 +21,8 @@
     "patches": [],
     "build_extension": {
       "script": "scripts/prepare_qwen_guard.py",
-      "scope": "generated CPU build sources only; optional token-boundary cancellation/decode deadline"
+      "scope": "generated CPU build sources only; cooperative token-boundary guard and per-call resumable native streaming state",
+      "streaming_script": "scripts/prepare_qwen_stream.py"
     }
   },
   "qwen3_asr_0_6b": {

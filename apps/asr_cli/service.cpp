@@ -38,6 +38,12 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
          {"languages", manager->capabilities().languages},
          {"sample_rate_hz", 16000},
          {"session_decode_controls", true},
+         {"shared_model", config.runtime == "qwen_prefix" || config.runtime == "qwen_stream"},
+         {"stream_unfixed_chunks",
+          config.runtime == "qwen_stream" ? nlohmann::json(config.stream_unfixed_chunks)
+          : config.runtime == "qwen_native" ? nlohmann::json(2)
+                                            : nlohmann::json(nullptr)},
+         {"refine_final", config.refine_final},
          {"decode_step_ms", config.decode_step_ms},
          {"prefix_preview_ms", config.prefix_preview_ms},
          {"chunk_ms", config.chunk_ms},
@@ -47,11 +53,15 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
          {"manifest_inputs", load_spec.inputs.size()},
          {"worker_routing", config.scheduler},
          {"decode_scheduling",
-          config.runtime == "qwen_prefix" ? "oldest_ready_preview_priority_max_2_then_eof" : "native_live"},
+          (config.runtime == "qwen_prefix" || config.runtime == "qwen_stream")
+              ? (config.runtime == "qwen_stream" ? "oldest_ready_stream_step_requeue"
+                                                 : "oldest_ready_preview_priority_max_2_then_eof")
+              : "native_live"},
          {"inference_slots_per_process", 1},
          {"max_load_concurrency", asr::max_load_concurrency},
          {"process_isolated", config.runtime == "qwen_native" ||
-                                  (config.runtime == "qwen_prefix" && config.worker_processes > 1)},
+                                  ((config.runtime == "qwen_prefix" || config.runtime == "qwen_stream") &&
+                                   config.worker_processes > 1)},
          {"hard_decode_watchdog", config.runtime == "qwen_native"},
          {"cooperative_cancellation", manager->capabilities().cooperative_cancellation},
          {"routes",
@@ -67,7 +77,8 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
             all.insert(all.end(), extra.begin(), extra.end());
             auto effective = asr::resolve_config(config_path, all);
             validate_shared_suite(config, effective);
-            effective.shared_model_loaded = effective.runtime == "qwen_prefix";
+            effective.shared_model_loaded =
+                (effective.runtime == "qwen_prefix" || effective.runtime == "qwen_stream");
             auto spec = asr::LoadSpec{};
             spec.inputs = load_spec.inputs;
             spec.calls = body.value("calls", 2);
@@ -113,8 +124,9 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
                 if (!plan.allowed)
                     throw std::invalid_argument("load preflight rejected: " +
                                                 plan.preflight["skip_reasons"].dump());
-                auto run_manager = effective.runtime == "qwen_prefix" ? std::unique_ptr<asr::IASREngine>{}
-                                                                      : make_engine(effective);
+                auto run_manager = (effective.runtime == "qwen_prefix" || effective.runtime == "qwen_stream")
+                                       ? std::unique_ptr<asr::IASREngine>{}
+                                       : make_engine(effective);
                 std::unique_ptr<asr::WebSocketServer> server;
                 std::unique_ptr<asr::WebSocketEngine> network;
                 asr::IASREngine *ingress = run_manager ? run_manager.get() : manager.get();
@@ -134,7 +146,7 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
                                           axis.at("values").get<std::vector<std::string>>()});
                 sweep.selected = body.value("selected", std::vector<std::vector<std::string>>{});
                 auto plan = asr::plan_sweep(config_path, all, sweep, sample_count, memory);
-                if (effective.runtime == "qwen_prefix")
+                if ((effective.runtime == "qwen_prefix" || effective.runtime == "qwen_stream"))
                     for (auto &item : plan.cases)
                         if (item.config) {
                             validate_shared_suite(config, *item.config);
@@ -155,9 +167,10 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
                     plan, effective.output_directory,
                     [&](const asr::RunConfig &selected, const asr::LoadPlan &load) {
                         validate_shared_suite(config, selected);
-                        auto run_manager = selected.runtime == "qwen_prefix"
-                                               ? std::unique_ptr<asr::IASREngine>{}
-                                               : make_engine(selected);
+                        auto run_manager =
+                            (selected.runtime == "qwen_prefix" || selected.runtime == "qwen_stream")
+                                ? std::unique_ptr<asr::IASREngine>{}
+                                : make_engine(selected);
                         std::unique_ptr<asr::WebSocketServer> server;
                         std::unique_ptr<asr::WebSocketEngine> network;
                         asr::IASREngine *ingress = run_manager ? run_manager.get() : manager.get();
@@ -194,7 +207,8 @@ int run_service(const RunConfig &config, const std::filesystem::path &config_pat
                   {"host_memory_available_bytes", sample["host_memory_bytes"].value("MemAvailable", 0LL)},
                   {"host_memory_total_bytes", sample["host_memory_bytes"].value("MemTotal", 0LL)},
                   {"sampled_process_tree_rss_bytes", rss},
-                  {"queue_depth_available", config.runtime == "qwen_prefix"}}}};
+                  {"queue_depth_available",
+                   (config.runtime == "qwen_prefix" || config.runtime == "qwen_stream")}}}};
         });
     asr::WebSocketServer server(*manager, std::uint16_t(serve_port), &api, &gate);
     std::signal(SIGINT, on_stop_signal);

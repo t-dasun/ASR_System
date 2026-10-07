@@ -161,12 +161,13 @@ export class PacedStream {
     if (this.seenRevisions.has(key)) return
     this.seenRevisions.add(key)
     const arrival = performance.now()
+    const latestSequence = this.snapshot.revisions.reduce((latest, revision) => Math.max(latest, revision.sequence), -1)
     this.update({
       clientFirstResultMs: this.snapshot.clientFirstResultMs ?? (event.text.trim() ? arrival - this.readyAt : null),
       clientEofToFinalMs: event.kind === 'final' && this.eofAt !== null
         ? arrival - this.eofAt : this.snapshot.clientEofToFinalMs,
-      transcript: event.text || this.snapshot.transcript,
-      revisions: [...this.snapshot.revisions.slice(-199), event],
+      transcript: event.sequence >= latestSequence ? event.text || this.snapshot.transcript : this.snapshot.transcript,
+      revisions: [...this.snapshot.revisions, event].sort((a, b) => a.sequence - b.sequence).slice(-200),
       workerId: event.worker_id || this.snapshot.workerId })
   }
 

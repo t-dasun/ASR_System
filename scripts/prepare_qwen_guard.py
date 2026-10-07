@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
-"""Derive CPU build sources with an optional offline decode guard.
+"""Derive CPU build sources with a decode guard and resumable streaming API.
 The pinned vendor checkout stays pristine. Unset guards preserve upstream behavior.
 """
 import argparse
 from pathlib import Path
+from prepare_qwen_stream import extend
 parser=argparse.ArgumentParser()
 parser.add_argument('source',type=Path)
 parser.add_argument('output',type=Path)
 args=parser.parse_args()
 args.output.mkdir(parents=True,exist_ok=True)
+stream_header, stream_source = extend((args.source/'qwen_asr.h').read_text(),
+                                      (args.source/'qwen_asr.c').read_text())
 for source in [*args.source.glob('*.h'),*args.source.glob('*.c')]:
     text=source.read_text()
+    if source.name=='qwen_asr.h': text=stream_header
+    if source.name=='qwen_asr.c': text=stream_source
     if source.name=='qwen_asr.h':
         anchor='    void *token_cb_userdata;'
         assert text.count(anchor)==1

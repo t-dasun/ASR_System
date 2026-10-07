@@ -1,5 +1,7 @@
 # Run the system
 
+For repeated updates with multiple sessions sharing each worker, use the [resumable streaming preset and commands](RESUMABLE_STREAMING.md). Existing native and prefix presets remain available.
+
 Run commands from the repository root.
 
 ## Setup, rebuild and cleanup

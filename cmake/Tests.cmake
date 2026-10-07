@@ -1,4 +1,6 @@
 if(ASR_ENABLE_QWEN_NATIVE)
+  add_executable(resumable-state-test tests/integration/resumable_state_test.cpp)
+  target_link_libraries(resumable-state-test PRIVATE qwen_cpu asr_audio)
   add_executable(native-worker-stub tests/integration/native_worker_stub.cpp)
   target_include_directories(native-worker-stub PRIVATE src/engines/native/src)
   target_link_libraries(native-worker-stub PRIVATE nlohmann_json::nlohmann_json asr_warnings)

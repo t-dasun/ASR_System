@@ -23,7 +23,8 @@ find_package(Threads REQUIRED)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(QWEN_BUILD_SOURCE "${CMAKE_CURRENT_BINARY_DIR}/qwen_guarded_cpu")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
-  "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_guard.py")
+  "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_guard.py"
+  "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_stream.py")
 execute_process(COMMAND "${Python3_EXECUTABLE}"
   "${PROJECT_SOURCE_DIR}/scripts/prepare_qwen_guard.py" "${QWEN_SOURCE}" "${QWEN_BUILD_SOURCE}"
   RESULT_VARIABLE guard_result)

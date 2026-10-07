@@ -4,12 +4,13 @@ C++20 Qwen3-ASR-0.6B service with paced WAV simulation, live WebSocket calls, a 
 
 ## Start here
 
-- [Final technical report, measured results and remaining evidence gaps](docs/FINAL_REPORT.md)
+- [Resumable multi-call streaming: commands, design and evidence](docs/RESUMABLE_STREAMING.md)
+- [Final report: complete resumable study, results, graphs and sizing](docs/FINAL_REPORT_RESUMABLE.md)
 - [Run commands and worker/call selection](docs/CLI_QUICKSTART.md)
 - [Architecture and code map](docs/ARCHITECTURE.md)
 - [Tests, experiment layouts, and result files](docs/TESTING.md)
 - [Assignment questions, decisions, and conditional sizing](docs/ASSIGNMENT_QUESTIONS_AND_ANSWERS.md)
-- [50–1,000-call resource equations and conditional estimates](docs/CAPACITY_SIZING.md)
+- [50–1,000-call conditional sizing from resumable measurements](docs/FINAL_REPORT_RESUMABLE.md#10-conditional-sizing-for-501000-call-legs)
 
 ## Setup and cleanup
 

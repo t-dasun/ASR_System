@@ -16,11 +16,12 @@ class PrefixProcessPool final : public IASREngine {
     bool draining_ = false;
     std::size_t tie_break_ = 0;
     std::string scheduler_;
+    SharedStreamOptions streaming_;
 
   public:
     PrefixProcessPool(const std::filesystem::path &executable, std::string model, int workers, int slots,
                       int preview_ms, int threads, int idle_ms, int total_ms, int decode_ms,
-                      std::string scheduler = "least_active");
+                      std::string scheduler = "least_active", SharedStreamOptions streaming = {});
     ~PrefixProcessPool() override;
     EngineCapabilities capabilities() const override;
     std::vector<PrefixPoolWorkerStatus> workers();

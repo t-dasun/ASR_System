@@ -1,5 +1,7 @@
 # Architecture and code map
 
+The opt-in `qwen_stream` runtime now adds resumable per-call state over shared model weights, reusing this pool and transport. See [implementation/pilot evidence](RESUMABLE_STREAMING.md). Descriptions of `qwen_prefix` below remain the legacy preview/EOF path used by the original capacity study.
+
 ## Runtime flow
 
 ```text

@@ -83,6 +83,7 @@ Json defaults() {
               {"threads", 4},
               {"decode_step_ms", 2000},
               {"prefix_preview_ms", 4000},
+              {"stream_unfixed_chunks", 0},
               {"max_new_tokens", 32},
               {"timeout_ms", 45000},
               {"refine_final", true}}},
@@ -162,11 +163,12 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     if (root["model"]["device"] != "cpu")
         invalid("model.device", "CPU only");
     const auto runtime = root["model"]["runtime"].get<std::string>();
-    if (runtime != "mock" && runtime != "qwen_native" && runtime != "qwen_prefix")
-        invalid("model.runtime", "expected mock, qwen_native, or qwen_prefix");
-    const bool prefix = runtime == "qwen_prefix";
+    if (runtime != "mock" && runtime != "qwen_native" && runtime != "qwen_prefix" && runtime != "qwen_stream")
+        invalid("model.runtime", "expected mock, qwen_native, qwen_prefix, or qwen_stream");
+    const bool prefix = runtime == "qwen_prefix" || runtime == "qwen_stream";
     range(root["model"]["threads"], 1, 16, "model.threads");
     range(root["model"]["decode_step_ms"], 1000, 8000, "model.decode_step_ms");
+    range(root["model"]["stream_unfixed_chunks"], 0, 4, "model.stream_unfixed_chunks");
     range(root["model"]["prefix_preview_ms"], 1000, 20000, "model.prefix_preview_ms");
     range(root["model"]["max_new_tokens"], 1, 256, "model.max_new_tokens");
     range(root["model"]["timeout_ms"], 1000, 600000, "model.timeout_ms");
@@ -175,7 +177,7 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
         if (root["workers"][key] != 1)
             invalid(std::string("workers.") + key, "M5 requires one isolated slot/context per process");
     range(root["workers"]["max_sessions_per_process"], 1, prefix ? 8 : 1, "workers.max_sessions_per_process");
-    if (prefix && !root["model"]["refine_final"].get<bool>())
+    if (runtime == "qwen_prefix" && !root["model"]["refine_final"].get<bool>())
         invalid("model.refine_final", "qwen_prefix requires full-audio EOF final decoding");
     range(root["workers"]["idle_timeout_ms"], 1, 600000, "workers.idle_timeout_ms");
     range(root["workers"]["total_timeout_ms"], 1, 3600000, "workers.total_timeout_ms");
@@ -241,6 +243,7 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
     RunConfig config;
     config.worker_processes = root["workers"]["processes"].get<int>();
     config.max_sessions_per_process = root["workers"]["max_sessions_per_process"].get<int>();
+    config.stream_unfixed_chunks = root["model"]["stream_unfixed_chunks"].get<int>();
     config.prefix_preview_ms = root["model"]["prefix_preview_ms"].get<int>();
     config.idle_timeout_ms = root["workers"]["idle_timeout_ms"].get<int>();
     config.total_timeout_ms = root["workers"]["total_timeout_ms"].get<int>();

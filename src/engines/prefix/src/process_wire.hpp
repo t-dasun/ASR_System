@@ -87,6 +87,7 @@ inline Json observation(const RuntimeObservation &o, const std::string &call) {
             {"process_id", o.process_id},
             {"timestamp_ns", o.timestamp_ns},
             {"duration_ns", optional(o.duration_ns)},
+            {"counter_value", optional(o.counter_value)},
             {"sequence", optional(o.sequence)},
             {"buffered_samples", optional(o.buffered_samples)},
             {"cpu_ns", optional(o.cpu_ns)},
@@ -99,10 +100,11 @@ inline RuntimeObservation observation(const Json &j) {
     o.process_id = j.at("process_id");
     o.timestamp_ns = j.at("timestamp_ns");
     auto get = [&](const char *k, std::optional<std::int64_t> &v) {
-        if (!j.at(k).is_null())
+        if (j.contains(k) && !j.at(k).is_null())
             v = j.at(k).get<std::int64_t>();
     };
     get("duration_ns", o.duration_ns);
+    get("counter_value", o.counter_value);
     get("sequence", o.sequence);
     get("buffered_samples", o.buffered_samples);
     get("cpu_ns", o.cpu_ns);

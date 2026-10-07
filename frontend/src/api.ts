@@ -10,6 +10,9 @@ export interface Capabilities {
   precision: string
   languages: Language[]
   sample_rate_hz: number
+  shared_model?: boolean
+  refine_final?: boolean
+  stream_unfixed_chunks?: number
   session_decode_controls?: boolean
   decode_step_ms?: number
   prefix_preview_ms?: number

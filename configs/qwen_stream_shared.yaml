@@ -1,0 +1,28 @@
+schema_version: 1
+experiment:
+  name: qwen_stream_shared
+  seed: 42
+model:
+  runtime: qwen_stream
+  device: cpu
+  path: ../models/qwen3-asr-0.6b
+  threads: 4
+  decode_step_ms: 2000
+  max_new_tokens: 32
+  stream_unfixed_chunks: 0
+  refine_final: false
+workers:
+  processes: 1
+  max_sessions_per_process: 8
+  scheduler: least_active
+audio:
+  source: wav
+  path: ../tests/fixtures/m8_jfk_1p2s.wav
+  sample_rate_hz: 16000
+  channels: 1
+  chunk_ms: 200
+  realtime_pacing: true
+dataset:
+  language: en
+output:
+  directory: ../results

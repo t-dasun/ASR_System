@@ -5,6 +5,11 @@
 
 namespace asr {
 struct PrefixShared;
+struct SharedStreamOptions {
+    bool enabled = false;
+    int step_ms = 2000, max_tokens = 32, unfixed_chunks = 0;
+    bool refine_final = false;
+};
 struct PrefixCallStatus {
     std::string call_id, language;
     SessionState state = SessionState::ready;
@@ -18,8 +23,8 @@ struct PrefixWorkerStatus {
     std::string last_error;
     std::vector<PrefixCallStatus> calls;
 };
-// Experimental causal prefix redecoder. One loaded model, serial inference,
-// multiple active call sessions. It is not a resumable native streaming decoder.
+// Shared-weight engine with legacy prefix/EOF mode or resumable native steps.
+// Model weights are loaded once; scheduling serializes each worker's jobs.
 class PrefixMultiplexEngine final : public IASREngine {
     std::shared_ptr<PrefixShared> shared_;
 
@@ -27,7 +32,8 @@ class PrefixMultiplexEngine final : public IASREngine {
     explicit PrefixMultiplexEngine(std::string model_directory, int max_calls = 2, int preview_ms = 4000,
                                    int threads = 4, int idle_timeout_ms = 30000,
                                    int total_timeout_ms = 600000, int decode_timeout_ms = 45000,
-                                   std::string worker_id = "prefix_shared_0");
+                                   std::string worker_id = "prefix_shared_0",
+                                   SharedStreamOptions streaming = {});
     ~PrefixMultiplexEngine() override;
     EngineCapabilities capabilities() const override;
     PrefixWorkerStatus worker_status() const;

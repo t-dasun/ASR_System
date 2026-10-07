@@ -33,16 +33,20 @@ const char *state_name(asr::SessionState state) {
 
 std::unique_ptr<asr::IASREngine> make_engine(const asr::RunConfig &config) {
 #ifdef ASR_HAS_QWEN_NATIVE
-    if (config.runtime == "qwen_prefix" && config.worker_processes > 1)
+    const SharedStreamOptions streaming{config.runtime == "qwen_stream", config.decode_step_ms,
+                                        config.max_new_tokens, config.stream_unfixed_chunks,
+                                        config.refine_final};
+    if ((config.runtime == "qwen_prefix" || config.runtime == "qwen_stream") && config.worker_processes > 1)
         return std::make_unique<asr::PrefixProcessPool>(
             std::filesystem::read_symlink("/proc/self/exe").parent_path() / "asr-prefix-worker",
             config.model_path.string(), config.worker_processes, config.max_sessions_per_process,
             config.prefix_preview_ms, config.native_threads, config.idle_timeout_ms, config.total_timeout_ms,
-            config.timeout_ms, config.scheduler);
-    if (config.runtime == "qwen_prefix")
+            config.timeout_ms, config.scheduler, streaming);
+    if (config.runtime == "qwen_prefix" || config.runtime == "qwen_stream")
         return std::make_unique<asr::PrefixMultiplexEngine>(
             config.model_path.string(), config.max_sessions_per_process, config.prefix_preview_ms,
-            config.native_threads, config.idle_timeout_ms, config.total_timeout_ms, config.timeout_ms);
+            config.native_threads, config.idle_timeout_ms, config.total_timeout_ms, config.timeout_ms,
+            "prefix_shared_0", streaming);
 #endif
     std::unique_ptr<asr::IWorkerExecutor> executor;
     if (config.runtime == "mock")
@@ -145,10 +149,13 @@ nlohmann::json workers_json(asr::IASREngine &engine) {
     return workers;
 }
 void validate_shared_suite(const asr::RunConfig &startup, const asr::RunConfig &selected) {
-    if (startup.runtime != "qwen_prefix" && selected.runtime != "qwen_prefix")
+    if (startup.runtime != "qwen_prefix" && selected.runtime != "qwen_prefix" &&
+        startup.runtime != "qwen_stream" && selected.runtime != "qwen_stream")
         return;
     if (startup.runtime != selected.runtime || startup.model_path != selected.model_path ||
         startup.native_threads != selected.native_threads ||
+        startup.stream_unfixed_chunks != selected.stream_unfixed_chunks ||
+        startup.max_new_tokens != selected.max_new_tokens || startup.refine_final != selected.refine_final ||
         startup.max_sessions_per_process != selected.max_sessions_per_process ||
         startup.worker_processes != selected.worker_processes || startup.scheduler != selected.scheduler ||
         startup.idle_timeout_ms != selected.idle_timeout_ms ||

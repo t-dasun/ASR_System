@@ -1,4 +1,5 @@
 #include <asr/benchmark/baseline.hpp>
+#include <asr/core/utf8.hpp>
 #include <asr/engines/mock_engine.hpp>
 #include <fstream>
 #include <iostream>
@@ -13,6 +14,17 @@ void check(bool condition, const std::string &message) {
 template <class Function> void rejects(Function operation, const std::string &message) {
     bool rejected = false;
     try {
+        if (asr::complete_utf8_prefix("hello") != 5 || asr::complete_utf8_prefix("\xe4\xbd\xa0") != 3 ||
+            asr::complete_utf8_prefix("a\xe4\xbd") != 1)
+            throw std::runtime_error("UTF-8 progressive publication boundary");
+        bool malformed = false;
+        try {
+            (void)asr::complete_utf8_prefix("\xed\xa0\x80");
+        } catch (const std::runtime_error &) {
+            malformed = true;
+        }
+        if (!malformed)
+            throw std::runtime_error("UTF-8 surrogate accepted");
         operation();
     } catch (const std::exception &) {
         rejected = true;
@@ -129,17 +141,18 @@ void configurations(const std::filesystem::path &directory) {
     check(native.runtime == "qwen_native" && native.native_threads == 4 && native.refine_final,
           "native settings did not resolve");
     const auto prefix = resolve_config({}, {"model.runtime=qwen_prefix", "model.path=missing-model",
-        "audio.realtime_pacing=true", "workers.scheduler=round_robin", "workers.max_sessions_per_process=8"});
+                                            "audio.realtime_pacing=true", "workers.scheduler=round_robin",
+                                            "workers.max_sessions_per_process=8"});
     check(prefix.max_sessions_per_process == 8 && prefix.worker_processes == 1 &&
-          prefix.prefix_preview_ms == 4000 && prefix.model_path.is_absolute(),
+              prefix.prefix_preview_ms == 4000 && prefix.model_path.is_absolute(),
           "shared Qwen settings did not resolve");
     const auto pool = resolve_config({}, {"model.runtime=qwen_prefix", "model.path=missing-model",
-        "audio.realtime_pacing=true", "workers.scheduler=least_active", "workers.processes=2",
-        "workers.max_sessions_per_process=2"});
+                                          "audio.realtime_pacing=true", "workers.scheduler=least_active",
+                                          "workers.processes=2", "workers.max_sessions_per_process=2"});
     check(pool.worker_processes == 2 && pool.max_sessions_per_process == 2,
           "shared process pool layout rejected");
     rejects([] { (void)resolve_config({}, {"workers.max_sessions_per_process=2"}); },
-        "baseline adapter accepted shared sessions");
+            "baseline adapter accepted shared sessions");
     rejects([] { (void)resolve_config({}, {"model.runtime=qwen_native", "model.path=missing-model"}); },
             "native simulated pacing accepted");
     rejects([] { (void)resolve_config({}, {"model.threads=17"}); },
@@ -157,8 +170,7 @@ void configurations(const std::filesystem::path &directory) {
             "unsafe provisional process count accepted");
     rejects([] { (void)resolve_config({}, {"workers.scheduler=unknown"}); },
             "unsupported scheduler accepted");
-    rejects([] { (void)resolve_config({}, {"cpu.cores=[0,0]"}); },
-            "duplicate affinity CPU accepted");
+    rejects([] { (void)resolve_config({}, {"cpu.cores=[0,0]"}); }, "duplicate affinity CPU accepted");
     rejects([] { (void)resolve_config({}, {"cpu.affinity_enabled=true", "cpu.cores=[0,1]"}); },
             "mock affinity accepted");
 }

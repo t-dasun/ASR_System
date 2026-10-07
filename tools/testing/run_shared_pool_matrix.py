@@ -198,7 +198,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--per-language", type=int, default=10)
     parser.add_argument("--report-only", action="store_true")
+    parser.add_argument("--figures", action="store_true", help="export PNG/PDF plots after capacity/resumable reports using .venv-report")
     parser.add_argument("--stress", action="store_true", help="resource-guarded capacity curves instead of the four-case comparison")
+    parser.add_argument("--resumable-matrix", action="store_true", help="qwen_stream: 1 worker with 1..8 calls; 2 workers with 2/4/8/16 total calls (12 layouts)")
+    parser.add_argument("--resume", action="store_true", help="continue an interrupted resumable matrix, preserving completed layouts and old attempts")
     parser.add_argument("--repetitions", type=int, default=3, help="measured repetitions per stress point")
     parser.add_argument("--max-workers", type=int, default=8, help="stress worker counts 1..N (1..8)")
     parser.add_argument("--dense", action="store_true", help="stress every integer concurrency rather than scaling points")
@@ -206,7 +209,11 @@ def main():
     parser.add_argument("--soak-seconds", type=int, default=0, help="additional max-occupancy network load on largest worker layout")
     parser.add_argument("--plan-only", action="store_true", help="write stress plan and input identities without inference")
     args = parser.parse_args()
-    if args.stress:
+    if args.resume and (not args.resumable_matrix or args.plan_only or args.report_only):
+        parser.error("resume requires --resumable-matrix and cannot accompany plan-only/report-only")
+    if args.resumable_matrix and (args.dense or args.soak_seconds or args.max_workers not in (2, 8)):
+        parser.error("resumable-matrix has a fixed 12-layout grid; dense/soak are not part of this matrix")
+    if args.stress or args.resumable_matrix:
         if not (2 <= args.per_language <= 50 and 1 <= args.max_workers <= 8 and 1 <= args.repetitions <= 20
                 and args.reserve_gib >= 2 and args.soak_seconds >= 0):
             parser.error("invalid stress limits")
@@ -216,7 +223,14 @@ def main():
             report(args.output, saved["plan"], json.loads((args.output / "jobs.json").read_text()), saved["worker_runs"])
         else:
             run(args)
+        if args.figures and not args.plan_only:
+            python = ROOT / '.venv-report/bin/python'
+            if not python.exists():
+                parser.error("figure environment missing; run python3 scripts/setup.py --reports")
+            subprocess.run([str(python), str(ROOT/'tools/testing/plot_capacity.py'), str(args.output)], check=True)
         return
+    if args.figures:
+        parser.error("figures requires --stress or --resumable-matrix")
     if args.plan_only or args.dense or args.soak_seconds:
         parser.error("plan-only, dense and soak options require --stress")
     output = args.output.resolve()

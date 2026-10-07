@@ -10,6 +10,9 @@ const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const root = path.resolve(frontend, '..')
 const cli = process.env.ASR_CLI || path.join(root, 'build/release-cpu/asr-cli')
 const chrome = process.env.ASR_CHROME || '/usr/bin/google-chrome'
+const resumable = process.env.ASR_SHARED_MODE === 'stream'
+const configFile = resumable ? 'configs/qwen_stream_shared.yaml' : 'configs/qwen_prefix_shared.yaml'
+const manifestFile = resumable ? 'datasets/manifests/demo_calls.jsonl' : 'datasets/manifests/fleurs_validation.jsonl'
 const children = []
 let browser
 const evidenceDirectory = process.env.ASR_DEMO_EVIDENCE_DIR
@@ -36,7 +39,7 @@ async function until(fn, label, timeoutMs = 15000) {
 
 try {
   if (evidenceDirectory) await mkdir(evidenceDirectory, { recursive: true })
-  const manifest = (await readFile(path.join(root, 'datasets/manifests/fleurs_validation.jsonl'), 'utf8'))
+  const manifest = (await readFile(path.join(root, manifestFile), 'utf8'))
     .trim().split('\n').map(line => JSON.parse(line))
   const clips = ['en', 'id', 'zh'].map(language => {
     const match = manifest.filter(row => row.language === language)
@@ -46,7 +49,7 @@ try {
     assert.ok(match, `No FLEURS tuning clip for ${language}`)
     return match
   })
-  const service = start(cli, ['serve', '--config', 'configs/qwen_prefix_shared.yaml', '--port', '0',
+  const service = start(cli, ['serve', '--config', configFile, '--port', '0',
     '--set', 'workers.processes=2', '--set', 'workers.max_sessions_per_process=2'], root)
   const port = await until(() => {
     const line = service.output.split('\n').find(item => item.startsWith('{') && item.includes('"port"'))
@@ -71,7 +74,7 @@ try {
     await page.locator('input[type=file]').setInputFiles(path.join(root, clip.file))
     await page.getByLabel('Language').selectOption({ label: labels[clip.language] })
     await page.getByLabel('Transport chunk').selectOption('100')
-    await page.getByLabel('Prefix preview interval').selectOption('2000')
+    await page.locator('.streaming-panel').getByLabel(resumable ? 'Decode step' : 'Prefix preview interval').selectOption('2000')
     await page.getByLabel('Reference transcript (optional)').fill(clip.reference)
     await page.getByRole('button', { name: 'Start stream' }).click()
     await page.locator('.streaming-panel .state-pill.completed').waitFor({ timeout: 90000 })
@@ -88,7 +91,8 @@ try {
     assert.match(stats[accuracyLabel], /%$/)
     await page.locator('.revision-list summary').click()
     const timeline = await page.locator('.revision-list').innerText()
-    assert.match(timeline, /partial[^\n]*32000 samples/, 'preview override did not reach the model worker')
+    assert.match(timeline, /partial[^\n]*32000 samples/, 'decode control did not reach the model worker')
+    if (resumable) assert.match(timeline, /partial[^\n]*64000 samples/, 'second progressive step missing')
     const acked = await page.locator('.streaming-panel .progress-label strong').innerText()
     const firstTextMs = Number(stats['First text arrival']?.replace(' ms', ''))
     assert.ok(Number.isFinite(firstTextMs) && firstTextMs > 0,
@@ -98,7 +102,7 @@ try {
     results.push({ language: clip.language, clip_id: clip.id, duration_seconds: clip.duration_s,
       transcript, revisions, client_first_text_ms: firstTextMs, first_text_before_eof: firstTextBeforeEof,
       client_eof_to_final: stats['EOF to final text'], accuracy: stats[accuracyLabel],
-      reference: clip.reference, chunk_ms: 100, prefix_preview_ms: 2000,
+      reference: clip.reference, chunk_ms: 100, ...(resumable ? { decode_step_ms: 2000 } : { prefix_preview_ms: 2000 }),
       max_client_send_lag: stats['Max client send lag'], acked_chunks: acked,
       source_wav_sha256: clip.sha256 })
     if (evidenceDirectory)
@@ -107,14 +111,14 @@ try {
     await page.getByRole('button', { name: 'Reset' }).click()
   }
   assert.deepEqual(errors, [])
-  const evidence = { schema_version: 1, status: 'PASS', engine: 'qwen_prefix', workers: 2, slots_per_worker: 2,
+  const evidence = { schema_version: 1, status: 'PASS', engine: resumable ? 'qwen_stream' : 'qwen_prefix', workers: 2, slots_per_worker: 2,
     mode: 'native C++ service and headless browser over loopback',
     results, browser_errors: errors.length,
-    command: 'npm run test:e2e:shared',
-    config_sha256: await sha256(path.join(root, 'configs/qwen_prefix_shared.yaml')),
+    command: resumable ? 'npm run test:e2e:resumable' : 'npm run test:e2e:shared',
+    config_sha256: await sha256(path.join(root, configFile)),
     cli_sha256: await sha256(cli),
     worker_sha256: await sha256(path.join(path.dirname(cli), 'asr-prefix-worker')),
-    manifest_sha256: await sha256(path.join(root, 'datasets/manifests/fleurs_validation.jsonl')),
+    manifest_sha256: await sha256(path.join(root, manifestFile)),
     model_acquisition: JSON.parse(await readFile(path.join(root, 'models/qwen3-asr-0.6b/acquisition.json'), 'utf8')) }
   if (evidenceDirectory)
     await writeFile(path.join(evidenceDirectory, 'demo.json'), JSON.stringify(evidence, null, 2) + '\n', { flag: 'wx' })

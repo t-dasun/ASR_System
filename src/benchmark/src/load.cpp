@@ -198,7 +198,7 @@ LoadPlan plan_load(const RunConfig &config, const LoadSpec &spec, std::int64_t s
     LoadPlan plan;
     plan.spec = spec;
     std::vector<std::string> reasons;
-    const bool prefix = config.runtime == "qwen_prefix";
+    const bool prefix = config.runtime == "qwen_prefix" || config.runtime == "qwen_stream";
     const int slots = config.worker_processes * config.max_sessions_per_process;
     if (spec.concurrency > slots)
         reasons.emplace_back("target concurrency exceeds configured active call slots");

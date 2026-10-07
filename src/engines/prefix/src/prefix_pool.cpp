@@ -35,7 +35,7 @@ struct PrefixProcess {
     std::string error;
     std::thread reader;
     PrefixProcess(const std::filesystem::path &exe, std::string model, int index, int limit, int preview,
-                  int threads, int idle, int total, int decode)
+                  int threads, int idle, int total, int decode, SharedStreamOptions streaming)
         : id("prefix_shared_" + std::to_string(index)), slots(limit), total_ms(total + decode + 10000) {
         int sockets[2];
         if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, sockets))
@@ -61,6 +61,11 @@ struct PrefixProcess {
                                          std::to_string(total),
                                          std::to_string(decode),
                                          id};
+        if (streaming.enabled) {
+            args.insert(args.end(),
+                        {"stream", std::to_string(streaming.step_ms), std::to_string(streaming.max_tokens),
+                         std::to_string(streaming.unfixed_chunks), streaming.refine_final ? "1" : "0"});
+        }
         std::vector<char *> argv;
         for (auto &a : args)
             argv.push_back(a.data());
@@ -309,21 +314,21 @@ class RemoteSession final : public IASRSession {
 } // namespace
 PrefixProcessPool::PrefixProcessPool(const std::filesystem::path &exe, std::string model, int workers,
                                      int slots, int preview, int threads, int idle, int total, int decode,
-                                     std::string scheduler)
-    : scheduler_(std::move(scheduler)) {
+                                     std::string scheduler, SharedStreamOptions streaming)
+    : scheduler_(std::move(scheduler)), streaming_(streaming) {
     if (workers < 1 || workers > 8 || slots < 1 || slots > 8 ||
         (scheduler_ != "least_active" && scheduler_ != "round_robin"))
         throw std::invalid_argument("invalid prefix pool layout");
     for (int i = 0; i < workers; ++i)
-        workers_.push_back(
-            std::make_shared<PrefixProcess>(exe, model, i, slots, preview, threads, idle, total, decode));
+        workers_.push_back(std::make_shared<PrefixProcess>(exe, model, i, slots, preview, threads, idle,
+                                                           total, decode, streaming));
 }
 PrefixProcessPool::~PrefixProcessPool() = default;
 EngineCapabilities PrefixProcessPool::capabilities() const {
     EngineCapabilities c;
-    c.engine_id = "qwen_prefix_process_pool";
-    c.revision = "prefix_pool_v1";
-    c.streaming_kind = "causal_prefix_redecode";
+    c.engine_id = streaming_.enabled ? "qwen_stream_process_pool" : "qwen_prefix_process_pool";
+    c.revision = streaming_.enabled ? "resumable_pool_v1" : "prefix_pool_v1";
+    c.streaming_kind = streaming_.enabled ? "resumable_windowed_streaming" : "causal_prefix_redecode";
     c.is_mock = false;
     c.precision = "bf16_weights";
     c.concurrent_sessions = true;
@@ -364,7 +369,8 @@ PrefixProcessPool::create_session(const SessionConfig &config, IRecognitionSink 
     if (config.sample_rate_hz != 16000 ||
         (config.language != "en" && config.language != "id" && config.language != "zh"))
         return {{ErrorCode::unsupported, "prefix pool supports en/id/zh at 16kHz"}, nullptr};
-    if (config.prefix_preview_ms != 0 && (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
+    if (config.prefix_preview_ms != 0 &&
+        (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
         return {{ErrorCode::invalid_input, "prefix preview must be 1000..20000 ms"}, nullptr};
     if (clock.domain() != "host_steady")
         return {{ErrorCode::unsupported, "prefix pool requires host steady clock"}, nullptr};
@@ -406,6 +412,7 @@ PrefixProcessPool::create_session(const SessionConfig &config, IRecognitionSink 
                                    {"run_id", config.run_id},
                                    {"language", config.language},
                                    {"prefix_preview_ms", config.prefix_preview_ms},
+                                   {"decode_step_ms", config.decode_step_ms},
                                    {"max_chunk_samples", config.max_chunk_samples},
                                    {"sample_rate_hz", config.sample_rate_hz}});
     auto status = prefix_wire::status(response.at("status"));

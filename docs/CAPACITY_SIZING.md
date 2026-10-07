@@ -1,5 +1,7 @@
 # CPU sizing for 50–1,000 concurrent call legs
 
+**Current resumable sizing:** see [the final report, section 10](FINAL_REPORT_RESUMABLE.md#10-conditional-sizing-for-501000-call-legs), based on the completed 1,170-call direct matrix. The coefficients below describe the historical prefix runtime and are retained for comparison.
+
 Assignment basis: section 7 of `AIML_CPP_LEAD_ASR_Technical_Assignment_v2.docx`. This guide separates measured facts, session admission and conditional sustained capacity. It does not claim validated production capacity.
 
 ## 1. Measured basis

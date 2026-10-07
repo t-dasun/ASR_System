@@ -1,5 +1,6 @@
 """Resource-guarded capacity curves using the main C++ service and WAV runner."""
 import csv
+import hashlib
 import json
 import math
 import os
@@ -28,6 +29,60 @@ def concurrency_levels(workers, slots, dense=False):
 
 def balanced_calls(unique, concurrency):
     return unique * math.ceil(concurrency / unique)
+
+
+def matrix_layouts(args):
+    """(workers, configured slots per worker, measured total concurrency levels)."""
+    if getattr(args, 'resumable_matrix', False):
+        return [(1, slots, [slots]) for slots in range(1, 9)] + [
+            (2, slots, [2 * slots]) for slots in (1, 2, 4, 8)]
+    return [(workers, 8, concurrency_levels(workers, 8, args.dense))
+            for workers in range(1, args.max_workers + 1)]
+
+
+def resume_state(output, args, cli, config):
+    """Validate experiment identity before permitting writes or new inference."""
+    saved = json.loads((output/'curve.json').read_text())
+    plan = saved['plan']
+    if json.loads((output/'status.json').read_text()).get('status') == 'RUNNING':
+        raise ValueError('run is marked RUNNING; do not resume while its driver may be active')
+    if plan.get('matrix_mode') not in ('resumable_16_layouts', 'resumable_12_layouts'):
+        raise ValueError('cannot resume: saved experiment is not a resumable matrix')
+    expected = {'per_language':args.per_language,
+                'repetitions':args.repetitions, 'reserve_bytes':int(args.reserve_gib*GIB),
+                'config_sha256':digest(ROOT/config), 'cli_sha256':digest(cli),
+                'worker_sha256':digest(ROOT/'build/release-cpu/asr-prefix-worker'),
+                'manifest_sha256':digest(output/'inputs.jsonl')}
+    for key, value in expected.items():
+        if plan.get(key) != value:
+            raise ValueError(f'cannot resume: {key} differs from saved experiment')
+    jobs = json.loads((output/'jobs.json').read_text())
+    layouts = matrix_layouts(args)
+    selected = {(w,s) for w,s,_ in layouts}
+    measured = [r for r in saved['worker_runs'] if r['status']=='MEASURED'
+                and (r['workers'],r['slots_per_worker']) in selected]
+    complete = {(r['workers'],r['slots_per_worker']) for r in measured}
+    # Retain interrupted attempts in history and on disk, outside final curves.
+    # Re-run their complete layout, avoiding partial-cohort double weighting.
+    retained = [j for j in jobs if (j['workers'],j.get('slots_per_worker',8)) in complete]
+    plan = dict(plan)
+    plan.setdefault('original_layouts', plan['layouts'])
+    plan['layouts'] = [{'workers':w,'slots_per_worker':s,'concurrency_levels':levels} for w,s,levels in layouts]
+    plan['matrix_mode'] = 'resumable_12_layouts'
+    plan['planned_curve_calls'] = sum(balanced_calls(args.per_language,c)*args.repetitions*3
+                                     for _,_,levels in layouts for c in levels)
+    return plan, retained, measured, saved['worker_runs'], jobs
+
+
+def attempt_directory(output, workers, slots, resumable):
+    base = output/(f'{workers}w_{slots}s' if resumable else f'{workers}w')
+    directory = base
+    attempt = 1
+    while directory.exists():
+        attempt += 1
+        directory = base.with_name(f'{base.name}_attempt{attempt}')
+    directory.mkdir()
+    return directory
 
 
 def host_sample(pid=None):
@@ -140,7 +195,11 @@ class ResourceGuard:
                     sample['swap_io_last_60s_bytes']=recent_swap
                     sample['swap_io_total_bytes']=swap_delta
                     sample['benchmark_swap_bytes']=model_swap
-                    if available < self.reserve or swap_free < self.reserve or (recent_swap > self.swap_limit and prolonged):
+                    # Low host swap alone can come from unrelated applications.
+                    # Require sustained pressure and benchmark swapping before
+                    # treating swap headroom as a benchmark resource limit.
+                    swap_exhaustion = swap_free < self.reserve and model_swap > 0 and prolonged
+                    if available < self.reserve or swap_exhaustion or (recent_swap > self.swap_limit and prolonged):
                         self.error = f'resource guard: available={available/GIB:.2f} GiB, swap free={swap_free/GIB:.2f} GiB, benchmark swap={model_swap/2**20:.1f} MiB, prolonged stall={prolonged}'
                         stop(self.process)
                         break
@@ -175,7 +234,7 @@ def wait_ready(process, stdout, guard):
     raise RuntimeError('model/service startup exceeded 240 seconds')
 
 
-def execute(port, body, directory, label, sources, guard):
+def execute(port, body, directory, label, sources, guard, slots=8):
     guard.label = label
     write(directory/f'{label}_request.json', body)
     planned = request(port, '/v1/suites/dry-run', body)
@@ -201,7 +260,7 @@ def execute(port, body, directory, label, sources, guard):
     if 'result' not in state:
         raise RuntimeError(f'{label}: job failed without artifacts: {state}')
     if snapshots:
-        assert all(all(w['active_sessions'] <= 8 and w['runtime_threads'] == w['blas_threads'] == 4
+        assert all(all(w['active_sessions'] <= slots and w['runtime_threads'] == w['blas_threads'] == 4
                        for w in sample['workers']) for sample in snapshots), 'worker/thread/slot contract changed'
     suite = state['result']
     calls = read_calls(suite, sources)
@@ -221,7 +280,10 @@ def analyze_job(job, workers):
                for key in TIMINGS if key.endswith('_ns')}
     timings.update({key: distribution([c['measurements'][key] for c in completed
                                        if c['measurements'].get(key) is not None], 'ratio')
-                    for key in ('effective_rtf', 'offline_decode_wall_rtf')})
+                    for key in ('effective_rtf', 'offline_decode_wall_rtf', 'stream_invocation_wall_rtf')})
+    for key in ('stream_decode_steps', 'stream_reused_prefill_tokens'):
+        timings[key] = distribution([c['measurements'][key] for c in completed
+                                    if c['measurements'].get(key) is not None], 'count')
     samples = []
     for phase in suite['phases']:
         samples.extend(json.loads(line) for line in
@@ -251,7 +313,9 @@ def analyze_job(job, workers):
                 for c in successful if c['measurements'].get('finalization_ns') is not None])}
     edits = sum(c['accuracy']['edits'] for c in calls)
     units = sum(c['accuracy']['reference_units'] for c in calls)
-    return {'workers': workers, 'language': job['request']['languages'][0] if len(job['request']['languages']) == 1 else 'mixed',
+    return {'workers': workers, 'slots_per_worker': job.get('slots_per_worker', 8),
+            'target_calls_per_worker': job['request']['concurrency'] / workers,
+            'language': job['request']['languages'][0] if len(job['request']['languages']) == 1 else 'mixed',
             'concurrency': job['request']['concurrency'], 'mode': job['request']['mode'],
             'calls': len(calls), 'unique_wavs': len({c['recording_id'] for c in calls}),
             'completed': len(completed), 'failures': len(calls)-len(completed),
@@ -282,7 +346,7 @@ def load_job(job):
 def save_job(job, directory):
     path=directory/f"{job['label']}_record.json"
     write(path,job)
-    return {'workers':job['workers'],'kind':job['kind'],'label':job['label'],
+    return {'workers':job['workers'],'slots_per_worker':job.get('slots_per_worker',8),'kind':job['kind'],'label':job['label'],
             'status':job['status'],'record_path':str(path),
             'suite_directory':job.get('suite',{}).get('directory'),
             'calls':len(job['calls']),'completed':sum(c['status']=='COMPLETE' for c in job['calls'])}
@@ -337,21 +401,34 @@ def report(output, plan, jobs, worker_runs):
     lines = ['# CPU capacity stress report', '',
              'Main C++ service and WAV simulator; Python orchestrates and scores. No latency pass/fail target.', '',
              f"Same {plan['per_language']} unique WAVs per language, {plan['repetitions']} measured repetitions per curve point. Larger targets replay full balanced cohorts to fill concurrency. Languages are separate; failures are retained.", '',
-             'Worker sessions share a serial prefix/EOF context; this is not independent incremental streaming or batching. Four compute threads per worker. Model weights are unchanged.', '',
+             ('Resumable per-call encoder/decoder state shares model weights. Each worker runs one ready decode step at a time and requeues the call. No multi-call tensor batching. Decode step 2 seconds, zero initially withheld chunks, final whole-audio refinement disabled.'
+              if plan.get('runtime') == 'qwen_stream' else
+              'Worker sessions share a serial prefix/EOF context; this is not independent incremental streaming or batching.') + ' Four compute threads per worker. Model weights are unchanged.', '',
+             f"Runtime: `{plan.get('runtime', 'qwen_prefix')}`. Config: `{plan.get('config', 'configs/qwen_prefix_shared.yaml')}`.", '',
              '## Worker admission and idle cost', '',
-             '| Workers | Status | Idle RSS GiB | Idle PSS GiB | Reason |', '|---:|---|---:|---:|---|']
+             '| Workers | Slots/worker | Status | Idle RSS GiB | Idle PSS GiB | Reason |', '|---:|---:|---|---:|---:|---|']
     for run in worker_runs:
         idle = run.get('idle', {})
-        lines.append(f"| {run['workers']} | {run['status']} | {number(idle.get('rss_bytes'), GIB)} | {number(idle.get('pss_bytes'), GIB)} | {run.get('error', '')} |")
+        lines.append(f"| {run['workers']} | {run.get('slots_per_worker',8)} | {run['status']} | {number(idle.get('rss_bytes'), GIB)} | {number(idle.get('pss_bytes'), GIB)} | {run.get('error', '')} |")
     for language in LANGUAGES:
         lines += ['', f'## {language}', '',
-                  '| Workers | Concurrency | Complete | Failure % | First text mean/p95 s | EOF mean/p95 s | Audio s/wall s | CPU mean/peak cores | Peak PSS GiB | Completed WER/CER % | Failure-inclusive WER/CER % |',
-                  '|---:|---:|---:|---:|---|---|---:|---|---:|---:|---:|']
+                  '| Workers | Slots/worker | Concurrency | Complete | Failure % | First text mean/p95 s | EOF mean/p95 s | Audio s/wall s | CPU mean/peak cores | Peak PSS GiB | Completed WER/CER % | Failure-inclusive WER/CER % |',
+                  '|---:|---:|---:|---:|---:|---|---|---:|---|---:|---:|---:|']
         for p in points:
             if p['language'] != language or p['mode'] != 'direct':
                 continue
             first, eof = p['timings']['first_usable_transcript_ns'], p['timings']['finalization_ns']
-            lines.append(f"| {p['workers']} | {p['concurrency']} | {p['completed']}/{p['calls']} | {p['failure_rate']*100:.1f} | {number(first['mean'],1000)} / {number(first['p95'],1000)} | {number(eof['mean'],1000)} / {number(eof['p95'],1000)} | {number(p['audio_seconds_per_wall_second'])} | {number(p['sampled_mean_cpu_cores'])} / {number(p['sampled_peak_cpu_cores'])} | {number(p['sampled_peak_pss_bytes'],GIB)} | {number(p['accuracy']['completed_only']['rate'],.01)} | {number(p['accuracy']['rate'],.01)} |")
+            lines.append(f"| {p['workers']} | {p['slots_per_worker']} | {p['concurrency']} | {p['completed']}/{p['calls']} | {p['failure_rate']*100:.1f} | {number(first['mean'],1000)} / {number(first['p95'],1000)} | {number(eof['mean'],1000)} / {number(eof['p95'],1000)} | {number(p['audio_seconds_per_wall_second'])} | {number(p['sampled_mean_cpu_cores'])} / {number(p['sampled_peak_cpu_cores'])} | {number(p['sampled_peak_pss_bytes'],GIB)} | {number(p['accuracy']['completed_only']['rate'],.01)} | {number(p['accuracy']['rate'],.01)} |")
+        if plan.get('runtime') == 'qwen_stream':
+            lines += ['', '### Resumable decoding (completed-call means)', '',
+                      '| Workers | Slots/worker | Stream wall ms | Stream queue ms | Steps | Reused prefill tokens | Stream invocation RTF |',
+                      '|---:|---:|---:|---:|---:|---:|---:|']
+            for p in points:
+                if p['language'] == language and p['kind'] == 'curve':
+                    keys = ('stream_decode_wall_ns', 'stream_decode_queue_wait_ns', 'stream_decode_steps',
+                            'stream_reused_prefill_tokens', 'stream_invocation_wall_rtf')
+                    values = ' | '.join(number(p['timings'][key]['mean']) for key in keys)
+                    lines.append(f"| {p['workers']} | {p['slots_per_worker']} | {values} |")
     lines += ['', '## Observed throughput maxima (no latency acceptance target)', '',
               '| Language | Workers | Concurrency | Audio s/wall s | Failure % |', '|---|---:|---:|---:|---:|']
     for language in LANGUAGES:
@@ -371,7 +448,7 @@ def report(output, plan, jobs, worker_runs):
     lines += ['', 'These are maximum observed throughput points, not maximum usable capacity. No production latency/quality SLO was selected.', '',
               '## Scope and interpretation', '',
               '- First text can be partial or final; EOF delay is worker EOF receipt to final publication. Completed-call timing distributions exclude failed calls. Primary WER/CER uses completed calls only: total substitutions + deletions + insertions divided by their total reference words (WER) or characters (CER). Failures are reported separately; supplementary failure-inclusive accuracy uses empty hypotheses for failures. Completion is a protocol outcome, not an accuracy threshold. Excluding failures can make accuracy look better when difficult files fail.',
-              '- Effective RTF includes audio pacing; offline wall RTF includes prefix and final invocations, not vendor active compute. Ten distinct files give descriptive tails, not a production p95 guarantee.',
+              '- Effective RTF includes audio pacing. Stream invocation wall RTF sums resumable step wall times and optional refinement, divided by input audio duration; it excludes scheduler queue waiting. Legacy offline wall RTF is unavailable for resumable mode. Neither is vendor active compute. Ten distinct files give descriptive tails, not a production p95 guarantee.',
               '- PSS apportions shared physical pages; summed RSS double-counts some mapped weights. Host swap is system-wide and can include unrelated programs. Resource guards reserve RAM and bound swap I/O; an aborted run is not a model accuracy failure.',
               '- Cold CLI conservative plans remain recorded. Worker services load progressively under live resource monitoring; warm suite preflight remains enforced. A failed cold estimate is not silently labelled successful cold admission.',
               '- Maximum configured support is bounded to eight workers and eight sessions/worker. The load runner supports 64 calls so all configured slots can be exercised. Untested higher limits are not hardware capacity claims.',
@@ -383,51 +460,79 @@ def report(output, plan, jobs, worker_runs):
 
 def run(args):
     output = args.output.resolve()
-    if output.exists():
-        raise ValueError('output exists; use a new output directory')
-    output.mkdir(parents=True)
-    rows = [json.loads(line) for line in (ROOT/'datasets/manifests/fleurs_validation.jsonl').read_text().splitlines()]
-    selected = {lang: [r for r in rows if r['language']==lang][:args.per_language] for lang in LANGUAGES}
-    rows = [selected[lang][i] for i in range(args.per_language) for lang in LANGUAGES]
-    if any(len(v)!=args.per_language for v in selected.values()):
-        raise ValueError('insufficient unique WAV inputs')
+    resume = getattr(args, 'resume', False)
+    resumable = getattr(args, 'resumable_matrix', False)
+    cli = ROOT/'build/release-cpu/asr-cli'
+    config = 'configs/qwen_stream_shared.yaml' if resumable else 'configs/qwen_prefix_shared.yaml'
+    layouts = matrix_layouts(args)
+    jobs, worker_runs = [], []
+    manifest = output/'inputs.jsonl'
+    if resume:
+        plan, jobs, worker_runs, previous_runs, previous_jobs = resume_state(output, args, cli, config)
+        rows = [json.loads(line) for line in manifest.read_text().splitlines()]
+    else:
+        if output.exists():
+            raise ValueError('output exists; use --resume for an interrupted resumable matrix or a new directory')
+        output.mkdir(parents=True)
+        rows = [json.loads(line) for line in (ROOT/'datasets/manifests/fleurs_validation.jsonl').read_text().splitlines()]
+        selected = {lang: [r for r in rows if r['language']==lang][:args.per_language] for lang in LANGUAGES}
+        if any(len(v)!=args.per_language or len({r['id'] for r in v})!=args.per_language for v in selected.values()):
+            raise ValueError('insufficient unique WAV inputs')
+        rows = [selected[lang][i] for i in range(args.per_language) for lang in LANGUAGES]
     sources = {r['id']: r for r in rows}
     for r in rows:
         if digest(ROOT/r['file']) != r['sha256']:
             raise ValueError(f"WAV hash mismatch: {r['id']}")
-    manifest = output/'inputs.jsonl'
-    manifest.write_text(''.join(json.dumps({**r,'file':str(ROOT/r['file'])},ensure_ascii=False)+'\n' for r in rows))
-    cli = ROOT/'build/release-cpu/asr-cli'
-    layouts = {workers: concurrency_levels(workers, 8, args.dense) for workers in range(1, args.max_workers+1)}
-    plan = {'per_language':args.per_language, 'repetitions':args.repetitions,
-            'layouts':layouts, 'slots_per_worker':8, 'threads_per_worker':4,
-            'reserve_bytes':int(args.reserve_gib*GIB), 'swap_io_limit_bytes':64*2**20,
-            'soak_seconds':args.soak_seconds, 'soak_worker_layout':'largest measured layout', 'dense':args.dense,
-            'planned_curve_calls':sum(balanced_calls(args.per_language,c)*args.repetitions*3 for values in layouts.values() for c in values),
-            'host':host_sample(), 'lscpu':subprocess.check_output(['lscpu','--json'],text=True),
-            'git_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
-            'cli_sha256':digest(cli),'worker_sha256':digest(ROOT/'build/release-cpu/asr-prefix-worker'),
-            'driver_sha256':digest(Path(__file__)), 'manifest_sha256':digest(manifest),
-            'model':json.loads((ROOT/'models/qwen3-asr-0.6b/acquisition.json').read_text())}
-    write(output/'plan.json',plan)
-    print(f"Capacity plan: {sum(map(len,layouts.values()))} curve points, {plan['planned_curve_calls']} calls, plus warmups/network/soak",flush=True)
+    if not resume:
+        manifest.write_text(''.join(json.dumps({**r,'file':str(ROOT/r['file'])},ensure_ascii=False)+'\n' for r in rows))
+    if not resume:
+        plan = {'per_language':args.per_language, 'repetitions':args.repetitions,
+                'layouts':[{'workers':w,'slots_per_worker':s,'concurrency_levels':levels} for w,s,levels in layouts],
+                'slots_per_worker':list(range(1,9)) if resumable else 8, 'threads_per_worker':4,
+                'runtime':'qwen_stream' if resumable else 'qwen_prefix', 'config':config,
+                'config_sha256':digest(ROOT/config), 'matrix_mode':'resumable_12_layouts' if resumable else 'capacity_stress',
+                'reserve_bytes':int(args.reserve_gib*GIB), 'swap_io_limit_bytes':64*2**20,
+                'soak_seconds':args.soak_seconds, 'soak_worker_layout':'largest measured layout', 'dense':args.dense,
+                'planned_curve_calls':sum(balanced_calls(args.per_language,c)*args.repetitions*3 for _,_,values in layouts for c in values),
+                'host':host_sample(), 'lscpu':subprocess.check_output(['lscpu','--json'],text=True),
+                'git_head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+                'cli_sha256':digest(cli),'worker_sha256':digest(ROOT/'build/release-cpu/asr-prefix-worker'),
+                'driver_sha256':digest(Path(__file__)),
+                'matrix_driver_sha256':digest(ROOT/'tools/testing/run_shared_pool_matrix.py'),
+                'metrics_sha256':digest(ROOT/'tools/testing/metrics.py'),
+                'git_diff_sha256':hashlib.sha256(subprocess.check_output(['git','diff','HEAD'],cwd=ROOT)).hexdigest(), 'manifest_sha256':digest(manifest),
+                'model':json.loads((ROOT/'models/qwen3-asr-0.6b/acquisition.json').read_text())}
+        write(output/'plan.json',plan)
+    print(f"Capacity plan: {sum(len(levels) for _,_,levels in layouts)} curve points, {plan['planned_curve_calls']} calls, plus warmups/network/soak",flush=True)
     if args.plan_only:
         write(output/'status.json',{'status':'PLANNED'}); return
-    jobs, worker_runs = [], []
+    if resume:
+        history = output/'resume_history'
+        history.mkdir(exist_ok=True)
+        index = len(list(history.glob('attempt_*.json'))) + 1
+        write(history/f'attempt_{index}.json', {'previous_status':json.loads((output/'status.json').read_text()),
+              'previous_plan':json.loads((output/'curve.json').read_text())['plan'],
+              'effective_layouts':plan['layouts'],
+              'previous_worker_runs':previous_runs, 'previous_jobs':previous_jobs,
+              'driver_sha256':digest(Path(__file__)), 'host':host_sample(),
+              'guard_policy':'RAM reserve; sustained swap pressure, not low host swap alone'})
     write(output/'jobs.json',jobs)
     write(output/'status.json',{'status':'RUNNING'})
     try:
-        for workers, levels in layouts.items():
-            directory=output/f'{workers}w'; directory.mkdir()
-            run_info={'workers':workers,'status':'STARTING'}; worker_runs.append(run_info)
-            common=['--config','configs/qwen_prefix_shared.yaml','--manifest',str(manifest),
-                    '--set',f'workers.processes={workers}','--set','workers.max_sessions_per_process=8',
+        for layout_index, (workers, slots, levels) in enumerate(layouts):
+            if any(r['workers']==workers and r.get('slots_per_worker',8)==slots and r['status']=='MEASURED' for r in worker_runs):
+                print(f'Skipping completed {workers}w {slots}s', flush=True)
+                continue
+            directory=attempt_directory(output, workers, slots, resumable)
+            run_info={'workers':workers,'slots_per_worker':slots,'directory':str(directory),'status':'STARTING'}; worker_runs.append(run_info)
+            common=['--config',config,'--manifest',str(manifest),
+                    '--set',f'workers.processes={workers}','--set',f'workers.max_sessions_per_process={slots}',
                     '--set',f'output.directory={directory}']
-            cold=subprocess.run([str(cli),'load-dry-run',*common,'--calls','40','--concurrency',str(workers*8),'--languages','en'],cwd=ROOT,capture_output=True,text=True,check=True)
+            cold=subprocess.run([str(cli),'load-dry-run',*common,'--calls','40','--concurrency',str(workers*slots),'--languages','en'],cwd=ROOT,capture_output=True,text=True,check=True)
             (directory/'cold_plan.json').write_text(cold.stdout)
             if host_sample()['memory']['MemAvailable'] < plan['reserve_bytes']+GIB:
                 run_info.update(status='SKIPPED_RESOURCE',error='insufficient RAM headroom before startup')
-                worker_runs.extend({'workers':w,'status':'NOT_RUN_RESOURCE','error':'earlier startup headroom check stopped escalation'} for w in layouts if w > workers)
+                worker_runs.extend({'workers':w,'slots_per_worker':s,'status':'NOT_RUN_RESOURCE','error':'earlier startup headroom check stopped escalation'} for w,s,_ in layouts[layout_index+1:])
                 report(output,plan,jobs,worker_runs); break
             command=[str(cli),'serve',*common,'--port','0']
             write(directory/'command.json',command)
@@ -437,8 +542,11 @@ def run(args):
                 try:
                     port=wait_ready(process,directory/'service.stdout',guard)
                     capabilities=request(port,'/v1/capabilities')
-                    assert capabilities['worker_processes']==workers and capabilities['max_sessions_per_process']==8
+                    assert capabilities['worker_processes']==workers and capabilities['max_sessions_per_process']==slots
                     assert not capabilities['is_mock']
+                    if resumable:
+                        assert capabilities['streaming_kind']=='resumable_windowed_streaming', capabilities
+                        assert capabilities['refine_final'] is False and capabilities['stream_unfixed_chunks']==0, capabilities
                     write(directory/'capabilities.json',capabilities)
                     guard.label='idle'; time.sleep(5); guard.check()
                     idle=host_sample(process.pid)
@@ -446,22 +554,25 @@ def run(args):
                                       'pss_bytes':sum(p['pss_bytes'] or 0 for p in idle['processes']),
                                       'sample':idle}
                     warm=execute(port,{'kind':'load','mode':'direct','calls':workers,'concurrency':workers,
-                                       'languages':list(LANGUAGES)},directory,'warmup',sources,guard)
-                    warm.update(workers=workers,kind='warmup'); jobs.append(save_job(warm,directory)); del warm
+                                       'languages':list(LANGUAGES)},directory,'warmup',sources,guard,slots=slots)
+                    warm.update(workers=workers,slots_per_worker=slots,kind='warmup'); jobs.append(save_job(warm,directory)); del warm
                     for concurrency in levels:
                         for language in LANGUAGES:
                             body={'kind':'load','mode':'direct','calls':balanced_calls(args.per_language,concurrency),
                                   'concurrency':concurrency,'repetitions':args.repetitions,'languages':[language]}
-                            job=execute(port,body,directory,f'c{concurrency}_{language}',sources,guard)
-                            job.update(workers=workers,kind='curve'); jobs.append(save_job(job,directory))
+                            job=execute(port,body,directory,f'c{concurrency}_{language}',sources,guard,slots=slots)
+                            job.update(workers=workers,slots_per_worker=slots,kind='curve'); jobs.append(save_job(job,directory))
                             write(output/'jobs.json',jobs); report(output,plan,jobs,worker_runs)
                             print(f"{workers}w c{concurrency} {language}: {sum(c['status']=='COMPLETE' for c in job['calls'])}/{len(job['calls'])} completed",flush=True)
-                    # Real ingress coverage at the largest layout for every worker count.
-                    body={'kind':'load','mode':'network','calls':balanced_calls(len(rows),workers*8),
-                          'concurrency':workers*8,'languages':list(LANGUAGES)}
-                    job=execute(port,body,directory,'network_max',sources,guard)
-                    job.update(workers=workers,kind='network'); jobs.append(save_job(job,directory)); del job
-                    run_info['status']='MEASURED'
+                    # Keep previous mixed WebSocket coverage only at each worker count's maximum.
+                    if slots == 8:
+                        body={'kind':'load','mode':'network','calls':balanced_calls(len(rows),workers*slots),
+                              'concurrency':workers*slots,'languages':list(LANGUAGES)}
+                        job=execute(port,body,directory,'network_max',sources,guard,slots=slots)
+                        job.update(workers=workers,slots_per_worker=slots,kind='network'); jobs.append(save_job(job,directory)); del job
+                    run_info['status']='INCOMPLETE_PREFLIGHT' if any(
+                        j['status']=='SKIPPED_PREFLIGHT' and Path(j['record_path']).parent==directory for j in jobs
+                    ) else 'MEASURED'
                 except Exception as error:
                     run_info['interrupted_stage']=guard.label
                     run_info.update(status='ABORTED_RESOURCE' if guard.error else 'ERROR',error=str(error))
@@ -484,7 +595,7 @@ def run(args):
                     if incomplete: run_info['incomplete_runs']=incomplete
             write(output/'jobs.json',jobs); report(output,plan,jobs,worker_runs)
             if run_info['status']=='ABORTED_RESOURCE':
-                worker_runs.extend({'workers':w,'status':'NOT_RUN_RESOURCE','error':'earlier resource guard stopped escalation'} for w in layouts if w > workers)
+                worker_runs.extend({'workers':w,'slots_per_worker':s,'status':'NOT_RUN_RESOURCE','error':'earlier resource guard stopped escalation'} for w,s,_ in layouts[layout_index+1:])
                 break
         successful=[r['workers'] for r in worker_runs if r['status']=='MEASURED']
         if args.soak_seconds and successful:

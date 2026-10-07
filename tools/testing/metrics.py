@@ -7,7 +7,8 @@ TIMINGS = ("startup_ns", "first_partial_ns", "first_usable_transcript_ns", "fina
            "live_invocation_wall_ns", "prefix_decode_wall_ns", "eof_refinement_wall_ns",
            "prefix_decode_queue_wait_ns", "eof_decode_queue_wait_ns", "runtime_queue_wait_ns",
            "offline_decode_wall_ns", "worker_cpu_ns", "first_stable_transcript_ns",
-           "first_inference_compute_ns", "partial_service_lag_ns", "inference_compute_rtf")
+           "first_inference_compute_ns", "partial_service_lag_ns", "inference_compute_rtf",
+           "stream_decode_wall_ns", "stream_decode_queue_wait_ns", "stream_invocation_wall_ns")
 
 def quantiles(values, unit="ns"):
     values = sorted(values)

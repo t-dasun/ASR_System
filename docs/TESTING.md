@@ -75,6 +75,39 @@ python3 tools/testing/run_shared_pool_matrix.py \
 
 ## CPU/RAM capacity curves
 
+### Resumable streaming: 12 layouts on this laptop
+
+Stop other ASR servers and inference jobs before measuring so they do not compete for CPU/RAM. The driver starts and stops its own C++ services on dynamically assigned ports.
+
+```bash
+python3 tools/testing/run_shared_pool_matrix.py --resumable-matrix \
+  --output results/resumable-matrix --per-language 10 --repetitions 3 --figures
+```
+
+This mode uses `configs/qwen_stream_shared.yaml`: four compute threads per worker, 200 ms paced PCM chunks, 2-second decode steps, zero initially withheld chunks, and no final whole-audio refinement. It configures exactly 12 layouts: one worker with 1–8 slots and concurrency 1–8; two workers with 1/2/4/8 slots each and total concurrency 2/4/8/16. Each layout gets a fresh service and warmup, then separate EN/ID/ZH suites. Configured slots equal the target calls per worker; achieved occupancy is also recorded.
+
+The same ten distinct WAVs per language are reused in every layout with three measured repetitions. Targets above ten replay the full ten-file cohort twice per repetition to fill concurrency with equal file weighting. That is 1,170 direct measured calls, plus 16 warmup calls and two 30-call mixed-language WebSocket suites (at 1×8 and 2×8). No higher worker counts, odd two-worker concurrency targets, or soak runs are included. Resource guards remain enabled; insufficient resources or skipped preflights are recorded.
+
+Outputs: `results/resumable-matrix/report.md`, `curve.json`, `curve.csv`, `jobs.json`, per-layout `1w_1s`…`2w_8s` directories with raw records, and language PNG/PDF plots in `figures/`. First-text/EOF latency and primary WER/CER use completed calls; failures and supplementary failure-inclusive accuracy remain separate. Resumable step counts, prefill reuse, decode/queue wall times and streaming invocation RTF are retained. Plots show solid mean and dashed p95 for timing panels.
+
+`--figures` needs the report environment: `python3 scripts/setup.py --reports`. Omit that flag to collect data without Matplotlib. To inspect the grid without inference, use `--plan-only` with a different output directory. To regenerate the report and plots without inference:
+
+```bash
+python3 tools/testing/run_shared_pool_matrix.py --resumable-matrix \
+  --output results/resumable-matrix --report-only --figures
+```
+
+To continue an interrupted resumable matrix, preserving completed layouts:
+
+```bash
+python3 tools/testing/run_shared_pool_matrix.py --resumable-matrix --resume \
+  --output results/resumable-matrix --per-language 10 --repetitions 3 --figures
+```
+
+Resume requires unchanged configuration, binaries, input manifest, repetition count and RAM reserve. It retains measured layouts, retries incomplete layouts in a new `*_attemptN` directory, and archives previous run/job metadata in `resume_history/`. Interrupted attempts remain on disk and are excluded from the combined curves to avoid double-counting partially completed cohorts. The original plan and its hashes remain intact; the resume history records the updated driver and guard policy. Resume also accepts the previous 16-layout plan and selects the new 12-layout grid. Existing omitted two-worker layouts remain archived and are excluded from the combined curves. Do not resume while the original driver is running.
+
+### Legacy prefix capacity sweep
+
 ```bash
 python3 tools/testing/run_shared_pool_matrix.py --stress \
   --output results/capacity --per-language 10 --repetitions 3 \
@@ -85,7 +118,7 @@ Stress mode holds eight session slots per worker and samples total concurrency a
 
 The default scaling grid up to eight workers has 39 concurrency/layout points. Ten distinct WAVs per EN/ID/ZH and three repetitions require at most 6,840 direct curve calls. At concurrency above ten, a whole number of ten-file cohorts is repeated in each phase, keeping equal file weighting. Each worker count also gets a maximum-concurrency mixed-language WebSocket suite. `--soak-seconds 900` additionally sustains maximum configured occupancy for at least 15 minutes on the largest successfully measured worker layout.
 
-Services are monitored during context loading, idle and active work. The guard reserves 2 GiB of available RAM and 2 GiB of free swap. It also stops escalation when PSI full avg10 stays at least 10% for 15 seconds together with more than 64 MiB of swap I/O in the last minute. Host swap and per-process swapped bytes/major faults are recorded separately. Model load is recorded separately from warm calls. Conservative cold CLI estimates are retained; the warm suite memory gate remains enforced. Host swap without memory stalls is recorded without stopping the run. Actual resource limits may stop the sweep before eight workers. All call failures stay in the curve; no latency acceptance target is imposed. Resource aborts and untouched higher layouts are labelled separately from model failures.
+Services are monitored during context loading, idle and active work. The guard reserves 2 GiB of available RAM. Low free host swap alone does not stop a run: the swap-headroom check also requires benchmark swapping and sustained memory stalls. It also stops escalation when PSI full avg10 stays at least 10% for 15 seconds together with more than 64 MiB of swap I/O in the last minute. Host swap and per-process swapped bytes/major faults are recorded separately. Model load is recorded separately from warm calls. Conservative cold CLI estimates are retained; the warm suite memory gate remains enforced. Host swap without memory stalls is recorded without stopping the run. Actual resource limits may stop the sweep before eight workers. All call failures stay in the curve; no latency acceptance target is imposed. Resource aborts and untouched higher layouts are labelled separately from model failures.
 
 Output: `report.md`, `curve.csv`, `curve.json`, raw `jobs.json`, per-worker host/swap/process-tree telemetry, runtime snapshots, C++ suite/call artifacts, model/binary/input identities and final checksums. Language tables are separate, including mixed-network subgroups. Curves report achieved occupancy, CPU, RSS/PSS, available RAM, failures, WER/CER, first text, finalization, queue/decode stages and throughput. Stress tables and accuracy plots now use completed-call WER/CER as primary quality, with failures separate and supplementary failure-inclusive scores retained. Maximum observed throughput is not a claim of maximum usable production capacity. The current partial study and its known gaps are summarized in [FINAL_REPORT.md](FINAL_REPORT.md).
 
@@ -147,3 +180,17 @@ ASR_DEMO_EVIDENCE_DIR=../results/ui-controls-new npm run test:e2e:shared
 ```
 
 This starts its own two-worker C++ shared service and browser preview on port 4173, sends three short language recordings using 100 ms chunks and a 2 s preview, and checks partial sample counts, arrival delays and reference-based WER/CER. Save evidence in a new directory; stop other preview instances on port 4173 first. Known timeout recordings are excluded from this demonstration selection, so this is integration evidence rather than a replacement quality benchmark.
+
+## Resumable-state verification
+
+```bash
+# Real model: interleaved-call parity, cache reuse and cancellation isolation.
+build/release-cpu/resumable-state-test models/qwen3-asr-0.6b \
+  datasets/prepared/fleurs/fleurs_en_us_validation_1605_16.wav \
+  datasets/prepared/fleurs/fleurs_id_id_validation_1520_4.wav
+# Running resumable service: four C++ network calls, with saved checks/scores.
+.venv-reference/bin/python tools/testing/run_resumable_check.py \
+  --port 8081 --output results/resumable-check-new
+```
+
+`npm run test:e2e:resumable` uses the existing shared browser driver in resumable mode. Actual results and limitations are in [RESUMABLE_STREAMING.md](RESUMABLE_STREAMING.md); these pilots do not replace the original capacity experiment.

@@ -11,3 +11,5 @@ Exact runtime, model and dataset pins are in [third_party/revisions.lock](third_
 - Optional dataset tooling: PyArrow (Apache-2.0) and soundfile (BSD-3-Clause); native dependencies have their own notices. Optional JiWER scoring parity checks use its Apache-2.0 package.
 
 Legacy ignored llama.cpp, converted model, or Python reference caches may remain on this workstation. They are outside the current build and experiment tools; their own licenses still apply if redistributed. This document is not a complete redistribution SBOM.
+
+The generated CPU build also derives a resumable per-call streaming API from the pinned MIT-licensed Qwen C loop. `scripts/prepare_qwen_stream.py` retains shared model weights and separates mutable call state; vendor sources stay pristine and generated copies retain their original notices.

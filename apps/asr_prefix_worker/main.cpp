@@ -26,15 +26,23 @@ struct Call final : IRecognitionSink {
 } // namespace
 int main(int argc, char **argv) {
     try {
-        if (argc != 9)
+        if (argc != 9 && argc != 14)
             throw std::invalid_argument("prefix worker arguments");
         auto parent = getppid();
         prctl(PR_SET_PDEATHSIG, SIGKILL);
         if (getppid() != parent)
             return 1;
         SteadyClock clock;
+        SharedStreamOptions streaming;
+        if (argc == 14) {
+            if (std::string(argv[9]) != "stream")
+                throw std::invalid_argument("unknown shared worker mode");
+            streaming = {true, std::stoi(argv[10]), std::stoi(argv[11]), std::stoi(argv[12]),
+                         std::stoi(argv[13]) != 0};
+        }
         PrefixMultiplexEngine engine(argv[1], std::stoi(argv[2]), std::stoi(argv[3]), std::stoi(argv[4]),
-                                     std::stoi(argv[5]), std::stoi(argv[6]), std::stoi(argv[7]), argv[8]);
+                                     std::stoi(argv[5]), std::stoi(argv[6]), std::stoi(argv[7]), argv[8],
+                                     streaming);
         std::map<std::string, std::shared_ptr<Call>> calls;
         // EOF/cancel can wait for a decode. Keep ingress for other calls moving.
         struct Operation {
@@ -82,6 +90,7 @@ int main(int argc, char **argv) {
                     config.language = command.at("language");
                     config.max_chunk_samples = command.at("max_chunk_samples");
                     config.sample_rate_hz = command.at("sample_rate_hz");
+                    config.decode_step_ms = command.value("decode_step_ms", 0);
                     config.prefix_preview_ms = command.value("prefix_preview_ms", 0);
                     auto call = std::make_shared<Call>(id);
                     auto result = engine.create_session(config, *call, clock);
