@@ -501,3 +501,61 @@ Focused real C++ checks completed four calls sharing one worker and four simulta
 The fast preset uses early emission and no full-audio final refinement. Matched four-recording pilot results show shorter EOF delays but variable first-text and accuracy results; Indonesian and Mandarin errors were higher on the tested files. Optional refinement restored the tested Indonesian final WER from 16.67% to 8.33%, with 3.42 seconds of added decode work. This is not a general quality/performance guarantee.
 
 See [RESUMABLE_STREAMING.md](RESUMABLE_STREAMING.md) for commands, design, paired tables, settings, screenshots and raw evidence. The original 900-call prefix curves and conditional fleet coefficients are preserved as a different-mode study; no full new capacity curve or production scaling claim is made. New implementation is on `resumable-streaming`, with uncommitted source changes at report time.
+
+## Appendix A. Per-WAV accuracy in five selected setups
+
+These tables use completed calls only. Failed recordings remain visible, and workers/total-call notation matches the new resumable comparison.
+
+
+Same five setups as the resumable per-WAV tables. Headers mean **workers / total concurrent calls**. Values are arithmetic mean WER (EN/ID) or CER (ZH), in percent, over completed repetitions of each WAV. The first four columns offer three observations per WAV; the last offers six. Failed cells show **Failed (completed/offered)** rather than treating an absent final transcript as a measured transcription. Completion counts and supplementary failure-inclusive scores are retained in the CSV/JSON.
+
+Per-file means are not an unweighted replacement for corpus WER/CER. The original prefix policy used a four-second preview and whole-audio EOF refinement; these results describe that historical policy, not the new resumable runtime.
+
+### EN: mean WER (%) per WAV
+
+| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
+|---|---:|---:|---:|---:|---:|
+| fleurs_en_us_validation_1523_142 | 5.26 | 5.26 | 5.26 | 5.26 | 5.26 |
+| fleurs_en_us_validation_1626_141 | 15.15 | 15.15 | 15.15 | 15.15 | 15.15 |
+| fleurs_en_us_validation_1654_60 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_en_us_validation_1607_28 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_en_us_validation_1521_51 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_en_us_validation_1518_26 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
+| fleurs_en_us_validation_1520_42 | 11.54 | 11.54 | 11.54 | 11.54 | 11.54 |
+| fleurs_en_us_validation_1549_14 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_en_us_validation_1510_2 | 9.52 | 9.52 | 9.52 | 9.52 | 9.52 |
+| fleurs_en_us_validation_1581_159 | 7.14 | 7.14 | 7.14 | 7.14 | 7.14 |
+
+### ID: mean WER (%) per WAV
+
+| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
+|---|---:|---:|---:|---:|---:|
+| fleurs_id_id_validation_1523_32 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_id_id_validation_1626_67 | 17.86 | 17.86 | 17.86 | 17.86 | 17.86 |
+| fleurs_id_id_validation_1654_84 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_id_id_validation_1607_141 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_id_id_validation_1521_214 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_id_id_validation_1518_37 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_id_id_validation_1520_4 | 8.33 | 8.33 | 8.33 | 8.33 | 8.33 |
+| fleurs_id_id_validation_1549_131 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
+| fleurs_id_id_validation_1510_256 | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/3) | Failed (0/6) |
+| fleurs_id_id_validation_1581_36 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+
+### ZH: mean CER (%) per WAV
+
+| WAV recording ID | 1 worker(s) / 1 call(s) | 1 worker(s) / 2 call(s) | 2 worker(s) / 2 call(s) | 2 worker(s) / 4 call(s) | 2 worker(s) / 16 call(s) |
+|---|---:|---:|---:|---:|---:|
+| fleurs_cmn_hans_cn_validation_1523_8 | 22.58 | 22.58 | 22.58 | 22.58 | 22.58 |
+| fleurs_cmn_hans_cn_validation_1626_27 | 1.75 | 1.75 | 1.75 | 1.75 | 1.75 |
+| fleurs_cmn_hans_cn_validation_1654_53 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_cmn_hans_cn_validation_1607_137 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_cmn_hans_cn_validation_1521_86 | 4.55 | 4.55 | 4.55 | 4.55 | 4.55 |
+| fleurs_cmn_hans_cn_validation_1518_114 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_cmn_hans_cn_validation_1520_32 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_cmn_hans_cn_validation_1549_96 | 2.94 | 2.94 | 2.94 | 2.94 | 2.94 |
+| fleurs_cmn_hans_cn_validation_1510_56 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| fleurs_cmn_hans_cn_validation_1581_2 | 3.85 | 3.85 | 3.85 | 3.85 | 3.85 |
+
+**Selected-layout population:** 486/540 completed observations. Failed calls are excluded from primary per-WAV accuracy; they remain visible in counts and supplementary failure-inclusive values. This is only the five selected layouts, not the whole historical 900-call direct study.
+
+[Per-WAV CSV](../results/capacity_cpu_20261006_curves/per_wav_accuracy.csv) · [Scores, counts and failures in JSON](../results/capacity_cpu_20261006_curves/per_wav_accuracy.json).
