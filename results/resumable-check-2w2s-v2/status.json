@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "failures": [],
+  "calls": 4,
+  "completed": 4,
+  "note": "Focused short-call integration check, not capacity/accuracy validation."
+}

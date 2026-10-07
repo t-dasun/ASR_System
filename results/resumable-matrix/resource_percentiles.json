@@ -1,0 +1,1674 @@
+[
+  {
+    "workers": 1,
+    "slots_per_worker": 1,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 1195,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.6234884080233553,
+        "p90": 4.300052650695194,
+        "p95": 4.403627774832269,
+        "p99": 4.540081573491844,
+        "max": 4.68821377388768,
+        "mean": 1.872245313244635
+      },
+      "host_cpu_percent": {
+        "count": 1195,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.005524861878453,
+        "p90": 14.316089589923264,
+        "p95": 14.850451555784828,
+        "p99": 16.170650329385342,
+        "max": 17.647058823529413,
+        "mean": 6.81556447797871
+      },
+      "process_tree_pss_gib": {
+        "count": 1198,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.658834457397461,
+        "p90": 1.677631950378418,
+        "p95": 1.681826114654541,
+        "p99": 1.6879368972778321,
+        "max": 1.691986083984375,
+        "mean": 1.651184593894844
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 1,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 1503,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.4855885276490874,
+        "p90": 4.32077592309993,
+        "p95": 4.4127555226356385,
+        "p99": 4.570089537961313,
+        "max": 4.760291735722704,
+        "mean": 2.222609701168836
+      },
+      "host_cpu_percent": {
+        "count": 1503,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.71369294605809,
+        "p90": 14.380649898639984,
+        "p95": 14.880792799693603,
+        "p99": 16.577247088125414,
+        "max": 17.63157894736842,
+        "mean": 7.856790368024496
+      },
+      "process_tree_pss_gib": {
+        "count": 1506,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.6852569580078125,
+        "p90": 1.704742431640625,
+        "p95": 1.7117714881896973,
+        "p99": 1.7200952529907227,
+        "max": 1.7252693176269531,
+        "mean": 1.6852646082995897
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 1,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 1599,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.7419221433662486,
+        "p90": 4.371141923945094,
+        "p95": 4.501392336971429,
+        "p99": 4.681633532689255,
+        "max": 4.890427629152177,
+        "mean": 1.8287721183590515
+      },
+      "host_cpu_percent": {
+        "count": 1599,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.8567493112947657,
+        "p90": 14.658920539730136,
+        "p95": 15.243990003381004,
+        "p99": 17.06049343832021,
+        "max": 22.17948717948718,
+        "mean": 6.654603595581554
+      },
+      "process_tree_pss_gib": {
+        "count": 1602,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.7000274658203125,
+        "p90": 1.7254266738891602,
+        "p95": 1.731887435913086,
+        "p99": 1.7424107742309571,
+        "max": 1.7491912841796875,
+        "mean": 1.7020239907406391
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 2,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 670,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.037871918049557,
+        "p90": 4.392829895410944,
+        "p95": 4.48622965682554,
+        "p99": 4.571601933867194,
+        "max": 4.657444686905033,
+        "mean": 3.201705772154091
+      },
+      "host_cpu_percent": {
+        "count": 670,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.528945901815657,
+        "p90": 15.748910728590689,
+        "p95": 16.52385273528649,
+        "p99": 17.60870172498079,
+        "max": 21.419185282522996,
+        "mean": 11.276057073201253
+      },
+      "process_tree_pss_gib": {
+        "count": 673,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.7067279815673828,
+        "p90": 1.7552244186401367,
+        "p95": 1.7661323547363281,
+        "p99": 1.776960105895996,
+        "max": 1.7832841873168945,
+        "mean": 1.706894397027071
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 2,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 897,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.07187606725242,
+        "p90": 4.401690217465198,
+        "p95": 4.490090967784931,
+        "p99": 4.640805140708311,
+        "max": 4.723573821569187,
+        "mean": 3.590500090911877
+      },
+      "host_cpu_percent": {
+        "count": 897,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.642384105960264,
+        "p90": 15.530928915915286,
+        "p95": 16.180440274269216,
+        "p99": 17.63404842381182,
+        "max": 23.337856173677068,
+        "mean": 12.433978632767102
+      },
+      "process_tree_pss_gib": {
+        "count": 900,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.738448143005371,
+        "p90": 1.7770215034484864,
+        "p95": 1.7931689739227294,
+        "p99": 1.8033020401000976,
+        "max": 1.8043279647827148,
+        "mean": 1.735655696656969
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 2,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 850,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.121314977957541,
+        "p90": 4.4607430565626025,
+        "p95": 4.577080545672274,
+        "p99": 4.7186259385376,
+        "max": 4.825385456744923,
+        "mean": 3.2490577381059578
+      },
+      "host_cpu_percent": {
+        "count": 850,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.720316622691293,
+        "p90": 15.657894736842104,
+        "p95": 16.41605533539582,
+        "p99": 17.593438785497703,
+        "max": 21.151271753681392,
+        "mean": 11.319392456245643
+      },
+      "process_tree_pss_gib": {
+        "count": 853,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.7517385482788086,
+        "p90": 1.7869649887084962,
+        "p95": 1.7955320358276368,
+        "p99": 1.8044785690307616,
+        "max": 1.8098506927490234,
+        "mean": 1.749996413379593
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 3,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 561,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.029268157083117,
+        "p90": 4.386378393488746,
+        "p95": 4.450990752831798,
+        "p99": 4.534523986891603,
+        "max": 4.690377179964192,
+        "mean": 3.7653637301247467
+      },
+      "host_cpu_percent": {
+        "count": 561,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.686806411837239,
+        "p90": 16.103896103896105,
+        "p95": 16.728167281672818,
+        "p99": 17.5370118647091,
+        "max": 20.536912751677853,
+        "mean": 13.164869516235468
+      },
+      "process_tree_pss_gib": {
+        "count": 564,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.7493906021118164,
+        "p90": 1.8213603019714355,
+        "p95": 1.8495151042938234,
+        "p99": 1.8674664306640625,
+        "max": 1.8685379028320312,
+        "mean": 1.7593966054578198
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 3,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 839,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.057756482671757,
+        "p90": 4.38944062782656,
+        "p95": 4.483416442574521,
+        "p99": 4.645978333676117,
+        "max": 4.850548755734766,
+        "mean": 3.8051152898536422
+      },
+      "host_cpu_percent": {
+        "count": 839,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.738441215323647,
+        "p90": 15.740022059724662,
+        "p95": 16.44262373247719,
+        "p99": 17.4061807302645,
+        "max": 20.869565217391305,
+        "mean": 13.190487774289897
+      },
+      "process_tree_pss_gib": {
+        "count": 842,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.782571792602539,
+        "p90": 1.861469841003418,
+        "p95": 1.876077938079834,
+        "p99": 1.890299482345581,
+        "max": 1.8921585083007812,
+        "mean": 1.7896878136025471
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 3,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 692,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.165286175969998,
+        "p90": 4.484433739302178,
+        "p95": 4.5750773562886895,
+        "p99": 4.686526030556954,
+        "max": 4.808800591023527,
+        "mean": 3.9153379791889917
+      },
+      "host_cpu_percent": {
+        "count": 692,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.9818215692537,
+        "p90": 16.12668380462725,
+        "p95": 16.89501544269046,
+        "p99": 17.96644910682338,
+        "max": 21.79656538969617,
+        "mean": 13.539022103196466
+      },
+      "process_tree_pss_gib": {
+        "count": 695,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.807413101196289,
+        "p90": 1.859015655517578,
+        "p95": 1.8686668395996093,
+        "p99": 1.8745712661743164,
+        "max": 1.8804664611816406,
+        "mean": 1.8064440171495617
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 4,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 532,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.152384356589894,
+        "p90": 4.421976486595744,
+        "p95": 4.4644263759175296,
+        "p99": 4.566055384754766,
+        "max": 4.642288482112159,
+        "mean": 3.912743541979284
+      },
+      "host_cpu_percent": {
+        "count": 532,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.061473390275953,
+        "p90": 16.3104241185488,
+        "p95": 16.856907894736842,
+        "p99": 17.973447390344656,
+        "max": 18.733509234828496,
+        "mean": 13.693520418688571
+      },
+      "process_tree_pss_gib": {
+        "count": 535,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.8339920043945312,
+        "p90": 1.9003677368164062,
+        "p95": 1.908544921875,
+        "p99": 1.9304077911376953,
+        "max": 1.9376506805419922,
+        "mean": 1.8268227978287457
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 4,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 788,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.111833096771777,
+        "p90": 4.420551265818739,
+        "p95": 4.4990149881871035,
+        "p99": 4.641267408854308,
+        "max": 4.787260942543048,
+        "mean": 3.994198289969082
+      },
+      "host_cpu_percent": {
+        "count": 788,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.109670169470935,
+        "p90": 15.972582012070642,
+        "p95": 16.563313893231406,
+        "p99": 17.378854258142695,
+        "max": 21.077844311377245,
+        "mean": 13.896684525896918
+      },
+      "process_tree_pss_gib": {
+        "count": 791,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.8659381866455078,
+        "p90": 1.9101886749267578,
+        "p95": 1.919076919555664,
+        "p99": 1.9299659729003906,
+        "max": 1.9372491836547852,
+        "mean": 1.8603568059002555
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 4,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 665,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.2067767733424875,
+        "p90": 4.509306572212357,
+        "p95": 4.606242421964887,
+        "p99": 4.752031073926863,
+        "max": 4.890980581671388,
+        "mean": 4.020135833332052
+      },
+      "host_cpu_percent": {
+        "count": 665,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.136125654450261,
+        "p90": 16.010845918592555,
+        "p95": 16.862326430854345,
+        "p99": 18.268836489097023,
+        "max": 20.801033591731265,
+        "mean": 13.857451032408578
+      },
+      "process_tree_pss_gib": {
+        "count": 668,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.8686304092407227,
+        "p90": 1.9041570663452148,
+        "p95": 1.9143630981445312,
+        "p99": 1.929775619506836,
+        "max": 1.9354114532470703,
+        "mean": 1.8623420978020766
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 5,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 521,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.169824480591367,
+        "p90": 4.429870926339681,
+        "p95": 4.491508324977099,
+        "p99": 4.596999258054494,
+        "max": 4.748975111808683,
+        "mean": 3.948768776101174
+      },
+      "host_cpu_percent": {
+        "count": 521,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.0625,
+        "p90": 16.18204804045512,
+        "p95": 16.71087533156499,
+        "p99": 17.375523342943353,
+        "max": 20.230473751600513,
+        "mean": 13.717906547573026
+      },
+      "process_tree_pss_gib": {
+        "count": 524,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.8994126319885254,
+        "p90": 1.945199203491211,
+        "p95": 1.9564973831176757,
+        "p99": 1.975759162902832,
+        "max": 1.9822330474853516,
+        "mean": 1.8865959316719578
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 5,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 783,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.131911211360288,
+        "p90": 4.411340305283562,
+        "p95": 4.500516211450424,
+        "p99": 4.65006463593294,
+        "max": 4.790615625559317,
+        "mean": 4.00722480408996
+      },
+      "host_cpu_percent": {
+        "count": 783,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.247669773635153,
+        "p90": 16.385416829868237,
+        "p95": 16.857262277951932,
+        "p99": 17.917551803330024,
+        "max": 21.791767554479417,
+        "mean": 14.07083265683245
+      },
+      "process_tree_pss_gib": {
+        "count": 786,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.9415225982666016,
+        "p90": 1.9809751510620117,
+        "p95": 1.98872971534729,
+        "p99": 1.9970383167266845,
+        "max": 2.00150203704834,
+        "mean": 1.9281320705365286
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 5,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 656,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.224567678947373,
+        "p90": 4.5314731586601305,
+        "p95": 4.605824597326558,
+        "p99": 4.761894451867636,
+        "max": 4.820124749566946,
+        "mean": 4.06423274538402
+      },
+      "host_cpu_percent": {
+        "count": 656,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.322748655913978,
+        "p90": 16.436585231433003,
+        "p95": 16.961024332120093,
+        "p99": 17.83848759333006,
+        "max": 23.5370611183355,
+        "mean": 14.105197758957924
+      },
+      "process_tree_pss_gib": {
+        "count": 659,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.9317913055419922,
+        "p90": 1.9695964813232423,
+        "p95": 1.9816207885742188,
+        "p99": 1.9982807159423828,
+        "max": 2.001347541809082,
+        "mean": 1.9235744505261434
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 6,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 519,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.182603677605404,
+        "p90": 4.4368909351458266,
+        "p95": 4.505003487424885,
+        "p99": 4.627863082201789,
+        "max": 4.703465555957317,
+        "mean": 3.959944478686239
+      },
+      "host_cpu_percent": {
+        "count": 519,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.285714285714286,
+        "p90": 16.26283071375377,
+        "p95": 16.85356075515708,
+        "p99": 17.811846883569263,
+        "max": 21.11111111111111,
+        "mean": 13.913003963101415
+      },
+      "process_tree_pss_gib": {
+        "count": 522,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.958630084991455,
+        "p90": 2.0203854560852053,
+        "p95": 2.029528760910034,
+        "p99": 2.043048048019409,
+        "max": 2.046905517578125,
+        "mean": 1.9474558720643493
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 6,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 775,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.139741287237142,
+        "p90": 4.427590581204981,
+        "p95": 4.491667270718606,
+        "p99": 4.6668655181431,
+        "max": 4.81537997792992,
+        "mean": 4.016856873001681
+      },
+      "host_cpu_percent": {
+        "count": 775,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.248704663212436,
+        "p90": 16.386626682530547,
+        "p95": 16.98809136158534,
+        "p99": 17.892886926326437,
+        "max": 22.066326530612244,
+        "mean": 14.107633811610224
+      },
+      "process_tree_pss_gib": {
+        "count": 778,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.0087075233459473,
+        "p90": 2.0405993461608887,
+        "p95": 2.046964979171753,
+        "p99": 2.0552202320098876,
+        "max": 2.061389923095703,
+        "mean": 1.9994251991605392
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 6,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 655,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.224615574953405,
+        "p90": 4.50314992928202,
+        "p95": 4.609678154254525,
+        "p99": 4.783446498516368,
+        "max": 4.8694488587350975,
+        "mean": 4.059722500678455
+      },
+      "host_cpu_percent": {
+        "count": 655,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.453125,
+        "p90": 16.848245656254512,
+        "p95": 17.760679251834688,
+        "p99": 21.97422339722407,
+        "max": 24.936386768447836,
+        "mean": 14.399464334758644
+      },
+      "process_tree_pss_gib": {
+        "count": 658,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.0174083709716797,
+        "p90": 2.062726593017578,
+        "p95": 2.0749183654785157,
+        "p99": 2.0894910430908205,
+        "max": 2.0931520462036133,
+        "mean": 2.0105504888169308
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 7,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 411,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.13010268643877,
+        "p90": 4.355127459999617,
+        "p95": 4.406954511562837,
+        "p99": 4.494710487091198,
+        "max": 4.627427877341574,
+        "mean": 3.875296609567981
+      },
+      "host_cpu_percent": {
+        "count": 411,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.867684478371501,
+        "p90": 15.480649188514358,
+        "p95": 16.07947922310332,
+        "p99": 17.60319484743168,
+        "max": 25.43978349120433,
+        "mean": 13.308309775342428
+      },
+      "process_tree_pss_gib": {
+        "count": 414,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 1.9988536834716797,
+        "p90": 2.0681840896606447,
+        "p95": 2.0867060661315917,
+        "p99": 2.103137969970703,
+        "max": 2.10418701171875,
+        "mean": 1.9800254503885906
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 7,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 648,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.119959967746192,
+        "p90": 4.328002074281747,
+        "p95": 4.379224906693564,
+        "p99": 4.528631307926666,
+        "max": 4.822397864089606,
+        "mean": 3.9575606040591578
+      },
+      "host_cpu_percent": {
+        "count": 648,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.990289601702646,
+        "p90": 15.828483619956845,
+        "p95": 16.472242319750826,
+        "p99": 18.423585367559614,
+        "max": 24.88262910798122,
+        "mean": 13.82957149066192
+      },
+      "process_tree_pss_gib": {
+        "count": 651,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.049868583679199,
+        "p90": 2.112250328063965,
+        "p95": 2.127781867980957,
+        "p99": 2.1530942916870117,
+        "max": 2.160048484802246,
+        "mean": 2.0375072637461296
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 7,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 495,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.164897549304867,
+        "p90": 4.405381759608079,
+        "p95": 4.524731245103246,
+        "p99": 4.641257859626654,
+        "max": 4.7332127958562715,
+        "mean": 3.9624572988248055
+      },
+      "host_cpu_percent": {
+        "count": 495,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.991769547325102,
+        "p90": 15.797654758658304,
+        "p95": 16.238490566037733,
+        "p99": 17.119821270283474,
+        "max": 19.393139841688654,
+        "mean": 13.547982871249022
+      },
+      "process_tree_pss_gib": {
+        "count": 498,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.0556559562683105,
+        "p90": 2.0898539543151857,
+        "p95": 2.097519874572754,
+        "p99": 2.1067463111877442,
+        "max": 2.10909366607666,
+        "mean": 2.036527951558431
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 8,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 404,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.121672090917463,
+        "p90": 4.364193547143938,
+        "p95": 4.448040965228923,
+        "p99": 4.534026295914022,
+        "max": 4.682915492251772,
+        "mean": 3.8695202668852953
+      },
+      "host_cpu_percent": {
+        "count": 404,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.997393070931892,
+        "p90": 15.807934416630069,
+        "p95": 16.556899835689002,
+        "p99": 17.572270064449977,
+        "max": 18.576598311218337,
+        "mean": 13.39836382069345
+      },
+      "process_tree_pss_gib": {
+        "count": 407,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.0668468475341797,
+        "p90": 2.140359115600586,
+        "p95": 2.1513607025146486,
+        "p99": 2.170885124206543,
+        "max": 2.1762447357177734,
+        "mean": 2.0320059872376537
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 8,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 641,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.121608781510661,
+        "p90": 4.373979393417631,
+        "p95": 4.437334179892175,
+        "p99": 4.552620007785836,
+        "max": 4.708428587282706,
+        "mean": 3.956776624673119
+      },
+      "host_cpu_percent": {
+        "count": 641,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.234016887816647,
+        "p90": 16.533333333333335,
+        "p95": 17.364532019704434,
+        "p99": 19.79998982136497,
+        "max": 25.40880503144654,
+        "mean": 14.101292471640871
+      },
+      "process_tree_pss_gib": {
+        "count": 644,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.098522663116455,
+        "p90": 2.2002201080322266,
+        "p95": 2.208863067626953,
+        "p99": 2.217759437561035,
+        "max": 2.2334651947021484,
+        "mean": 2.093480618103691
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 8,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 500,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.143411288176809,
+        "p90": 4.417717096775097,
+        "p95": 4.543124540129651,
+        "p99": 4.66147108344955,
+        "max": 4.863919708081089,
+        "mean": 3.919299844406221
+      },
+      "host_cpu_percent": {
+        "count": 500,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.093959731543624,
+        "p90": 16.11778825220752,
+        "p95": 16.949263903427696,
+        "p99": 20.218603752887276,
+        "max": 24.03846153846154,
+        "mean": 13.76881023179904
+      },
+      "process_tree_pss_gib": {
+        "count": 503,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.120920181274414,
+        "p90": 2.170746994018555,
+        "p95": 2.1800392150878904,
+        "p99": 2.1937522888183594,
+        "max": 2.226411819458008,
+        "mean": 2.090360184550048
+      }
+    }
+  },
+  {
+    "workers": 1,
+    "slots_per_worker": 8,
+    "language": "mixed",
+    "kind": "network",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 514,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.133812229621759,
+        "p90": 4.369292134381151,
+        "p95": 4.438111194588112,
+        "p99": 4.588840241550786,
+        "max": 4.731666772376082,
+        "mean": 4.0138279932256244
+      },
+      "host_cpu_percent": {
+        "count": 514,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.334279794336583,
+        "p90": 16.666666666666668,
+        "p95": 17.50107099143207,
+        "p99": 21.56722379901188,
+        "max": 39.16083916083916,
+        "mean": 14.476993868359616
+      },
+      "process_tree_pss_gib": {
+        "count": 515,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 2.1322498321533203,
+        "p90": 2.236357498168945,
+        "p95": 2.277733993530273,
+        "p99": 2.3212456130981445,
+        "max": 2.3298683166503906,
+        "mean": 2.137023275801279
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 1,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 543,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.21363572496116,
+        "p90": 8.281809746050488,
+        "p95": 8.549507015368086,
+        "p99": 8.97074825750233,
+        "max": 9.239755936890141,
+        "mean": 3.9651092038945133
+      },
+      "host_cpu_percent": {
+        "count": 543,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 14.192139737991265,
+        "p90": 27.172024532139307,
+        "p95": 28.444728977993748,
+        "p99": 30.25502002306865,
+        "max": 31.60919540229885,
+        "mean": 13.799923971264569
+      },
+      "process_tree_pss_gib": {
+        "count": 546,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.0210161209106445,
+        "p90": 3.0729565620422363,
+        "p95": 3.0834150314331055,
+        "p99": 3.092784309387207,
+        "max": 3.1217126846313477,
+        "mean": 3.020981475983784
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 1,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 663,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 6.325854474493873,
+        "p90": 8.477822581964734,
+        "p95": 8.677402440529693,
+        "p99": 8.987833031018019,
+        "max": 9.322885647194475,
+        "mean": 5.446265047435514
+      },
+      "host_cpu_percent": {
+        "count": 663,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 21.993127147766323,
+        "p90": 28.023127205977207,
+        "p95": 28.876727244827066,
+        "p99": 30.633668748094234,
+        "max": 31.904761904761905,
+        "mean": 18.494520502345928
+      },
+      "process_tree_pss_gib": {
+        "count": 666,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.0543813705444336,
+        "p90": 3.0906224250793457,
+        "p95": 3.096923828125,
+        "p99": 3.106589937210083,
+        "max": 3.1108760833740234,
+        "mean": 3.047237065461305
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 1,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 737,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 4.187545704698924,
+        "p90": 8.241507846624135,
+        "p95": 8.610615752883689,
+        "p99": 8.938320614185674,
+        "max": 9.18288343919238,
+        "mean": 3.851399309389597
+      },
+      "host_cpu_percent": {
+        "count": 737,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 13.975903614457831,
+        "p90": 26.92870249832275,
+        "p95": 28.29021161263421,
+        "p99": 30.609348012393696,
+        "max": 32.18785796105384,
+        "mean": 13.365835631075718
+      },
+      "process_tree_pss_gib": {
+        "count": 740,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.0460710525512695,
+        "p90": 3.0922830581665037,
+        "p95": 3.100319671630859,
+        "p99": 3.1184904098510744,
+        "max": 3.1242523193359375,
+        "mean": 3.042105857746021
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 2,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 348,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.109869587962223,
+        "p90": 8.633546478250109,
+        "p95": 8.768023608841583,
+        "p99": 9.053565842916095,
+        "max": 9.353410189236211,
+        "mean": 6.782265648710919
+      },
+      "host_cpu_percent": {
+        "count": 348,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 26.72264646840918,
+        "p90": 29.7139567677561,
+        "p95": 30.438496790855552,
+        "p99": 31.883239505664907,
+        "max": 33.439153439153436,
+        "mean": 22.96324095216458
+      },
+      "process_tree_pss_gib": {
+        "count": 351,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.1512298583984375,
+        "p90": 3.236125946044922,
+        "p95": 3.2460455894470215,
+        "p99": 3.2549476623535156,
+        "max": 3.261617660522461,
+        "mean": 3.145246970347869
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 2,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 495,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.136580642667822,
+        "p90": 8.619785215972382,
+        "p95": 8.772707941858426,
+        "p99": 9.034133871258696,
+        "max": 9.212117170849156,
+        "mean": 7.433074262800289
+      },
+      "host_cpu_percent": {
+        "count": 495,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.0,
+        "p90": 29.36070724352216,
+        "p95": 30.27027027027027,
+        "p99": 31.323042403844696,
+        "max": 32.96296296296296,
+        "mean": 25.068770749904314
+      },
+      "process_tree_pss_gib": {
+        "count": 498,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.1990299224853516,
+        "p90": 3.243356132507324,
+        "p95": 3.2572540283203124,
+        "p99": 3.275134620666504,
+        "max": 3.2860565185546875,
+        "mean": 3.1894074922584625
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 2,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 406,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.274760539173029,
+        "p90": 8.787958355494158,
+        "p95": 8.944107384929193,
+        "p99": 9.113659739787666,
+        "max": 9.401071572630425,
+        "mean": 7.443344551361321
+      },
+      "host_cpu_percent": {
+        "count": 406,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.466802519945126,
+        "p90": 29.69830200121286,
+        "p95": 30.589433804665592,
+        "p99": 31.554460245636715,
+        "max": 34.55377574370709,
+        "mean": 25.089531440672626
+      },
+      "process_tree_pss_gib": {
+        "count": 409,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.2094688415527344,
+        "p90": 3.24830322265625,
+        "p95": 3.2615993499755858,
+        "p99": 3.2804001235961913,
+        "max": 3.286799430847168,
+        "mean": 3.198106192143447
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 4,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 327,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.142249430890404,
+        "p90": 8.639034208931045,
+        "p95": 8.741040766461444,
+        "p99": 8.888338422610033,
+        "max": 8.948054030371443,
+        "mean": 7.4482623206341385
+      },
+      "host_cpu_percent": {
+        "count": 327,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.22007722007722,
+        "p90": 29.593214088143096,
+        "p95": 30.46580647693646,
+        "p99": 31.351543735534303,
+        "max": 35.170340681362724,
+        "mean": 25.292577467330577
+      },
+      "process_tree_pss_gib": {
+        "count": 330,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.412302017211914,
+        "p90": 3.476038360595703,
+        "p95": 3.4988306045532225,
+        "p99": 3.520916633605957,
+        "max": 3.5311336517333984,
+        "mean": 3.370888915206447
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 4,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 509,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.04584590609443,
+        "p90": 8.587721603321798,
+        "p95": 8.731061817138702,
+        "p99": 8.996471246633869,
+        "max": 9.286851729949277,
+        "mean": 7.107650511156555
+      },
+      "host_cpu_percent": {
+        "count": 509,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 26.75760755508919,
+        "p90": 29.355430528375734,
+        "p95": 29.85897049925904,
+        "p99": 30.99634931997137,
+        "max": 33.59528487229863,
+        "mean": 24.146627739709366
+      },
+      "process_tree_pss_gib": {
+        "count": 512,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.4344000816345215,
+        "p90": 3.5329090118408204,
+        "p95": 3.5541931629180907,
+        "p99": 3.575859184265137,
+        "max": 3.5806751251220703,
+        "mean": 3.4205962531268597
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 4,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 382,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.247999062341918,
+        "p90": 8.854372224095215,
+        "p95": 8.988754768055513,
+        "p99": 9.236442806976564,
+        "max": 9.557855008298944,
+        "mean": 7.591861628542598
+      },
+      "host_cpu_percent": {
+        "count": 382,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.380496888072646,
+        "p90": 29.864775644442986,
+        "p95": 30.61299686037557,
+        "p99": 31.582162564082495,
+        "max": 32.22857142857143,
+        "mean": 25.577372535110094
+      },
+      "process_tree_pss_gib": {
+        "count": 385,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.4424867630004883,
+        "p90": 3.493698501586914,
+        "p95": 3.5080545425415037,
+        "p99": 3.530598564147949,
+        "max": 3.5450973510742188,
+        "mean": 3.417937895539519
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 8,
+    "language": "en",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 625,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.153588931407619,
+        "p90": 8.661264718933046,
+        "p95": 8.784541171132366,
+        "p99": 9.057041624222379,
+        "max": 9.229649222689295,
+        "mean": 7.579933094562856
+      },
+      "host_cpu_percent": {
+        "count": 625,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.543679342240495,
+        "p90": 29.83649371616702,
+        "p95": 30.463726474787094,
+        "p99": 31.428645255598397,
+        "max": 32.41706161137441,
+        "mean": 25.864944797861273
+      },
+      "process_tree_pss_gib": {
+        "count": 628,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.8134145736694336,
+        "p90": 3.97036075592041,
+        "p95": 4.003274822235108,
+        "p99": 4.043054475784301,
+        "max": 4.0562639236450195,
+        "mean": 3.7728499546172514
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 8,
+    "language": "id",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 983,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.106364785466308,
+        "p90": 8.607496550474993,
+        "p95": 8.764424183025007,
+        "p99": 9.06137558159017,
+        "max": 9.374458191601429,
+        "mean": 7.554467153457524
+      },
+      "host_cpu_percent": {
+        "count": 983,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.193828351012534,
+        "p90": 29.49013522500554,
+        "p95": 30.09980392156863,
+        "p99": 31.400312528725063,
+        "max": 33.61884368308351,
+        "mean": 25.61379604670508
+      },
+      "process_tree_pss_gib": {
+        "count": 986,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.883948802947998,
+        "p90": 4.120508193969727,
+        "p95": 4.135848760604858,
+        "p99": 4.151460361480713,
+        "max": 4.1571550369262695,
+        "mean": 3.8867001049900636
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 8,
+    "language": "zh",
+    "kind": "curve",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 775,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.214031794360894,
+        "p90": 8.818171431553989,
+        "p95": 8.964459529997155,
+        "p99": 9.19022255757394,
+        "max": 9.922973531572605,
+        "mean": 7.499666989810174
+      },
+      "host_cpu_percent": {
+        "count": 775,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.69709543568465,
+        "p90": 30.09410490052648,
+        "p95": 30.63945334159627,
+        "p99": 31.85939743721873,
+        "max": 36.8,
+        "mean": 25.520674239517813
+      },
+      "process_tree_pss_gib": {
+        "count": 778,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.90750789642334,
+        "p90": 4.03136043548584,
+        "p95": 4.047758626937866,
+        "p99": 4.083824205398559,
+        "max": 4.10994815826416,
+        "mean": 3.8665901505242277
+      }
+    }
+  },
+  {
+    "workers": 2,
+    "slots_per_worker": 8,
+    "language": "mixed",
+    "kind": "network",
+    "statistics": {
+      "process_tree_cpu_equivalents": {
+        "count": 336,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_cpu_equivalents",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 8.156565712684579,
+        "p90": 8.712815159969956,
+        "p95": 8.872039273709179,
+        "p99": 9.031738951880515,
+        "max": 9.28241772619439,
+        "mean": 7.587417897204869
+      },
+      "host_cpu_percent": {
+        "count": 336,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "host_cpu_percent",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 27.586039145780724,
+        "p90": 30.055924574588623,
+        "p95": 30.592070196945873,
+        "p99": 31.4760348583878,
+        "max": 36.31984585741811,
+        "mean": 25.932827980785625
+      },
+      "process_tree_pss_gib": {
+        "count": 337,
+        "population": "valid resource samples within measured phases; sample-weighted",
+        "unit": "process_tree_pss_gib",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 3.8980369567871094,
+        "p90": 4.006713485717773,
+        "p95": 4.026278686523438,
+        "p99": 4.043211059570313,
+        "max": 4.048192024230957,
+        "mean": 3.8709068581329253
+      }
+    }
+  }
+]

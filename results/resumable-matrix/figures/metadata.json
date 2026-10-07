@@ -1,0 +1,8 @@
+{
+  "plot_source_sha256": "3d5bfb8d34da3e2132a39910819f5e2b133e00b1dafbc4be31fee821d01a93a9",
+  "matplotlib_version": "3.11.2",
+  "python": "3.14.7 (main, Aug 10 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]",
+  "source": "curve.json",
+  "timing_population": "completed calls; null means no successful observation",
+  "figure_units": "timing seconds, memory GiB, CPU core equivalents"
+}

@@ -1,0 +1,50 @@
+{
+  "scope": "completed resumable 12-layout study",
+  "direct_calls": 1170,
+  "direct_complete": 1170,
+  "network_calls": 60,
+  "network_complete": 55,
+  "warmup_calls": 16,
+  "direct_contract_checks": true,
+  "network_contract_checks": false,
+  "note": "Driver COMPLETE means requested grid finished; network failures and terminal-event contract failures remain. Report generation did not run inference.",
+  "late_chunks": 6,
+  "audio_overflows": 0,
+  "report_path": "docs/FINAL_REPORT_RESUMABLE.md",
+  "report_sha256": "f9374dad17c8ce19055531910f7feb1f8701a6b547dc6e2dcefd25e5935bce6c",
+  "report_refinement": "Assignment-complete explanations of jitter, concurrency scheduling and accuracy policy; no additional inference.",
+  "accuracy_recheck": "Independently rescored completed raw baseline transcripts in both studies; common EN subset 33/552=5.98%, all new completed EN 63/615=10.24%.",
+  "per_wav_accuracy": {
+    "languages": 3,
+    "unique_wavs_per_language": 10,
+    "layouts": [
+      {
+        "workers": 1,
+        "total_calls": 1
+      },
+      {
+        "workers": 1,
+        "total_calls": 2
+      },
+      {
+        "workers": 2,
+        "total_calls": 2
+      },
+      {
+        "workers": 2,
+        "total_calls": 4
+      },
+      {
+        "workers": 2,
+        "total_calls": 16
+      }
+    ],
+    "source_observations": 540,
+    "same_score_across_selected_layouts": true
+  },
+  "submission_report": {
+    "path": "report.md",
+    "sha256": "88844ad936c173d4d37afdc3f4bbf32d029125fe4ccc80b722545c7b7f7214d7",
+    "scope": "Standalone assignment report; measurements unchanged."
+  }
+}

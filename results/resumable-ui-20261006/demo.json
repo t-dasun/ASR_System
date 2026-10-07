@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "engine": "qwen_stream",
+  "workers": 2,
+  "slots_per_worker": 2,
+  "mode": "native C++ service and headless browser over loopback",
+  "results": [
+    {
+      "language": "en",
+      "clip_id": "fleurs_en_us_validation_1523_142",
+      "duration_seconds": 10.22,
+      "transcript": "The final score was a one-point victory, 21 to 20, ending the All Blacks' 15-game winning streak.",
+      "revisions": 6,
+      "client_first_text_ms": 2693,
+      "first_text_before_eof": true,
+      "client_eof_to_final": "1011 ms",
+      "accuracy": "0.00%",
+      "reference": "The final score was a one-point victory, 21 to 20, ending the All Blacks' 15 game winning streak.",
+      "chunk_ms": 100,
+      "decode_step_ms": 2000,
+      "max_client_send_lag": "5.0 ms",
+      "acked_chunks": "103 / 103",
+      "source_wav_sha256": "4c7538ad8ae26c434f7401d9d9705c69d1bb47101a2aba8bf8d7f8cc659dff19"
+    },
+    {
+      "language": "id",
+      "clip_id": "fleurs_id_id_validation_1520_4",
+      "duration_seconds": 15.48,
+      "transcript": "Dari seribu empat ratus orang yang disurvey sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8 persen sejak tahun 2008.",
+      "revisions": 8,
+      "client_first_text_ms": 2842,
+      "first_text_before_eof": true,
+      "client_eof_to_final": "1189 ms",
+      "accuracy": "16.67%",
+      "reference": "Dari 1.400 orang yang disurvei sebelum pemilihan federal tahun 2010, mereka yang menentang Australia menjadi republik tumbuh sebesar 8 persen sejak tahun 2008.",
+      "chunk_ms": 100,
+      "decode_step_ms": 2000,
+      "max_client_send_lag": "30.6 ms",
+      "acked_chunks": "155 / 155",
+      "source_wav_sha256": "0a42606fcb02a1c52a321aec1ec8e6fc1b2a44ad53ed0b274f14ef7c5abd159a"
+    },
+    {
+      "language": "zh",
+      "clip_id": "fleurs_cmn_hans_cn_validation_1559_6",
+      "duration_seconds": 14.28,
+      "transcript": "嗯意大利的法语的发音相对容易，因为大多数单词的发音与拼写完全相同。",
+      "revisions": 8,
+      "client_first_text_ms": 2508,
+      "first_text_before_eof": true,
+      "client_eof_to_final": "1480 ms",
+      "accuracy": "10.71%",
+      "reference": "意大利语的发音相对容易，因为大多数单词的发音与拼写完全相同",
+      "chunk_ms": 100,
+      "decode_step_ms": 2000,
+      "max_client_send_lag": "1.6 ms",
+      "acked_chunks": "143 / 143",
+      "source_wav_sha256": "2aeae658ebe4d5d8b0cef6cb7af598334c1d14f4555bbd9f7b031dadf06714f4"
+    }
+  ],
+  "browser_errors": 0,
+  "command": "npm run test:e2e:resumable",
+  "config_sha256": "bbc84824744cc6c40bf44fb565c06ebca4a0a40d2ff868dc431eb854b209b17e",
+  "cli_sha256": "9ee75014dd74103b55be576297b4cbbe3c6c546111ebc7c41167410523ee6427",
+  "worker_sha256": "df2aefdd36462a480123151f19841e1abb85136ced285e9840f1006a57ae175b",
+  "manifest_sha256": "9b45b65b3fd235622f497a1ed3642e8c0b67bf41056179bd8b7cd240a6f2a977",
+  "model_acquisition": {
+    "model": "Qwen/Qwen3-ASR-0.6B",
+    "revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+    "status": "verified",
+    "files": [
+      {
+        "name": "README.md",
+        "expected_size": 57456,
+        "expected_sha256": null,
+        "sha256": "5058416891bc47a2051557765997e8c42f8eb78a0e33c3e775bd17d4b0ba4d50"
+      },
+      {
+        "name": "chat_template.json",
+        "expected_size": 1161,
+        "expected_sha256": null,
+        "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff"
+      },
+      {
+        "name": "config.json",
+        "expected_size": 6193,
+        "expected_sha256": null,
+        "sha256": "76d3ae4601ce939830b2517f4a6cadb86cc51316c3900af6b020b051c21a478c"
+      },
+      {
+        "name": "generation_config.json",
+        "expected_size": 142,
+        "expected_sha256": null,
+        "sha256": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c"
+      },
+      {
+        "name": "merges.txt",
+        "expected_size": 1671853,
+        "expected_sha256": null,
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "name": "model.safetensors",
+        "expected_size": 1876091704,
+        "expected_sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea",
+        "sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+      },
+      {
+        "name": "preprocessor_config.json",
+        "expected_size": 330,
+        "expected_sha256": null,
+        "sha256": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"
+      },
+      {
+        "name": "tokenizer_config.json",
+        "expected_size": 12487,
+        "expected_sha256": null,
+        "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+      },
+      {
+        "name": "vocab.json",
+        "expected_size": 2776833,
+        "expected_sha256": null,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ]
+  }
+}

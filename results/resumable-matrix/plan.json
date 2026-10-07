@@ -1,0 +1,304 @@
+{
+  "per_language": 10,
+  "repetitions": 3,
+  "layouts": [
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "concurrency_levels": [
+        1
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "concurrency_levels": [
+        2
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "concurrency_levels": [
+        3
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "concurrency_levels": [
+        4
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "concurrency_levels": [
+        5
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "concurrency_levels": [
+        6
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "concurrency_levels": [
+        7
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "concurrency_levels": [
+        8
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 1,
+      "concurrency_levels": [
+        2
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 2,
+      "concurrency_levels": [
+        4
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 3,
+      "concurrency_levels": [
+        6
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 4,
+      "concurrency_levels": [
+        8
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 5,
+      "concurrency_levels": [
+        10
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 6,
+      "concurrency_levels": [
+        12
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 7,
+      "concurrency_levels": [
+        14
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 8,
+      "concurrency_levels": [
+        16
+      ]
+    }
+  ],
+  "slots_per_worker": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "threads_per_worker": 4,
+  "runtime": "qwen_stream",
+  "config": "configs/qwen_stream_shared.yaml",
+  "config_sha256": "bbc84824744cc6c40bf44fb565c06ebca4a0a40d2ff868dc431eb854b209b17e",
+  "matrix_mode": "resumable_16_layouts",
+  "reserve_bytes": 2147483648,
+  "swap_io_limit_bytes": 67108864,
+  "soak_seconds": 0,
+  "soak_worker_layout": "largest measured layout",
+  "dense": false,
+  "planned_curve_calls": 1710,
+  "host": {
+    "timestamp_ns": 34164828306230,
+    "memory": {
+      "MemTotal": 15870791680,
+      "MemFree": 1101410304,
+      "MemAvailable": 6260326400,
+      "Buffers": 585728,
+      "Cached": 5473214464,
+      "SwapCached": 3137536,
+      "Active": 6133989376,
+      "Inactive": 4529745920,
+      "Active(anon)": 4635623424,
+      "Inactive(anon)": 762044416,
+      "Active(file)": 1498365952,
+      "Inactive(file)": 3767701504,
+      "Unevictable": 118784,
+      "Mlocked": 118784,
+      "SwapTotal": 8589930496,
+      "SwapFree": 4379811840,
+      "Zswap": 0,
+      "Zswapped": 0,
+      "Dirty": 2433024,
+      "Writeback": 0,
+      "AnonPages": 5188771840,
+      "Mapped": 2866962432,
+      "Shmem": 207892480,
+      "KReclaimable": 240607232,
+      "Slab": 709283840,
+      "SReclaimable": 240607232,
+      "SUnreclaim": 468676608,
+      "KernelStack": 45809664,
+      "PageTables": 152702976,
+      "SecPageTables": 5865472,
+      "NFS_Unstable": 0,
+      "Bounce": 0,
+      "WritebackTmp": 0,
+      "CommitLimit": 16525324288,
+      "Committed_AS": 61362151424,
+      "VmallocTotal": 35184372087808,
+      "VmallocUsed": 225128448,
+      "VmallocChunk": 0,
+      "Percpu": 42467328,
+      "HardwareCorrupted": 0,
+      "AnonHugePages": 39845888,
+      "ShmemHugePages": 0,
+      "ShmemPmdMapped": 0,
+      "FileHugePages": 0,
+      "FilePmdMapped": 0,
+      "CmaTotal": 0,
+      "CmaFree": 0,
+      "Unaccepted": 0,
+      "Balloon": 0,
+      "GPUActive": 1039478784,
+      "GPUReclaim": 86552576,
+      "Hugepagesize": 2097152,
+      "Hugetlb": 0,
+      "DirectMap4k": 4808822784,
+      "DirectMap2M": 11488198656,
+      "DirectMap1G": 1073741824
+    },
+    "memory_pressure": {
+      "some": {
+        "avg10": 0.12,
+        "avg60": 0.02,
+        "avg300": 0.0,
+        "total": 3985179.0
+      },
+      "full": {
+        "avg10": 0.12,
+        "avg60": 0.02,
+        "avg300": 0.0,
+        "total": 3958973.0
+      }
+    },
+    "cpu_mean_frequency_khz": 1828298.28125,
+    "temperatures_c": {
+      "spd5118/temp1_input": 38.5,
+      "amdgpu/edge": 47.0,
+      "nvme/Sensor 2": 35.85,
+      "nvme/Composite": 32.85,
+      "nvme/Sensor 1": 32.85,
+      "acpitz/temp1_input": 50.0,
+      "k10temp/Tccd1": 42.625,
+      "k10temp/Tccd2": 40.25,
+      "k10temp/Tctl": 50.5,
+      "mt7921_phy0/temp1_input": 42.0
+    },
+    "swap_pages": {
+      "pswpin": 331011,
+      "pswpout": 1466329
+    },
+    "cpu_total_ticks": 109455157,
+    "cpu_idle_ticks": 104586012,
+    "processes": []
+  },
+  "lscpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"32\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-31\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 9 9955HX 16-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"79%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"2500.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"1217.1060\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"4990.59\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"768 KiB (16 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"512 KiB (16 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"16 MiB (16 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"64 MiB (2 instances)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-31\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+  "git_head": "24d34d9f8d6a978521cd4ba7e6b0b524b84363c8",
+  "cli_sha256": "c4457588df85c53893fbd6daae6c6d18586b7b19cab7c36ad5234dc34602b1e3",
+  "worker_sha256": "df2aefdd36462a480123151f19841e1abb85136ced285e9840f1006a57ae175b",
+  "driver_sha256": "9f16efaf10fd906e15997308b1d43ce74454ea023974c011e7b6a54aff459900",
+  "matrix_driver_sha256": "a38bd18828a63dc032fd13bbb43d6ee4eb5ab0d3e9f4371c4fd742c338586a42",
+  "metrics_sha256": "fdd178b619a16bdc42c07a11bd1d141302984228f51565a8c6b752d255d31189",
+  "git_diff_sha256": "172c285bfa23688a8cd33cfe0cd00f0bd736e7f5fa6036a46064894aa0e3729a",
+  "manifest_sha256": "bac0a12ed68db714c7974ac3fb8907062d1dbcf34738ccd7c58b6c64a69726bc",
+  "model": {
+    "model": "Qwen/Qwen3-ASR-0.6B",
+    "revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+    "status": "verified",
+    "files": [
+      {
+        "name": "README.md",
+        "expected_size": 57456,
+        "expected_sha256": null,
+        "sha256": "5058416891bc47a2051557765997e8c42f8eb78a0e33c3e775bd17d4b0ba4d50"
+      },
+      {
+        "name": "chat_template.json",
+        "expected_size": 1161,
+        "expected_sha256": null,
+        "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff"
+      },
+      {
+        "name": "config.json",
+        "expected_size": 6193,
+        "expected_sha256": null,
+        "sha256": "76d3ae4601ce939830b2517f4a6cadb86cc51316c3900af6b020b051c21a478c"
+      },
+      {
+        "name": "generation_config.json",
+        "expected_size": 142,
+        "expected_sha256": null,
+        "sha256": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c"
+      },
+      {
+        "name": "merges.txt",
+        "expected_size": 1671853,
+        "expected_sha256": null,
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "name": "model.safetensors",
+        "expected_size": 1876091704,
+        "expected_sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea",
+        "sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+      },
+      {
+        "name": "preprocessor_config.json",
+        "expected_size": 330,
+        "expected_sha256": null,
+        "sha256": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"
+      },
+      {
+        "name": "tokenizer_config.json",
+        "expected_size": 12487,
+        "expected_sha256": null,
+        "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+      },
+      {
+        "name": "vocab.json",
+        "expected_size": 2776833,
+        "expected_sha256": null,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ]
+  }
+}

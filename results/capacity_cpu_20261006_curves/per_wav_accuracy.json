@@ -1,0 +1,1793 @@
+[
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1523_142",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 5.263157894736842,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 5.263157894736842,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 5.263157894736842,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 5.263157894736842,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 5.263157894736842,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 5.263157894736842,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 5.263157894736842,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 5.263157894736842,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 5.263157894736842,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 5.263157894736842,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1626_141",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 15.151515151515152,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 15.151515151515152,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 15.151515151515152,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 15.151515151515152,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 15.151515151515152,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 15.151515151515152,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1654_60",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1607_28",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1521_51",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1518_26",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbe898eb2ca58a_956960988f0df5c70f4923a0f1f5e3c3_repeat_0_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe898eb2ca58a_956960988f0df5c70f4923a0f1f5e3c3_repeat_1_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe898eb2ca58a_956960988f0df5c70f4923a0f1f5e3c3_repeat_2_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbe9e9cb1f5b69_19dd6880db5e481b98435dc53f602aa8_repeat_0_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe9e9cb1f5b69_19dd6880db5e481b98435dc53f602aa8_repeat_1_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe9e9cb1f5b69_19dd6880db5e481b98435dc53f602aa8_repeat_2_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbed7fca2b071c_47d82cbf76624a65fc517cd28742e082_repeat_0_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbed7fca2b071c_47d82cbf76624a65fc517cd28742e082_repeat_1_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbed7fca2b071c_47d82cbf76624a65fc517cd28742e082_repeat_2_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbee36dfe8a7e0_8c1513ea4f5eb0d127600edc5c760acb_repeat_0_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee36dfe8a7e0_8c1513ea4f5eb0d127600edc5c760acb_repeat_1_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee36dfe8a7e0_8c1513ea4f5eb0d127600edc5c760acb_repeat_2_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_0_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_0_call_15",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_1_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_1_call_15",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_2_call_5",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef3691e4dca6_5e58c68255bd32d2834dffba6cc8546a_repeat_2_call_15",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1520_42",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 11.538461538461538,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 11.538461538461538,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 11.538461538461538,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 11.538461538461538,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 11.538461538461538,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 11.538461538461538,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1549_14",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1510_2",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 9.523809523809524,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 9.523809523809524,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 9.523809523809524,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 9.523809523809524,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 9.523809523809524,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 9.523809523809524,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1581_159",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 7.142857142857142,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 7.142857142857142,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 7.142857142857142,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 7.142857142857142,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 7.142857142857142,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 7.142857142857142,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1523_32",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1626_67",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 17.857142857142858,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 17.857142857142858,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 17.857142857142858,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 17.857142857142858,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 17.857142857142858,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 17.857142857142858,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 17.857142857142858,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 17.857142857142858,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 17.857142857142858,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 17.857142857142858,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1654_84",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1607_141",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1521_214",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1518_37",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1520_4",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 8.333333333333332,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 8.333333333333332,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 8.333333333333332,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 8.333333333333332,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 8.333333333333332,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 8.333333333333332,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 8.333333333333332,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 8.333333333333332,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 8.333333333333332,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 8.333333333333332,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1549_131",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_0_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_1_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_2_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_0_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_1_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_2_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_0_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_1_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_2_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_0_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_1_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_2_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_0_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_0_call_17",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_1_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_1_call_17",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_2_call_7",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_2_call_17",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1510_256",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_0_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_1_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbe8faf8356fe9_e66241de83b4b8d321f923df5230cfcc_repeat_2_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_0_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_1_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbea2d1f444e96_77b79552212c63437be89a00be9ae8aa_repeat_2_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_0_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_1_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbedb7a10fe780_610b1db4a93d4096b76278c0f152a4fc_repeat_2_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_0_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_1_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbee6707aa26e0_6c428de05b1c632131c6882210bc3074_repeat_2_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": null,
+        "completed_observations": 0,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 100.0,
+        "failures": [
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_0_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_0_call_18",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_1_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_1_call_18",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_2_call_8",
+            "reason": "prefix decode interrupted at token boundary"
+          },
+          {
+            "run_id": "load_18dbef806d34059c_a3515ce9d8e30c06242088bc4a26a98b_repeat_2_call_18",
+            "reason": "prefix decode interrupted at token boundary"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1581_36",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1523_8",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 22.58064516129032,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 22.58064516129032,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 22.58064516129032,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 22.58064516129032,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 22.58064516129032,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 22.58064516129032,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1626_27",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 1.7543859649122806,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 1.7543859649122806,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 1.7543859649122806,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 1.7543859649122806,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 1.7543859649122806,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 1.7543859649122806,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 1.7543859649122806,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 1.7543859649122806,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 1.7543859649122806,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 1.7543859649122806,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1654_53",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1607_137",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1521_86",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 4.545454545454546,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 4.545454545454546,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 4.545454545454546,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 4.545454545454546,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 4.545454545454546,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 4.545454545454546,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1518_114",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1520_32",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1549_96",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 2.941176470588235,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 2.941176470588235,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 2.941176470588235,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 2.941176470588235,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 2.941176470588235,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 2.941176470588235,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1510_56",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 0.0,
+        "failures": []
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1581_2",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "completed_mean_percent": 3.8461538461538463,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 3.8461538461538463,
+        "failures": []
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "completed_mean_percent": 3.8461538461538463,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 3.8461538461538463,
+        "failures": []
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "completed_mean_percent": 3.8461538461538463,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 3.8461538461538463,
+        "failures": []
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "completed_mean_percent": 3.8461538461538463,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "failure_inclusive_mean_percent": 3.8461538461538463,
+        "failures": []
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "completed_mean_percent": 3.8461538461538463,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "failure_inclusive_mean_percent": 3.8461538461538463,
+        "failures": []
+      }
+    }
+  }
+]

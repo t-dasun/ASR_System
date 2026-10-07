@@ -1,0 +1,2252 @@
+[
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1523_142",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1626_141",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 33,
+        "edits_per_call": [
+          5,
+          5,
+          5
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 33,
+        "edits_per_call": [
+          5,
+          5,
+          5
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 33,
+        "edits_per_call": [
+          5,
+          5,
+          5
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 15.151515151515152,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 33,
+        "edits_per_call": [
+          5,
+          5,
+          5
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 15.151515151515152,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 33,
+        "edits_per_call": [
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1654_60",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1607_28",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 12,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 12,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 12,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 12,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 12,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1521_51",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 15,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 15,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 15,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 15,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 15,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1518_26",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 47.61904761904761,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          10,
+          10,
+          10
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 47.61904761904761,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          10,
+          10,
+          10
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 47.61904761904761,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          10,
+          10,
+          10
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 47.61904761904761,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          10,
+          10,
+          10
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 47.61904761904761,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          10,
+          10,
+          10,
+          10,
+          10,
+          10
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1520_42",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 11.538461538461538,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 11.538461538461538,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1549_14",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 20,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 20,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 20,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 20,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 20,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1510_2",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 9.523809523809524,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 9.523809523809524,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "language": "en",
+    "recording_id": "fleurs_en_us_validation_1581_159",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 7.142857142857142,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 7.142857142857142,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1523_32",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 72.22222222222221,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          13,
+          13,
+          13
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 72.22222222222221,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          13,
+          13,
+          13
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 72.22222222222221,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          13,
+          13,
+          13
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 72.22222222222221,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          13,
+          13,
+          13
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 72.22222222222221,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          13,
+          13,
+          13,
+          13,
+          13,
+          13
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1626_67",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 42.857142857142854,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 28,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 42.857142857142854,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 28,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 42.857142857142854,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 28,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 42.857142857142854,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 28,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 42.857142857142854,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 28,
+        "edits_per_call": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1654_84",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 21,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1607_141",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 30.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 10,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 30.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 10,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 30.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 10,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 30.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 10,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 30.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 10,
+        "edits_per_call": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1521_214",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 11,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 11,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 11,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 11,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 11,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1518_37",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 75.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 16,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 75.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 16,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 75.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 16,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 75.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 16,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 75.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 16,
+        "edits_per_call": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1520_4",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 16.666666666666664,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 16.666666666666664,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 16.666666666666664,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 16.666666666666664,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 16.666666666666664,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 24,
+        "edits_per_call": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1549_131",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 36.84210526315789,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 36.84210526315789,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 36.84210526315789,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 36.84210526315789,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 36.84210526315789,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 19,
+        "edits_per_call": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1510_256",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 66.66666666666666,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 66.66666666666666,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 66.66666666666666,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 66.66666666666666,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          12,
+          12,
+          12
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 66.66666666666666,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 18,
+        "edits_per_call": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ]
+      }
+    }
+  },
+  {
+    "language": "id",
+    "recording_id": "fleurs_id_id_validation_1581_36",
+    "metric": "WER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 14,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1523_8",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 31,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 31,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 31,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 22.58064516129032,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 31,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 22.58064516129032,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 31,
+        "edits_per_call": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1626_27",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 7.017543859649122,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 57,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 7.017543859649122,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 57,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 7.017543859649122,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 57,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 7.017543859649122,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 57,
+        "edits_per_call": [
+          4,
+          4,
+          4
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 7.017543859649122,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 57,
+        "edits_per_call": [
+          4,
+          4,
+          4,
+          4,
+          4,
+          4
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1654_53",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 8.823529411764707,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 8.823529411764707,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 8.823529411764707,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 8.823529411764707,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          3,
+          3,
+          3
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 8.823529411764707,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1607_137",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 5.88235294117647,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 17,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 5.88235294117647,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 17,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 5.88235294117647,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 17,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 5.88235294117647,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 17,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 5.88235294117647,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 17,
+        "edits_per_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1521_86",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 22,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 22,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 22,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 4.545454545454546,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 22,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 4.545454545454546,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 22,
+        "edits_per_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1518_114",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 32,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 32,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 32,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 0.0,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 32,
+        "edits_per_call": [
+          0,
+          0,
+          0
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 0.0,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 32,
+        "edits_per_call": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1520_32",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 28.57142857142857,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 56,
+        "edits_per_call": [
+          16,
+          16,
+          16
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 28.57142857142857,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 56,
+        "edits_per_call": [
+          16,
+          16,
+          16
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 28.57142857142857,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 56,
+        "edits_per_call": [
+          16,
+          16,
+          16
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 28.57142857142857,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 56,
+        "edits_per_call": [
+          16,
+          16,
+          16
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 28.57142857142857,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 56,
+        "edits_per_call": [
+          16,
+          16,
+          16,
+          16,
+          16,
+          16
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1549_96",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 2.941176470588235,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          1,
+          1,
+          1
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 2.941176470588235,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 34,
+        "edits_per_call": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1510_56",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 6.896551724137931,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 29,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 6.896551724137931,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 29,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 6.896551724137931,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 29,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 6.896551724137931,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 29,
+        "edits_per_call": [
+          2,
+          2,
+          2
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 6.896551724137931,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 29,
+        "edits_per_call": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  },
+  {
+    "language": "zh",
+    "recording_id": "fleurs_cmn_hans_cn_validation_1581_2",
+    "metric": "CER",
+    "layouts": {
+      "1w_1total": {
+        "workers": 1,
+        "total_concurrency": 1,
+        "mean_percent": 26.923076923076923,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "1w_2total": {
+        "workers": 1,
+        "total_concurrency": 2,
+        "mean_percent": 26.923076923076923,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_2total": {
+        "workers": 2,
+        "total_concurrency": 2,
+        "mean_percent": 26.923076923076923,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_4total": {
+        "workers": 2,
+        "total_concurrency": 4,
+        "mean_percent": 26.923076923076923,
+        "completed_observations": 3,
+        "offered_observations": 3,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          7,
+          7,
+          7
+        ]
+      },
+      "2w_16total": {
+        "workers": 2,
+        "total_concurrency": 16,
+        "mean_percent": 26.923076923076923,
+        "completed_observations": 6,
+        "offered_observations": 6,
+        "reference_units_per_call": 26,
+        "edits_per_call": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      }
+    }
+  }
+]

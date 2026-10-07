@@ -1,0 +1,1940 @@
+{
+  "previous_status": {
+    "status": "FAILED",
+    "error": ""
+  },
+  "previous_plan": {
+    "per_language": 10,
+    "repetitions": 3,
+    "layouts": [
+      {
+        "workers": 1,
+        "slots_per_worker": 1,
+        "concurrency_levels": [
+          1
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 2,
+        "concurrency_levels": [
+          2
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 3,
+        "concurrency_levels": [
+          3
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 4,
+        "concurrency_levels": [
+          4
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 5,
+        "concurrency_levels": [
+          5
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 6,
+        "concurrency_levels": [
+          6
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 7,
+        "concurrency_levels": [
+          7
+        ]
+      },
+      {
+        "workers": 1,
+        "slots_per_worker": 8,
+        "concurrency_levels": [
+          8
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 1,
+        "concurrency_levels": [
+          2
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 2,
+        "concurrency_levels": [
+          4
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 3,
+        "concurrency_levels": [
+          6
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 4,
+        "concurrency_levels": [
+          8
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 5,
+        "concurrency_levels": [
+          10
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 6,
+        "concurrency_levels": [
+          12
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 7,
+        "concurrency_levels": [
+          14
+        ]
+      },
+      {
+        "workers": 2,
+        "slots_per_worker": 8,
+        "concurrency_levels": [
+          16
+        ]
+      }
+    ],
+    "slots_per_worker": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "threads_per_worker": 4,
+    "runtime": "qwen_stream",
+    "config": "configs/qwen_stream_shared.yaml",
+    "config_sha256": "bbc84824744cc6c40bf44fb565c06ebca4a0a40d2ff868dc431eb854b209b17e",
+    "matrix_mode": "resumable_16_layouts",
+    "reserve_bytes": 2147483648,
+    "swap_io_limit_bytes": 67108864,
+    "soak_seconds": 0,
+    "soak_worker_layout": "largest measured layout",
+    "dense": false,
+    "planned_curve_calls": 1710,
+    "host": {
+      "timestamp_ns": 34164828306230,
+      "memory": {
+        "MemTotal": 15870791680,
+        "MemFree": 1101410304,
+        "MemAvailable": 6260326400,
+        "Buffers": 585728,
+        "Cached": 5473214464,
+        "SwapCached": 3137536,
+        "Active": 6133989376,
+        "Inactive": 4529745920,
+        "Active(anon)": 4635623424,
+        "Inactive(anon)": 762044416,
+        "Active(file)": 1498365952,
+        "Inactive(file)": 3767701504,
+        "Unevictable": 118784,
+        "Mlocked": 118784,
+        "SwapTotal": 8589930496,
+        "SwapFree": 4379811840,
+        "Zswap": 0,
+        "Zswapped": 0,
+        "Dirty": 2433024,
+        "Writeback": 0,
+        "AnonPages": 5188771840,
+        "Mapped": 2866962432,
+        "Shmem": 207892480,
+        "KReclaimable": 240607232,
+        "Slab": 709283840,
+        "SReclaimable": 240607232,
+        "SUnreclaim": 468676608,
+        "KernelStack": 45809664,
+        "PageTables": 152702976,
+        "SecPageTables": 5865472,
+        "NFS_Unstable": 0,
+        "Bounce": 0,
+        "WritebackTmp": 0,
+        "CommitLimit": 16525324288,
+        "Committed_AS": 61362151424,
+        "VmallocTotal": 35184372087808,
+        "VmallocUsed": 225128448,
+        "VmallocChunk": 0,
+        "Percpu": 42467328,
+        "HardwareCorrupted": 0,
+        "AnonHugePages": 39845888,
+        "ShmemHugePages": 0,
+        "ShmemPmdMapped": 0,
+        "FileHugePages": 0,
+        "FilePmdMapped": 0,
+        "CmaTotal": 0,
+        "CmaFree": 0,
+        "Unaccepted": 0,
+        "Balloon": 0,
+        "GPUActive": 1039478784,
+        "GPUReclaim": 86552576,
+        "Hugepagesize": 2097152,
+        "Hugetlb": 0,
+        "DirectMap4k": 4808822784,
+        "DirectMap2M": 11488198656,
+        "DirectMap1G": 1073741824
+      },
+      "memory_pressure": {
+        "some": {
+          "avg10": 0.12,
+          "avg60": 0.02,
+          "avg300": 0.0,
+          "total": 3985179.0
+        },
+        "full": {
+          "avg10": 0.12,
+          "avg60": 0.02,
+          "avg300": 0.0,
+          "total": 3958973.0
+        }
+      },
+      "cpu_mean_frequency_khz": 1828298.28125,
+      "temperatures_c": {
+        "spd5118/temp1_input": 38.5,
+        "amdgpu/edge": 47.0,
+        "nvme/Sensor 2": 35.85,
+        "nvme/Composite": 32.85,
+        "nvme/Sensor 1": 32.85,
+        "acpitz/temp1_input": 50.0,
+        "k10temp/Tccd1": 42.625,
+        "k10temp/Tccd2": 40.25,
+        "k10temp/Tctl": 50.5,
+        "mt7921_phy0/temp1_input": 42.0
+      },
+      "swap_pages": {
+        "pswpin": 331011,
+        "pswpout": 1466329
+      },
+      "cpu_total_ticks": 109455157,
+      "cpu_idle_ticks": 104586012,
+      "processes": []
+    },
+    "lscpu": "{\n   \"lscpu\": [\n      {\n         \"field\": \"Architecture:\",\n         \"data\": \"x86_64\"\n      },{\n         \"field\": \"CPU op-mode(s):\",\n         \"data\": \"32-bit, 64-bit\"\n      },{\n         \"field\": \"Address sizes:\",\n         \"data\": \"48 bits physical, 48 bits virtual\"\n      },{\n         \"field\": \"Byte Order:\",\n         \"data\": \"Little Endian\"\n      },{\n         \"field\": \"CPU(s):\",\n         \"data\": \"32\"\n      },{\n         \"field\": \"On-line CPU(s) list:\",\n         \"data\": \"0-31\"\n      },{\n         \"field\": \"Vendor ID:\",\n         \"data\": \"AuthenticAMD\"\n      },{\n         \"field\": \"Model name:\",\n         \"data\": \"AMD Ryzen 9 9955HX 16-Core Processor\"\n      },{\n         \"field\": \"CPU family:\",\n         \"data\": \"26\"\n      },{\n         \"field\": \"Model:\",\n         \"data\": \"68\"\n      },{\n         \"field\": \"Thread(s) per core:\",\n         \"data\": \"2\"\n      },{\n         \"field\": \"Core(s) per socket:\",\n         \"data\": \"16\"\n      },{\n         \"field\": \"Socket(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"Stepping:\",\n         \"data\": \"0\"\n      },{\n         \"field\": \"Frequency boost:\",\n         \"data\": \"enabled\"\n      },{\n         \"field\": \"CPU(s) scaling MHz:\",\n         \"data\": \"79%\"\n      },{\n         \"field\": \"CPU max MHz:\",\n         \"data\": \"2500.0000\"\n      },{\n         \"field\": \"CPU min MHz:\",\n         \"data\": \"1217.1060\"\n      },{\n         \"field\": \"BogoMIPS:\",\n         \"data\": \"4990.59\"\n      },{\n         \"field\": \"Flags:\",\n         \"data\": \"fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpuid_fault cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx_vnni avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid bus_lock_detect movdiri movdir64b overflow_recov succor smca fsrm avx512_vp2intersect flush_l1d amd_lbr_pmc_freeze\"\n      },{\n         \"field\": \"Virtualization:\",\n         \"data\": \"AMD-V\"\n      },{\n         \"field\": \"L1d cache:\",\n         \"data\": \"768 KiB (16 instances)\"\n      },{\n         \"field\": \"L1i cache:\",\n         \"data\": \"512 KiB (16 instances)\"\n      },{\n         \"field\": \"L2 cache:\",\n         \"data\": \"16 MiB (16 instances)\"\n      },{\n         \"field\": \"L3 cache:\",\n         \"data\": \"64 MiB (2 instances)\"\n      },{\n         \"field\": \"NUMA node(s):\",\n         \"data\": \"1\"\n      },{\n         \"field\": \"NUMA node0 CPU(s):\",\n         \"data\": \"0-31\"\n      },{\n         \"field\": \"Vulnerability Gather data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Ghostwrite:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Indirect target selection:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Itlb multihit:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability L1tf:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Meltdown:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Mmio stale data:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Old microcode:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Reg file data sampling:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Retbleed:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Spec rstack overflow:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT only\"\n      },{\n         \"field\": \"Vulnerability Spec store bypass:\",\n         \"data\": \"Mitigation; Speculative Store Bypass disabled via prctl\"\n      },{\n         \"field\": \"Vulnerability Spectre v1:\",\n         \"data\": \"Mitigation; usercopy/swapgs barriers and __user pointer sanitization\"\n      },{\n         \"field\": \"Vulnerability Spectre v2:\",\n         \"data\": \"Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\"\n      },{\n         \"field\": \"Vulnerability Srbds:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsa:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Tsx async abort:\",\n         \"data\": \"Not affected\"\n      },{\n         \"field\": \"Vulnerability Vmscape:\",\n         \"data\": \"Mitigation; IBPB on VMEXIT\"\n      }\n   ]\n}\n",
+    "git_head": "24d34d9f8d6a978521cd4ba7e6b0b524b84363c8",
+    "cli_sha256": "c4457588df85c53893fbd6daae6c6d18586b7b19cab7c36ad5234dc34602b1e3",
+    "worker_sha256": "df2aefdd36462a480123151f19841e1abb85136ced285e9840f1006a57ae175b",
+    "driver_sha256": "9f16efaf10fd906e15997308b1d43ce74454ea023974c011e7b6a54aff459900",
+    "matrix_driver_sha256": "a38bd18828a63dc032fd13bbb43d6ee4eb5ab0d3e9f4371c4fd742c338586a42",
+    "metrics_sha256": "fdd178b619a16bdc42c07a11bd1d141302984228f51565a8c6b752d255d31189",
+    "git_diff_sha256": "172c285bfa23688a8cd33cfe0cd00f0bd736e7f5fa6036a46064894aa0e3729a",
+    "manifest_sha256": "bac0a12ed68db714c7974ac3fb8907062d1dbcf34738ccd7c58b6c64a69726bc",
+    "model": {
+      "model": "Qwen/Qwen3-ASR-0.6B",
+      "revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+      "status": "verified",
+      "files": [
+        {
+          "name": "README.md",
+          "expected_size": 57456,
+          "expected_sha256": null,
+          "sha256": "5058416891bc47a2051557765997e8c42f8eb78a0e33c3e775bd17d4b0ba4d50"
+        },
+        {
+          "name": "chat_template.json",
+          "expected_size": 1161,
+          "expected_sha256": null,
+          "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff"
+        },
+        {
+          "name": "config.json",
+          "expected_size": 6193,
+          "expected_sha256": null,
+          "sha256": "76d3ae4601ce939830b2517f4a6cadb86cc51316c3900af6b020b051c21a478c"
+        },
+        {
+          "name": "generation_config.json",
+          "expected_size": 142,
+          "expected_sha256": null,
+          "sha256": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c"
+        },
+        {
+          "name": "merges.txt",
+          "expected_size": 1671853,
+          "expected_sha256": null,
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "name": "model.safetensors",
+          "expected_size": 1876091704,
+          "expected_sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea",
+          "sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+        },
+        {
+          "name": "preprocessor_config.json",
+          "expected_size": 330,
+          "expected_sha256": null,
+          "sha256": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"
+        },
+        {
+          "name": "tokenizer_config.json",
+          "expected_size": 12487,
+          "expected_sha256": null,
+          "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+        },
+        {
+          "name": "vocab.json",
+          "expected_size": 2776833,
+          "expected_sha256": null,
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        }
+      ]
+    }
+  },
+  "effective_layouts": [
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "concurrency_levels": [
+        1
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "concurrency_levels": [
+        2
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "concurrency_levels": [
+        3
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "concurrency_levels": [
+        4
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "concurrency_levels": [
+        5
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "concurrency_levels": [
+        6
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "concurrency_levels": [
+        7
+      ]
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "concurrency_levels": [
+        8
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 1,
+      "concurrency_levels": [
+        2
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 2,
+      "concurrency_levels": [
+        4
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 4,
+      "concurrency_levels": [
+        8
+      ]
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 8,
+      "concurrency_levels": [
+        16
+      ]
+    }
+  ],
+  "previous_worker_runs": [
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1863606272,
+        "pss_bytes": 1362642944,
+        "sample": {
+          "timestamp_ns": 34170545710671,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 479924224,
+            "MemAvailable": 4864286720,
+            "Buffers": 585728,
+            "Cached": 4791132160,
+            "SwapCached": 3260416,
+            "Active": 5670895616,
+            "Inactive": 5647872000,
+            "Active(anon)": 4419403776,
+            "Inactive(anon)": 2315993088,
+            "Active(file)": 1251491840,
+            "Inactive(file)": 3331878912,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4503883776,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 2060288,
+            "Writeback": 0,
+            "AnonPages": 6524891136,
+            "Mapped": 2788212736,
+            "Shmem": 208334848,
+            "KReclaimable": 237490176,
+            "Slab": 704978944,
+            "SReclaimable": 237490176,
+            "SUnreclaim": 467488768,
+            "KernelStack": 46088192,
+            "PageTables": 156659712,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 66930618368,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225325056,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 1169780736,
+            "GPUReclaim": 282624,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4831891456,
+            "DirectMap2M": 11465129984,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.33,
+              "avg60": 0.08,
+              "avg300": 0.01,
+              "total": 4052418.0
+            },
+            "full": {
+              "avg10": 0.33,
+              "avg60": 0.08,
+              "avg300": 0.01,
+              "total": 4025814.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1500717.71875,
+          "temperatures_c": {
+            "spd5118/temp1_input": 38.75,
+            "amdgpu/edge": 47.0,
+            "nvme/Sensor 2": 35.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 32.85,
+            "acpitz/temp1_input": 51.0,
+            "k10temp/Tccd1": 41.375,
+            "k10temp/Tccd2": 40.375,
+            "k10temp/Tctl": 51.5,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 369426,
+            "pswpout": 1475205
+          },
+          "cpu_total_ticks": 109473515,
+          "cpu_idle_ticks": 104603426,
+          "processes": [
+            {
+              "pid": 86293,
+              "start_ticks": 3416499,
+              "cpu_ticks": 40,
+              "rss_bytes": 1863606272,
+              "pss_bytes": 1362642944,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1865117696,
+        "pss_bytes": 1362686976,
+        "sample": {
+          "timestamp_ns": 35190424489612,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 466948096,
+            "MemAvailable": 5107081216,
+            "Buffers": 585728,
+            "Cached": 4980281344,
+            "SwapCached": 2674688,
+            "Active": 7314792448,
+            "Inactive": 4078551040,
+            "Active(anon)": 5243924480,
+            "Inactive(anon)": 1365381120,
+            "Active(file)": 2070867968,
+            "Inactive(file)": 2713169920,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4428558336,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 5509120,
+            "Writeback": 176128,
+            "AnonPages": 6411395072,
+            "Mapped": 3292545024,
+            "Shmem": 196894720,
+            "KReclaimable": 237408256,
+            "Slab": 705466368,
+            "SReclaimable": 237408256,
+            "SUnreclaim": 468058112,
+            "KernelStack": 45662208,
+            "PageTables": 157081600,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 66965729280,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225095680,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 975900672,
+            "GPUReclaim": 0,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4842377216,
+            "DirectMap2M": 11454644224,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4225399.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4197679.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1312520.75,
+          "temperatures_c": {
+            "spd5118/temp1_input": 41.0,
+            "amdgpu/edge": 48.0,
+            "nvme/Sensor 2": 38.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 32.85,
+            "acpitz/temp1_input": 51.0,
+            "k10temp/Tccd1": 40.875,
+            "k10temp/Tccd2": 39.75,
+            "k10temp/Tctl": 51.25,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 376163,
+            "pswpout": 1500375
+          },
+          "cpu_total_ticks": 112738801,
+          "cpu_idle_ticks": 107632816,
+          "processes": [
+            {
+              "pid": 90522,
+              "start_ticks": 3518481,
+              "cpu_ticks": 40,
+              "rss_bytes": 1865117696,
+              "pss_bytes": 1362686976,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1864785920,
+        "pss_bytes": 1362693120,
+        "sample": {
+          "timestamp_ns": 35789716215113,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 594853888,
+            "MemAvailable": 5171666944,
+            "Buffers": 585728,
+            "Cached": 4948258816,
+            "SwapCached": 2666496,
+            "Active": 7746281472,
+            "Inactive": 3584065536,
+            "Active(anon)": 5402492928,
+            "Inactive(anon)": 1175060480,
+            "Active(file)": 2343788544,
+            "Inactive(file)": 2409005056,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4415119360,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 3530752,
+            "Writeback": 0,
+            "AnonPages": 6379925504,
+            "Mapped": 3416850432,
+            "Shmem": 196108288,
+            "KReclaimable": 237408256,
+            "Slab": 705216512,
+            "SReclaimable": 237408256,
+            "SUnreclaim": 467808256,
+            "KernelStack": 45203456,
+            "PageTables": 155713536,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 66071953408,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 224546816,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 971689984,
+            "GPUReclaim": 4194304,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4846571520,
+            "DirectMap2M": 11450449920,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4261227.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4233180.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1267943.84375,
+          "temperatures_c": {
+            "spd5118/temp1_input": 45.0,
+            "amdgpu/edge": 48.0,
+            "nvme/Sensor 2": 38.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 33.85,
+            "acpitz/temp1_input": 52.0,
+            "k10temp/Tccd1": 42.75,
+            "k10temp/Tccd2": 41.875,
+            "k10temp/Tctl": 52.375,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 377231,
+            "pswpout": 1504567
+          },
+          "cpu_total_ticks": 114658097,
+          "cpu_idle_ticks": 109329926,
+          "processes": [
+            {
+              "pid": 93510,
+              "start_ticks": 3578414,
+              "cpu_ticks": 39,
+              "rss_bytes": 1864785920,
+              "pss_bytes": 1362693120,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1865760768,
+        "pss_bytes": 1362692096,
+        "sample": {
+          "timestamp_ns": 36316858377589,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 663728128,
+            "MemAvailable": 5180334080,
+            "Buffers": 585728,
+            "Cached": 4815712256,
+            "SwapCached": 2621440,
+            "Active": 6947483648,
+            "Inactive": 4327325696,
+            "Active(anon)": 5118943232,
+            "Inactive(anon)": 1528901632,
+            "Active(file)": 1828540416,
+            "Inactive(file)": 2798424064,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4413091840,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 4288512,
+            "Writeback": 176128,
+            "AnonPages": 6456766464,
+            "Mapped": 3523981312,
+            "Shmem": 189497344,
+            "KReclaimable": 237400064,
+            "Slab": 705318912,
+            "SReclaimable": 237400064,
+            "SUnreclaim": 467918848,
+            "KernelStack": 45924352,
+            "PageTables": 157065216,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 67026964480,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225247232,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 971689984,
+            "GPUReclaim": 16842752,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4846571520,
+            "DirectMap2M": 11450449920,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4292587.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4263983.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1443222.84375,
+          "temperatures_c": {
+            "spd5118/temp1_input": 46.75,
+            "amdgpu/edge": 49.0,
+            "nvme/Sensor 2": 39.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 32.85,
+            "acpitz/temp1_input": 53.0,
+            "k10temp/Tccd1": 44.125,
+            "k10temp/Tccd2": 41.625,
+            "k10temp/Tctl": 53.25,
+            "mt7921_phy0/temp1_input": 42.0
+          },
+          "swap_pages": {
+            "pswpin": 380592,
+            "pswpout": 1507373
+          },
+          "cpu_total_ticks": 116346467,
+          "cpu_idle_ticks": 110798434,
+          "processes": [
+            {
+              "pid": 96332,
+              "start_ticks": 3631130,
+              "cpu_ticks": 40,
+              "rss_bytes": 1865760768,
+              "pss_bytes": 1362692096,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1864695808,
+        "pss_bytes": 1362700288,
+        "sample": {
+          "timestamp_ns": 36824804392362,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 634015744,
+            "MemAvailable": 5024006144,
+            "Buffers": 585728,
+            "Cached": 4763111424,
+            "SwapCached": 2641920,
+            "Active": 6932742144,
+            "Inactive": 4269666304,
+            "Active(anon)": 5095063552,
+            "Inactive(anon)": 1532981248,
+            "Active(file)": 1837678592,
+            "Inactive(file)": 2736685056,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4416708608,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 3305472,
+            "Writeback": 0,
+            "AnonPages": 6437109760,
+            "Mapped": 3577180160,
+            "Shmem": 189485056,
+            "KReclaimable": 237400064,
+            "Slab": 705974272,
+            "SReclaimable": 237400064,
+            "SUnreclaim": 468574208,
+            "KernelStack": 45809664,
+            "PageTables": 157097984,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 67018354688,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225112064,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 950116352,
+            "GPUReclaim": 17428480,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4846571520,
+            "DirectMap2M": 11450449920,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4294599.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4265989.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1257881.90625,
+          "temperatures_c": {
+            "spd5118/temp1_input": 47.0,
+            "amdgpu/edge": 50.0,
+            "nvme/Sensor 2": 39.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 32.85,
+            "acpitz/temp1_input": 53.0,
+            "k10temp/Tccd1": 43.75,
+            "k10temp/Tccd2": 42.0,
+            "k10temp/Tctl": 53.75,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 381494,
+            "pswpout": 1507736
+          },
+          "cpu_total_ticks": 117973269,
+          "cpu_idle_ticks": 112205628,
+          "processes": [
+            {
+              "pid": 99430,
+              "start_ticks": 3681923,
+              "cpu_ticks": 40,
+              "rss_bytes": 1864695808,
+              "pss_bytes": 1362700288,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1865502720,
+        "pss_bytes": 1362706432,
+        "sample": {
+          "timestamp_ns": 37330579521848,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 686800896,
+            "MemAvailable": 4993282048,
+            "Buffers": 585728,
+            "Cached": 4681097216,
+            "SwapCached": 2641920,
+            "Active": 3668119552,
+            "Inactive": 7520428032,
+            "Active(anon)": 2745741312,
+            "Inactive(anon)": 3951943680,
+            "Active(file)": 922378240,
+            "Inactive(file)": 3568484352,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 4418854912,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 4222976,
+            "Writeback": 0,
+            "AnonPages": 6504972288,
+            "Mapped": 3618775040,
+            "Shmem": 190984192,
+            "KReclaimable": 237383680,
+            "Slab": 706150400,
+            "SReclaimable": 237383680,
+            "SUnreclaim": 468766720,
+            "KernelStack": 46071808,
+            "PageTables": 159223808,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 67846623232,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225452032,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 976625664,
+            "GPUReclaim": 3031040,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 4846571520,
+            "DirectMap2M": 11450449920,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4299243.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 4270627.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1455412.84375,
+          "temperatures_c": {
+            "spd5118/temp1_input": 47.25,
+            "amdgpu/edge": 49.0,
+            "nvme/Sensor 2": 39.85,
+            "nvme/Composite": 32.85,
+            "nvme/Sensor 1": 32.85,
+            "acpitz/temp1_input": 53.0,
+            "k10temp/Tccd1": 44.5,
+            "k10temp/Tccd2": 41.625,
+            "k10temp/Tctl": 53.5,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 382196,
+            "pswpout": 1507904
+          },
+          "cpu_total_ticks": 119593286,
+          "cpu_idle_ticks": 113605114,
+          "processes": [
+            {
+              "pid": 102423,
+              "start_ticks": 3732501,
+              "cpu_ticks": 40,
+              "rss_bytes": 1865502720,
+              "pss_bytes": 1362706432,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2",
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1864568832,
+        "pss_bytes": 1364681728,
+        "sample": {
+          "timestamp_ns": 38330283682204,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 279252992,
+            "MemAvailable": 5318565888,
+            "Buffers": 602112,
+            "Cached": 5346729984,
+            "SwapCached": 4927488,
+            "Active": 4130242560,
+            "Inactive": 5248307200,
+            "Active(anon)": 2665070592,
+            "Inactive(anon)": 1568878592,
+            "Active(file)": 1465171968,
+            "Inactive(file)": 3679428608,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 2022457344,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 536576,
+            "Writeback": 0,
+            "AnonPages": 4028424192,
+            "Mapped": 3631271936,
+            "Shmem": 202813440,
+            "KReclaimable": 242470912,
+            "Slab": 734007296,
+            "SReclaimable": 242470912,
+            "SUnreclaim": 491536384,
+            "KernelStack": 46284800,
+            "PageTables": 157736960,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 66984919040,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225546240,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 39845888,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 1013604352,
+            "GPUReclaim": 58957824,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 5081452544,
+            "DirectMap2M": 11215568896,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.36,
+              "avg60": 0.09,
+              "avg300": 0.07,
+              "total": 5803183.0
+            },
+            "full": {
+              "avg10": 0.36,
+              "avg60": 0.09,
+              "avg300": 0.07,
+              "total": 5770651.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1664277.34375,
+          "temperatures_c": {
+            "spd5118/temp1_input": 35.25,
+            "amdgpu/edge": 46.0,
+            "nvme/Sensor 2": 35.85,
+            "nvme/Composite": 31.85,
+            "nvme/Sensor 1": 30.85,
+            "acpitz/temp1_input": 51.0,
+            "k10temp/Tccd1": 41.625,
+            "k10temp/Tccd2": 37.625,
+            "k10temp/Tctl": 51.625,
+            "mt7921_phy0/temp1_input": 38.0
+          },
+          "swap_pages": {
+            "pswpin": 399739,
+            "pswpout": 2110322
+          },
+          "cpu_total_ticks": 122795341,
+          "cpu_idle_ticks": 116530027,
+          "processes": [
+            {
+              "pid": 107063,
+              "start_ticks": 3832472,
+              "cpu_ticks": 28,
+              "rss_bytes": 1864568832,
+              "pss_bytes": 1364681728,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s",
+      "status": "MEASURED",
+      "idle": {
+        "rss_bytes": 1864155136,
+        "pss_bytes": 1364870144,
+        "sample": {
+          "timestamp_ns": 38725268172861,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 694018048,
+            "MemAvailable": 5318782976,
+            "Buffers": 598016,
+            "Cached": 4920332288,
+            "SwapCached": 3260416,
+            "Active": 4182020096,
+            "Inactive": 4558336000,
+            "Active(anon)": 2889695232,
+            "Inactive(anon)": 1117249536,
+            "Active(file)": 1292324864,
+            "Inactive(file)": 3441086464,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 1786146816,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 3448832,
+            "Writeback": 0,
+            "AnonPages": 3817549824,
+            "Mapped": 3605979136,
+            "Shmem": 187543552,
+            "KReclaimable": 239112192,
+            "Slab": 732098560,
+            "SReclaimable": 239112192,
+            "SUnreclaim": 492986368,
+            "KernelStack": 45973504,
+            "PageTables": 157904896,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 67013414912,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 225333248,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 0,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 965730304,
+            "GPUReclaim": 38043648,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 5081452544,
+            "DirectMap2M": 11215568896,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 5951082.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 5917398.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1566126.5625,
+          "temperatures_c": {
+            "spd5118/temp1_input": 52.0,
+            "amdgpu/edge": 57.0,
+            "nvme/Sensor 2": 41.85,
+            "nvme/Composite": 33.85,
+            "nvme/Sensor 1": 33.85,
+            "acpitz/temp1_input": 75.0,
+            "k10temp/Tccd1": 52.25,
+            "k10temp/Tccd2": 51.125,
+            "k10temp/Tctl": 75.25,
+            "mt7921_phy0/temp1_input": 42.0
+          },
+          "swap_pages": {
+            "pswpin": 420887,
+            "pswpout": 2186013
+          },
+          "cpu_total_ticks": 124060668,
+          "cpu_idle_ticks": 117628908,
+          "processes": [
+            {
+              "pid": 109632,
+              "start_ticks": 3871991,
+              "cpu_ticks": 24,
+              "rss_bytes": 1864155136,
+              "pss_bytes": 1364870144,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 6
+            }
+          ]
+        }
+      }
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 1,
+      "directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/2w_1s",
+      "status": "STARTING",
+      "idle": {
+        "rss_bytes": 3720617984,
+        "pss_bytes": 2591075328,
+        "sample": {
+          "timestamp_ns": 39254905896789,
+          "memory": {
+            "MemTotal": 15870791680,
+            "MemFree": 313421824,
+            "MemAvailable": 5351366656,
+            "Buffers": 598016,
+            "Cached": 5327781888,
+            "SwapCached": 3694592,
+            "Active": 4654567424,
+            "Inactive": 4761165824,
+            "Active(anon)": 3689111552,
+            "Inactive(anon)": 582688768,
+            "Active(file)": 965455872,
+            "Inactive(file)": 4178477056,
+            "Unevictable": 118784,
+            "Mlocked": 118784,
+            "SwapTotal": 8589930496,
+            "SwapFree": 2742947840,
+            "Zswap": 0,
+            "Zswapped": 0,
+            "Dirty": 5730304,
+            "Writeback": 0,
+            "AnonPages": 4086083584,
+            "Mapped": 3453140992,
+            "Shmem": 184500224,
+            "KReclaimable": 258547712,
+            "Slab": 722186240,
+            "SReclaimable": 239071232,
+            "SUnreclaim": 483115008,
+            "KernelStack": 35504128,
+            "PageTables": 116641792,
+            "SecPageTables": 5865472,
+            "NFS_Unstable": 0,
+            "Bounce": 0,
+            "WritebackTmp": 0,
+            "CommitLimit": 16525324288,
+            "Committed_AS": 58749407232,
+            "VmallocTotal": 35184372087808,
+            "VmallocUsed": 203325440,
+            "VmallocChunk": 0,
+            "Percpu": 42467328,
+            "HardwareCorrupted": 0,
+            "AnonHugePages": 0,
+            "ShmemHugePages": 0,
+            "ShmemPmdMapped": 0,
+            "FileHugePages": 0,
+            "FilePmdMapped": 0,
+            "CmaTotal": 0,
+            "CmaFree": 0,
+            "Unaccepted": 0,
+            "Balloon": 0,
+            "GPUActive": 699654144,
+            "GPUReclaim": 443543552,
+            "Hugepagesize": 2097152,
+            "Hugetlb": 0,
+            "DirectMap4k": 5091938304,
+            "DirectMap2M": 11205083136,
+            "DirectMap1G": 1073741824
+          },
+          "memory_pressure": {
+            "some": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 6018789.0
+            },
+            "full": {
+              "avg10": 0.0,
+              "avg60": 0.0,
+              "avg300": 0.0,
+              "total": 5981502.0
+            }
+          },
+          "cpu_mean_frequency_khz": 1669657.46875,
+          "temperatures_c": {
+            "spd5118/temp1_input": 55.0,
+            "amdgpu/edge": 60.0,
+            "nvme/Sensor 2": 40.85,
+            "nvme/Composite": 35.85,
+            "nvme/Sensor 1": 35.85,
+            "acpitz/temp1_input": 78.0,
+            "k10temp/Tccd1": 58.0,
+            "k10temp/Tccd2": 54.375,
+            "k10temp/Tctl": 78.25,
+            "mt7921_phy0/temp1_input": 40.0
+          },
+          "swap_pages": {
+            "pswpin": 479064,
+            "pswpout": 2191197
+          },
+          "cpu_total_ticks": 125757706,
+          "cpu_idle_ticks": 119094306,
+          "processes": [
+            {
+              "pid": 114181,
+              "start_ticks": 3924933,
+              "cpu_ticks": 3,
+              "rss_bytes": 26202112,
+              "pss_bytes": 17356800,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 4
+            },
+            {
+              "pid": 114193,
+              "start_ticks": 3924960,
+              "cpu_ticks": 20,
+              "rss_bytes": 1847513088,
+              "pss_bytes": 1286842368,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 5
+            },
+            {
+              "pid": 114182,
+              "start_ticks": 3924937,
+              "cpu_ticks": 22,
+              "rss_bytes": 1846902784,
+              "pss_bytes": 1286876160,
+              "swap_bytes": 0,
+              "major_faults": 0,
+              "threads": 5
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "previous_jobs": [
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/load_18dc02b3135b08fe_3ea854a2f65a522ddf9f9cb7ea15589e",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "kind": "curve",
+      "label": "c1_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/c1_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/load_18dc02b5b8769816_3aed71d68083e970e00adef51839cf6f",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "kind": "curve",
+      "label": "c1_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/c1_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/load_18dc02f65b6764b3_6190f89f27b0dcb73995e6e01d6e9415",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 1,
+      "kind": "curve",
+      "label": "c1_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/c1_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_1s/load_18dc03487eb3f10a_743bd3b22eb8c0c76115a0ae2bf856c6",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/load_18dc03a088f1019a_8f473582bde7c2dc2a844e80ce163e3b",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "kind": "curve",
+      "label": "c2_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/c2_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/load_18dc03a32e938dab_a203c153c6704e8075eea5e9ed91fb71",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "kind": "curve",
+      "label": "c2_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/c2_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/load_18dc03c8907b2166_1fb972dc883dc9d27b664e2b1da08fa3",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 2,
+      "kind": "curve",
+      "label": "c2_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/c2_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_2s/load_18dc03fb2eee4e73_fdad23c9cc604dec6e35b354dece045b",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/load_18dc042c11749eb2_4fa6ecb1ad301adf6186014a9a7236cb",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "kind": "curve",
+      "label": "c3_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/c3_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/load_18dc042eb7c0323e_b1b588099b09beb6fe377ce72a2a20cd",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "kind": "curve",
+      "label": "c3_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/c3_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/load_18dc044e62eb34a8_992a0587f11840cf84d7a5ffefb996b8",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 3,
+      "kind": "curve",
+      "label": "c3_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/c3_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_3s/load_18dc047e3b348505_634eeaa92e444de978aab2d8e97ec595",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/load_18dc04a6cdb2b466_5870c84a87706dcd317d0141f198122d",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "kind": "curve",
+      "label": "c4_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/c4_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/load_18dc04a97452283a_7e7e848f0d41f666d9355a82071d4fdc",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "kind": "curve",
+      "label": "c4_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/c4_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/load_18dc04c80b2668a8_2ef15cef30d662667eb6f60fc03d5263",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 4,
+      "kind": "curve",
+      "label": "c4_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/c4_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_4s/load_18dc04f59db11c48_ad2300f84ac48ff6311696cf32286afc",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/load_18dc051d118f274c_05e0072cdb454f0f74595fd9f217c09e",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "kind": "curve",
+      "label": "c5_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/c5_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/load_18dc051fb9dbb374_57edd90b5d539ac634d099d6139681fd",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "kind": "curve",
+      "label": "c5_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/c5_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/load_18dc053dde32143e_85bf4a9f32a12ad80363396e9688b909",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 5,
+      "kind": "curve",
+      "label": "c5_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/c5_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_5s/load_18dc056b8a467733_e7b1da50b43a77c51561467544de0875",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/load_18dc0592d4200643_4c833337dea841f3ed689f42ada94538",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "kind": "curve",
+      "label": "c6_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/c6_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/load_18dc05957cc6296a_3086f6fede86681ff277e0e990be556d",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "kind": "curve",
+      "label": "c6_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/c6_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/load_18dc05b3c32aec29_e83a59315a8578791dce09c73ac7798e",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 6,
+      "kind": "curve",
+      "label": "c6_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/c6_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_6s/load_18dc05e13dccb75b_fe0b591f5a8263d062d72e08a4570885",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/load_18dc067b9714edc9_0b4059bd479c9a1ddf0dba993883c79e",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "kind": "curve",
+      "label": "c7_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/c7_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/load_18dc067e37402465_462b228332ce665ec80812a18f72a817",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "kind": "curve",
+      "label": "c7_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/c7_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/load_18dc069552e7d8ec_e784ac64a29c953c2aae670ba3157951",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 7,
+      "kind": "curve",
+      "label": "c7_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/c7_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_7s_attempt2/load_18dc06ba249c7300_ecb9be4505e7f77db13620d3bc553322",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/load_18dc06d78e0abdb9_0a9689d0ff2460be177d77db311801fe",
+      "calls": 1,
+      "completed": 1
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "kind": "curve",
+      "label": "c8_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/c8_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/load_18dc06da3118bdad_3499a8b95eed13c5dc67edf3c7b47cdb",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "kind": "curve",
+      "label": "c8_id",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/c8_id_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/load_18dc06f166252115_54c7bbee17c069a58caec1eb94fd2072",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "kind": "curve",
+      "label": "c8_zh",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/c8_zh_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/load_18dc0716a00767b0_1d86f98ce6e7999e6b94c4a293e3869a",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 1,
+      "slots_per_worker": 8,
+      "kind": "network",
+      "label": "network_max",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/network_max_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/1w_8s/load_18dc07333a1437cc_fd23dea7d3c46e18281a8f02ace90a37",
+      "calls": 30,
+      "completed": 30
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 1,
+      "kind": "warmup",
+      "label": "warmup",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/2w_1s/warmup_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/2w_1s/load_18dc0752dee3e515_31f713ac9b29ce019fd318199d2f9a2c",
+      "calls": 2,
+      "completed": 2
+    },
+    {
+      "workers": 2,
+      "slots_per_worker": 1,
+      "kind": "curve",
+      "label": "c2_en",
+      "status": "COMPLETE",
+      "record_path": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/2w_1s/c2_en_record.json",
+      "suite_directory": "/home/dasun/Documents/Projects/ASR-System/ASR_Syetem/results/resumable-matrix/2w_1s/load_18dc07559f83fe4a_2293cf56adae1ee5d716e97877aa7bdb",
+      "calls": 30,
+      "completed": 30
+    }
+  ],
+  "driver_sha256": "877a2c87092b00c22f6557be030a115db495a15bc7494dda83aadb055761359c",
+  "host": {
+    "timestamp_ns": 39588800712704,
+    "memory": {
+      "MemTotal": 15870791680,
+      "MemFree": 2889158656,
+      "MemAvailable": 7876460544,
+      "Buffers": 598016,
+      "Cached": 5262131200,
+      "SwapCached": 3776512,
+      "Active": 3098320896,
+      "Inactive": 4074405888,
+      "Active(anon)": 1583472640,
+      "Inactive(anon)": 512741376,
+      "Active(file)": 1514848256,
+      "Inactive(file)": 3561664512,
+      "Unevictable": 118784,
+      "Mlocked": 118784,
+      "SwapTotal": 8589930496,
+      "SwapFree": 2746732544,
+      "Zswap": 0,
+      "Zswapped": 0,
+      "Dirty": 2457600,
+      "Writeback": 462848,
+      "AnonPages": 1909202944,
+      "Mapped": 3453300736,
+      "Shmem": 186413056,
+      "KReclaimable": 258547712,
+      "Slab": 721985536,
+      "SReclaimable": 239071232,
+      "SUnreclaim": 482914304,
+      "KernelStack": 35422208,
+      "PageTables": 108847104,
+      "SecPageTables": 5869568,
+      "NFS_Unstable": 0,
+      "Bounce": 0,
+      "WritebackTmp": 0,
+      "CommitLimit": 16525324288,
+      "Committed_AS": 43581689856,
+      "VmallocTotal": 35184372087808,
+      "VmallocUsed": 203145216,
+      "VmallocChunk": 0,
+      "Percpu": 42467328,
+      "HardwareCorrupted": 0,
+      "AnonHugePages": 0,
+      "ShmemHugePages": 0,
+      "ShmemPmdMapped": 0,
+      "FileHugePages": 0,
+      "FilePmdMapped": 0,
+      "CmaTotal": 0,
+      "CmaFree": 0,
+      "Unaccepted": 0,
+      "Balloon": 0,
+      "GPUActive": 693129216,
+      "GPUReclaim": 202776576,
+      "Hugepagesize": 2097152,
+      "Hugetlb": 0,
+      "DirectMap4k": 5094035456,
+      "DirectMap2M": 11202985984,
+      "DirectMap1G": 1073741824
+    },
+    "memory_pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 6042062.0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 6004753.0
+      }
+    },
+    "cpu_mean_frequency_khz": 1794678,
+    "temperatures_c": {
+      "spd5118/temp1_input": 55.25,
+      "amdgpu/edge": 61.0,
+      "nvme/Sensor 2": 39.85,
+      "nvme/Composite": 35.85,
+      "nvme/Sensor 1": 35.85,
+      "acpitz/temp1_input": 79.0,
+      "k10temp/Tccd1": 57.625,
+      "k10temp/Tccd2": 54.375,
+      "k10temp/Tctl": 78.0,
+      "mt7921_phy0/temp1_input": 42.0
+    },
+    "swap_pages": {
+      "pswpin": 481138,
+      "pswpout": 2192178
+    },
+    "cpu_total_ticks": 126828018,
+    "cpu_idle_ticks": 119996054,
+    "processes": []
+  },
+  "guard_policy": "RAM reserve; sustained swap pressure, not low host swap alone"
+}

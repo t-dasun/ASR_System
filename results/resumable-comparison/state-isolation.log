@@ -1,0 +1,3 @@
+PASS: two interleaved languages match native streaming; cached state reused; cancellation isolated
+EN steps=7 reused_prefill=366
+ID steps=8 reused_prefill=479

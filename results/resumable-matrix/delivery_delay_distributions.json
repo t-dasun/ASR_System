@@ -1,0 +1,332 @@
+[
+  {
+    "kind": "curve",
+    "language": "en",
+    "offered_calls": 390,
+    "distributions": {
+      "send_lag": {
+        "count": 16146,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.089557,
+        "p90": 0.1299285,
+        "p95": 0.27949275,
+        "p99": 0.4713397999999992,
+        "max": 1.647681,
+        "mean": 0.10771714858169205
+      },
+      "controller_queue_wait": {
+        "count": 16146,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001082,
+        "p90": 0.001904,
+        "p95": 0.002415,
+        "p99": 0.0035265499999999994,
+        "max": 0.04283,
+        "mean": 0.001226665118295553
+      },
+      "submit_wall": {
+        "count": 16146,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.029725,
+        "p90": 0.9200695000000001,
+        "p95": 1.04912925,
+        "p99": 1.597004049999996,
+        "max": 99.768838,
+        "mean": 0.4172940253313514
+      },
+      "publication_delay": {
+        "count": 1794,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.066805,
+        "p90": 0.3768377,
+        "p95": 0.4584175,
+        "p99": 0.68030021,
+        "max": 0.843326,
+        "mean": 0.16557171850613156
+      }
+    }
+  },
+  {
+    "kind": "curve",
+    "language": "id",
+    "offered_calls": 390,
+    "distributions": {
+      "send_lag": {
+        "count": 20709,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.090434,
+        "p90": 0.1284798,
+        "p95": 0.24733079999999918,
+        "p99": 0.4527843999999989,
+        "max": 2.716753,
+        "mean": 0.10649974122362257
+      },
+      "controller_queue_wait": {
+        "count": 20709,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001122,
+        "p90": 0.001993,
+        "p95": 0.002515,
+        "p99": 0.003476,
+        "max": 0.073889,
+        "mean": 0.0012799982616253803
+      },
+      "submit_wall": {
+        "count": 20709,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.024075,
+        "p90": 0.9744832000000001,
+        "p95": 1.11291,
+        "p99": 1.5171698799999997,
+        "max": 48.970827,
+        "mean": 0.39180057689893283
+      },
+      "publication_delay": {
+        "count": 2223,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.067266,
+        "p90": 0.3813068,
+        "p95": 0.46305420000000036,
+        "p99": 0.6914851200000015,
+        "max": 0.891396,
+        "mean": 0.17108763292847504
+      }
+    }
+  },
+  {
+    "kind": "curve",
+    "language": "zh",
+    "offered_calls": 390,
+    "distributions": {
+      "send_lag": {
+        "count": 22503,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.089317,
+        "p90": 0.12685359999999998,
+        "p95": 0.24956679999999978,
+        "p99": 0.4553651399999999,
+        "max": 2.91522,
+        "mean": 0.10568233448873483
+      },
+      "controller_queue_wait": {
+        "count": 22503,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001082,
+        "p90": 0.0018737999999999993,
+        "p95": 0.002375,
+        "p99": 0.003427,
+        "max": 0.075471,
+        "mean": 0.0012260183086699552
+      },
+      "submit_wall": {
+        "count": 22503,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.020739,
+        "p90": 0.905541,
+        "p95": 1.022559,
+        "p99": 1.4422517599999993,
+        "max": 45.859681,
+        "mean": 0.34547858463316
+      },
+      "publication_delay": {
+        "count": 2379,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.068027,
+        "p90": 0.3843242,
+        "p95": 0.4553175999999997,
+        "p99": 0.6761900399999998,
+        "max": 0.865819,
+        "mean": 0.168996377469525
+      }
+    }
+  },
+  {
+    "kind": "network",
+    "language": "en",
+    "offered_calls": 20,
+    "distributions": {
+      "send_lag": {
+        "count": 737,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.084799,
+        "p90": 0.1107344,
+        "p95": 0.12232419999999994,
+        "p99": 0.3486749999999998,
+        "max": 21.771178,
+        "mean": 0.15559300407055632
+      },
+      "controller_queue_wait": {
+        "count": 737,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001022,
+        "p90": 0.0019009999999999984,
+        "p95": 0.0024689999999999985,
+        "p99": 0.0035251999999999996,
+        "max": 0.023053,
+        "mean": 0.0011880556309362279
+      },
+      "submit_wall": {
+        "count": 737,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 41.436384,
+        "p90": 42.4887218,
+        "p95": 42.863472800000004,
+        "p99": 81.74180748,
+        "max": 84.012588,
+        "mean": 42.38925456173677
+      },
+      "publication_delay": {
+        "count": 82,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.459163,
+        "p90": 41.1321078,
+        "p95": 41.28413975,
+        "p99": 41.86936986,
+        "max": 42.074376,
+        "mean": 10.831188048780488
+      }
+    }
+  },
+  {
+    "kind": "network",
+    "language": "id",
+    "offered_calls": 20,
+    "distributions": {
+      "send_lag": {
+        "count": 1017,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.086698,
+        "p90": 0.1148728,
+        "p95": 0.13149439999999993,
+        "p99": 0.3907052000000011,
+        "max": 22.753815,
+        "mean": 0.18114934808259586
+      },
+      "controller_queue_wait": {
+        "count": 1017,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001112,
+        "p90": 0.002024,
+        "p95": 0.002695,
+        "p99": 0.003446440000000006,
+        "max": 0.00541,
+        "mean": 0.001220850540806293
+      },
+      "submit_wall": {
+        "count": 1017,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 41.610489,
+        "p90": 42.627034599999995,
+        "p95": 42.925501999999994,
+        "p99": 80.98474812000005,
+        "max": 83.928379,
+        "mean": 42.1992935712881
+      },
+      "publication_delay": {
+        "count": 109,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.445764,
+        "p90": 40.984108,
+        "p95": 41.4070464,
+        "p99": 42.13844656,
+        "max": 42.423718,
+        "mean": 9.385682743119267
+      }
+    }
+  },
+  {
+    "kind": "network",
+    "language": "zh",
+    "offered_calls": 20,
+    "distributions": {
+      "send_lag": {
+        "count": 1065,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.087533,
+        "p90": 0.11323520000000001,
+        "p95": 0.12178999999999998,
+        "p99": 0.34071511999999987,
+        "max": 0.847877,
+        "mean": 0.09535066948356807
+      },
+      "controller_queue_wait": {
+        "count": 1065,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.001222,
+        "p90": 0.0022704,
+        "p95": 0.002775199999999998,
+        "p99": 0.003599599999999999,
+        "max": 0.004428,
+        "mean": 0.0013282610328638497
+      },
+      "submit_wall": {
+        "count": 1065,
+        "population": "recorded delivered chunks",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 41.696459,
+        "p90": 42.6393036,
+        "p95": 43.0017888,
+        "p99": 62.74427379999999,
+        "max": 82.850395,
+        "mean": 42.198642453521124
+      },
+      "publication_delay": {
+        "count": 112,
+        "population": "recorded recognition events",
+        "unit": "ms",
+        "estimator": "linear_(n-1)*p_type7",
+        "p50": 0.5053095000000001,
+        "p90": 41.1066648,
+        "p95": 41.5806338,
+        "p99": 41.99156031,
+        "max": 42.090235,
+        "mean": 9.146114553571428
+      }
+    }
+  }
+]
