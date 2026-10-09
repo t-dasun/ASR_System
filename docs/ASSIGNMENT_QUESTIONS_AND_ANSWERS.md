@@ -4,7 +4,7 @@
 
 **Measured scope:** twelve layouts; 1,170/1,170 direct calls; sixteen separate warmups; 55/60 WebSocket calls. Primary direct accuracy: English WER 10.24%, Indonesian WER 35.20%, Mandarin CER 12.43%. Ten unique WAVs per language are reused with balanced repetitions. Completed protocol status is not an accuracy threshold.
 
-Implemented, measured, proposed and conditional statements are distinguished below. Baseline prefix values appear only as a labelled configuration comparison in the canonical report and the archive.
+Implemented, measured, proposed and conditional statements are distinguished below. Baseline prefix values appear only as a labelled configuration comparison in the canonical report and the archive. A supplementary five-WAV English sweep completed 75/75 calls in each of direct/network modes; those 150 tuning observations are separate from the full multilingual study. An additional 75-call v4 performance-configuration sweep is reported separately in Section 1.1, bringing focused English tuning observations to 225. Most earlier tests used operator-reported quiet/balanced settings. Its full multilingual reference remains direct mode, 200 ms chunks and 2,000 ms decode steps.
 
 ### Q1. Was a CPU-only, real-time, multilingual Qwen3-ASR proof of concept built?
 
@@ -28,7 +28,7 @@ The [resumable browser demonstration](../results/resumable-ui-20261006/demo.json
 
 ### Q6. Why 16 kHz mono PCM16, 200 ms chunks, and a 2-second decode step?
 
-16 kHz mono PCM16 matches the model/media contract. A 200 ms chunk is 3,200 samples or 6,400 bytes, balancing delivery granularity and overhead. A 2-second decode step controls model readiness, not transport pacing. Four compute threads per worker, zero initial withheld chunks and no EOF whole-audio refinement define the measured preset; text latency is not guaranteed by chunk size.
+16 kHz mono PCM16 matches the model/media contract. A 200 ms chunk is 3,200 samples or 6,400 bytes, balancing delivery granularity and overhead. A 2-second decode step controls model readiness, not transport pacing. Four compute threads per worker, zero initial withheld chunks and no EOF whole-audio refinement define the measured preset; text latency is not guaranteed by chunk size. The five-WAV sweep gives WER 4.85% / 5.83% / 12.62% at 2,000 / 1,000 / 500 ms steps in both modes; first text becomes earlier while EOF delay and errors increase. Report Section 1.1 and Appendix G show the tuning results separately from full-cohort scores.
 
 ### Q7. How are pacing, buffering, backpressure, and EOF handled?
 

@@ -4,6 +4,8 @@ C++20 Qwen3-ASR-0.6B service with paced WAV simulation, live WebSocket calls, a 
 
 ## Start here
 
+- [English five-WAV decode-step/chunk experiment and measured results](docs/ENGLISH_STEP_CHUNK_EXPERIMENT.md)
+
 - [Resumable multi-call streaming: commands, design and evidence](docs/RESUMABLE_STREAMING.md)
 - [Final technical report: measurements, architecture and capacity sizing](report.md)
 - [Run commands and worker/call selection](docs/CLI_QUICKSTART.md)

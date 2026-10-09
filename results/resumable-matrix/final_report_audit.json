@@ -44,7 +44,7 @@
   },
   "submission_report": {
     "path": "report.md",
-    "sha256": "eb9d37225a0af3e8e685cc04a3a848a434831673da0c6e43aa2aff30075b1377",
+    "sha256": "251fba3e079ea9bed0ad57bc4be919682cebe2ea16931dd5006268a6116f2cd0",
     "scope": "Standalone assignment report; measurements unchanged."
   },
   "canonical_report": "report.md",
@@ -53,5 +53,26 @@
     "evaluated_binary_archive_sha256": "0984054010d048bfc1c4b6f772ffb12068ad578e57da68f6dae19d82971c5749",
     "source_files": 1734,
     "capture_scope": "implementation available at report finalization; not a retrospectively captured original source state"
+  },
+  "english_direct_network_sweep": {
+    "direct_calls": 75,
+    "network_calls": 75,
+    "direct_completed": 75,
+    "network_completed": 75,
+    "unique_wavs_per_mode": 5,
+    "repetitions": 3,
+    "full_matrix_reference": "direct / decode 2000 ms / chunk 200 ms",
+    "input_reference_binary_config_identities_match": true
+  },
+  "v4_performance_sweep": {
+    "calls": 75,
+    "completed": 75,
+    "profile_label": "operator-reported performance configuration",
+    "earlier_profiles": "operator-reported quiet/balanced for most tests",
+    "original_multilingual_measurements_preserved": true,
+    "compute_wall_time_reduction_range_percent": [
+      42.59683932921672,
+      45.93059465622484
+    ]
   }
 }

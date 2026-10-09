@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "calls": 75,
+  "unique_english_wavs": 5,
+  "settings": 5,
+  "repetitions": 3,
+  "single_worker_single_active_call": true,
+  "independent_accuracy_rescore": true,
+  "delivery_event_checks": true,
+  "suite_measurement_failures": 0,
+  "compared_with_network_same_inputs_and_binaries": true
+}

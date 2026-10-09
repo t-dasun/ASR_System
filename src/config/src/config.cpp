@@ -167,7 +167,8 @@ RunConfig resolve_config(const std::filesystem::path &yaml_file, const std::vect
         invalid("model.runtime", "expected mock, qwen_native, qwen_prefix, or qwen_stream");
     const bool prefix = runtime == "qwen_prefix" || runtime == "qwen_stream";
     range(root["model"]["threads"], 1, 16, "model.threads");
-    range(root["model"]["decode_step_ms"], 1000, 8000, "model.decode_step_ms");
+    range(root["model"]["decode_step_ms"], runtime == "qwen_stream" ? 500 : 1000, 8000,
+          "model.decode_step_ms");
     range(root["model"]["stream_unfixed_chunks"], 0, 4, "model.stream_unfixed_chunks");
     range(root["model"]["prefix_preview_ms"], 1000, 20000, "model.prefix_preview_ms");
     range(root["model"]["max_new_tokens"], 1, 256, "model.max_new_tokens");

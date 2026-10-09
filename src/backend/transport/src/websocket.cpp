@@ -764,7 +764,10 @@ void WebSocketServer::handle_client(int fd) {
     config.sample_rate_hz = start.at("sample_rate_hz").get<int>();
     config.decode_step_ms = start.value("decode_step_ms", 0);
     config.prefix_preview_ms = start.value("prefix_preview_ms", 0);
-    if ((config.decode_step_ms != 0 && (config.decode_step_ms < 1000 || config.decode_step_ms > 8000)) ||
+    const int minimum_step_ms =
+        engine_.capabilities().streaming_kind == "resumable_windowed_streaming" ? 500 : 1000;
+    if ((config.decode_step_ms != 0 &&
+         (config.decode_step_ms < minimum_step_ms || config.decode_step_ms > 8000)) ||
         (config.prefix_preview_ms != 0 &&
          (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000)))
         throw std::invalid_argument("invalid decode step or prefix preview interval");

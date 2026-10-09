@@ -109,7 +109,7 @@ struct PrefixShared {
         worker_id = std::move(id);
         streaming = stream_options;
         if (streaming.enabled &&
-            (streaming.step_ms < 1000 || streaming.step_ms > 8000 || streaming.max_tokens < 1 ||
+            (streaming.step_ms < 500 || streaming.step_ms > 8000 || streaming.max_tokens < 1 ||
              streaming.max_tokens > 256 || streaming.unfixed_chunks < 0 || streaming.unfixed_chunks > 4))
             throw std::invalid_argument("invalid resumable stream options");
         if (!runtime_owner.owns_lock())
@@ -574,8 +574,10 @@ PrefixMultiplexEngine::create_session(const SessionConfig &config, IRecognitionS
     if (config.prefix_preview_ms != 0 &&
         (config.prefix_preview_ms < 1000 || config.prefix_preview_ms > 20000))
         return {{ErrorCode::invalid_input, "prefix preview must be 1000..20000 ms"}, nullptr};
-    if (config.decode_step_ms != 0 && (config.decode_step_ms < 1000 || config.decode_step_ms > 8000))
-        return {{ErrorCode::invalid_input, "decode step must be 1000..8000 ms"}, nullptr};
+    const int minimum_step_ms = shared_->streaming.enabled ? 500 : 1000;
+    if (config.decode_step_ms != 0 &&
+        (config.decode_step_ms < minimum_step_ms || config.decode_step_ms > 8000))
+        return {{ErrorCode::invalid_input, "decode step outside supported runtime bounds"}, nullptr};
     std::lock_guard lock(shared_->mutex);
     if (shared_->draining)
         return {{ErrorCode::invalid_state, "shared worker is draining"}, nullptr};

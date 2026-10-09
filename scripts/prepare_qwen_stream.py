@@ -59,7 +59,7 @@ void qwen_resumable_destroy(qwen_resumable_state *s);
     destroy += '        free(s->ctx);\n    }\n    free(s);\n}\n'
     create = '''qwen_resumable_state *qwen_resumable_create(qwen_ctx_t *model, const char *language,
     int step_ms, int max_tokens, int unfixed_chunks) {
-    if (!model || model->rocm || model->cuda || step_ms < 1000 || step_ms > 8000 ||
+    if (!model || model->rocm || model->cuda || step_ms < 500 || step_ms > 8000 ||
         max_tokens < 1 || max_tokens > 256 || unfixed_chunks < 0 || unfixed_chunks > 4) return NULL;
     qwen_resumable_state *s = calloc(1, sizeof(*s));
     if (!s) return NULL;

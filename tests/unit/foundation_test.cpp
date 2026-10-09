@@ -159,6 +159,12 @@ void configurations(const std::filesystem::path &directory) {
             "unsupported native thread count accepted");
     rejects([] { (void)resolve_config({}, {"model.decode_step_ms=500"}); },
             "unsupported native decode step accepted");
+    const auto short_stream = resolve_config({}, {"model.runtime=qwen_stream", "model.path=missing-model",
+                                                  "audio.realtime_pacing=true", "model.decode_step_ms=500"});
+    check(short_stream.decode_step_ms == 500, "resumable 500 ms step rejected");
+    rejects([] { (void)resolve_config({}, {"model.runtime=qwen_stream", "model.path=missing-model",
+                                          "audio.realtime_pacing=true", "model.decode_step_ms=499"}); },
+            "resumable step below 500 ms accepted");
     const auto managed = resolve_config({}, {"workers.processes=2", "workers.scheduler=round_robin"});
     check(managed.worker_processes == 2 && managed.scheduler == "round_robin" &&
               managed.resolved["workers"]["executor"] == "in_process" &&

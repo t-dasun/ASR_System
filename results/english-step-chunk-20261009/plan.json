@@ -1,0 +1,441 @@
+{
+  "runtime": "qwen_stream",
+  "mode": "network",
+  "workers": 1,
+  "active_concurrency": 1,
+  "session_slots": 8,
+  "threads": 4,
+  "repetitions": 3,
+  "cases": [
+    [
+      2000,
+      200
+    ],
+    [
+      1000,
+      200
+    ],
+    [
+      2000,
+      100
+    ],
+    [
+      1000,
+      100
+    ],
+    [
+      500,
+      100
+    ]
+  ],
+  "schedule": [
+    {
+      "round": 1,
+      "step_ms": 1000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 1,
+      "step_ms": 1000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 1,
+      "step_ms": 2000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 1,
+      "step_ms": 500,
+      "chunk_ms": 100
+    },
+    {
+      "round": 1,
+      "step_ms": 2000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 2,
+      "step_ms": 1000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 2,
+      "step_ms": 2000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 2,
+      "step_ms": 2000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 2,
+      "step_ms": 500,
+      "chunk_ms": 100
+    },
+    {
+      "round": 2,
+      "step_ms": 1000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 3,
+      "step_ms": 1000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 3,
+      "step_ms": 1000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 3,
+      "step_ms": 2000,
+      "chunk_ms": 100
+    },
+    {
+      "round": 3,
+      "step_ms": 2000,
+      "chunk_ms": 200
+    },
+    {
+      "round": 3,
+      "step_ms": 500,
+      "chunk_ms": 100
+    }
+  ],
+  "recordings": [
+    {
+      "schema_version": 1,
+      "id": "fleurs_en_us_validation_1523_142",
+      "file": "datasets/prepared/fleurs/fleurs_en_us_validation_1523_142.wav",
+      "language": "en",
+      "config": "en_us",
+      "dataset": "google/fleurs",
+      "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+      "split": "validation",
+      "cohort": "heldout_validation",
+      "selection_rank": 20,
+      "seed": 42,
+      "source_id": "1523",
+      "source_row": 142,
+      "source_path": "/root/.cache/huggingface/datasets/downloads/extracted/738546934b3f5c30eba9deb6155e2bbf145e9a2ca11e221d7e85eb47d291f0ac/16091676904582653474.wav",
+      "speaker_id": null,
+      "reference": "The final score was a one-point victory, 21 to 20, ending the All Blacks' 15 game winning streak.",
+      "source_transcription": "the final score was a one-point victory 21 to 20 ending the all blacks' 15 game winning streak",
+      "reference_field": "raw_transcription",
+      "num_samples": 163520,
+      "duration_s": 10.22,
+      "sample_rate": 16000,
+      "channels": 1,
+      "encoding": "PCM_16",
+      "condition": "clean",
+      "sha256": "4c7538ad8ae26c434f7401d9d9705c69d1bb47101a2aba8bf8d7f8cc659dff19",
+      "source_audio_sha256": "3675b48a41835bb19193b37163ed0dd327253fdd567302f486caa04e0e4a1826",
+      "license": "CC-BY-4.0",
+      "conversion": {
+        "library": "soundfile",
+        "version": "0.14.0",
+        "operation": "float32 decode to PCM16 WAV; no resampling"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "fleurs_en_us_validation_1626_141",
+      "file": "datasets/prepared/fleurs/fleurs_en_us_validation_1626_141.wav",
+      "language": "en",
+      "config": "en_us",
+      "dataset": "google/fleurs",
+      "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+      "split": "validation",
+      "cohort": "heldout_validation",
+      "selection_rank": 21,
+      "seed": 42,
+      "source_id": "1626",
+      "source_row": 141,
+      "source_path": "/root/.cache/huggingface/datasets/downloads/extracted/738546934b3f5c30eba9deb6155e2bbf145e9a2ca11e221d7e85eb47d291f0ac/16053666868203857398.wav",
+      "speaker_id": null,
+      "reference": "The Olympic gold medalist was due to swim in the 100m and 200m freestyle and in three relays at the Commonwealth Games, but due to his complaints his fitness has been in doubt.",
+      "source_transcription": "the olympic gold medalist was due to swim in the 100m and 200m freestyle and in three relays at the commonwealth games but due to his complaints his fitness has been in doubt",
+      "reference_field": "raw_transcription",
+      "num_samples": 162240,
+      "duration_s": 10.14,
+      "sample_rate": 16000,
+      "channels": 1,
+      "encoding": "PCM_16",
+      "condition": "clean",
+      "sha256": "3e6aefd17f528e91ee468feed40d82c26177e0f5e0fc11c653558eea0c32cdbd",
+      "source_audio_sha256": "71e8878c98c2a4622e9cd6fdaf0d131095f290ab01ea1fb6a901f33b16d9bc29",
+      "license": "CC-BY-4.0",
+      "conversion": {
+        "library": "soundfile",
+        "version": "0.14.0",
+        "operation": "float32 decode to PCM16 WAV; no resampling"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "fleurs_en_us_validation_1654_60",
+      "file": "datasets/prepared/fleurs/fleurs_en_us_validation_1654_60.wav",
+      "language": "en",
+      "config": "en_us",
+      "dataset": "google/fleurs",
+      "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+      "split": "validation",
+      "cohort": "heldout_validation",
+      "selection_rank": 22,
+      "seed": 42,
+      "source_id": "1654",
+      "source_row": 60,
+      "source_path": "/root/.cache/huggingface/datasets/downloads/extracted/738546934b3f5c30eba9deb6155e2bbf145e9a2ca11e221d7e85eb47d291f0ac/12307759170163178109.wav",
+      "speaker_id": null,
+      "reference": "I don't know if you realize it or not, but most of the goods from Central America came into this country duty-free.",
+      "source_transcription": "i don't know if you realize it or not but most of the goods from central america came into this country duty-free",
+      "reference_field": "raw_transcription",
+      "num_samples": 128640,
+      "duration_s": 8.04,
+      "sample_rate": 16000,
+      "channels": 1,
+      "encoding": "PCM_16",
+      "condition": "clean",
+      "sha256": "9c62d33f38bad02df4eb532fc2d258b972588773c84ee177c716cdb681d3f991",
+      "source_audio_sha256": "0c16d804dd643a3e9dc8a9560d0fa79ee4fa0cf2a32df35bacad08ad16810f71",
+      "license": "CC-BY-4.0",
+      "conversion": {
+        "library": "soundfile",
+        "version": "0.14.0",
+        "operation": "float32 decode to PCM16 WAV; no resampling"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "fleurs_en_us_validation_1607_28",
+      "file": "datasets/prepared/fleurs/fleurs_en_us_validation_1607_28.wav",
+      "language": "en",
+      "config": "en_us",
+      "dataset": "google/fleurs",
+      "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+      "split": "validation",
+      "cohort": "heldout_validation",
+      "selection_rank": 23,
+      "seed": 42,
+      "source_id": "1607",
+      "source_row": 28,
+      "source_path": "/root/.cache/huggingface/datasets/downloads/extracted/738546934b3f5c30eba9deb6155e2bbf145e9a2ca11e221d7e85eb47d291f0ac/10846227846460802233.wav",
+      "speaker_id": null,
+      "reference": "It's worth half an hour to stroll about the intriguing village.",
+      "source_transcription": "it's worth half an hour to stroll about the intriguing village",
+      "reference_field": "raw_transcription",
+      "num_samples": 61440,
+      "duration_s": 3.84,
+      "sample_rate": 16000,
+      "channels": 1,
+      "encoding": "PCM_16",
+      "condition": "clean",
+      "sha256": "deb1d0362fcbb8d9be8c575fe5a1f15281048ed81389c152342888dd8283c184",
+      "source_audio_sha256": "cd18277b92bd22d1c2827f6bee287a636cc227365fd9bc1d7e3ef5b81afe6ad3",
+      "license": "CC-BY-4.0",
+      "conversion": {
+        "library": "soundfile",
+        "version": "0.14.0",
+        "operation": "float32 decode to PCM16 WAV; no resampling"
+      }
+    },
+    {
+      "schema_version": 1,
+      "id": "fleurs_en_us_validation_1521_51",
+      "file": "datasets/prepared/fleurs/fleurs_en_us_validation_1521_51.wav",
+      "language": "en",
+      "config": "en_us",
+      "dataset": "google/fleurs",
+      "revision": "70bb2e84b976b7e960aa89f1c648e09c59f894dd",
+      "split": "validation",
+      "cohort": "heldout_validation",
+      "selection_rank": 24,
+      "seed": 42,
+      "source_id": "1521",
+      "source_row": 51,
+      "source_path": "/root/.cache/huggingface/datasets/downloads/extracted/738546934b3f5c30eba9deb6155e2bbf145e9a2ca11e221d7e85eb47d291f0ac/11840539862172308240.wav",
+      "speaker_id": null,
+      "reference": "The satellite in space gets the call and then reflects it back down, almost instantly.",
+      "source_transcription": "the satellite in space gets the call and then reflects it back down almost instantly",
+      "reference_field": "raw_transcription",
+      "num_samples": 88320,
+      "duration_s": 5.52,
+      "sample_rate": 16000,
+      "channels": 1,
+      "encoding": "PCM_16",
+      "condition": "clean",
+      "sha256": "5497489e587a408a2c7e1933a9662e946d816ffbcc777705ec8a7b93778a9986",
+      "source_audio_sha256": "7915ef601929f72ace84ae638b4d4c6b74e579a6d34f99741ef724ceec234264",
+      "license": "CC-BY-4.0",
+      "conversion": {
+        "library": "soundfile",
+        "version": "0.14.0",
+        "operation": "float32 decode to PCM16 WAV; no resampling"
+      }
+    }
+  ],
+  "manifest_sha256": "720b76a866bdda366f5d199f2dbc3598c320e8336fedde6c67258da474b989c2",
+  "config_sha256": "bbc84824744cc6c40bf44fb565c06ebca4a0a40d2ff868dc431eb854b209b17e",
+  "cli_sha256": "9da909602522bd662b01986d74abb3e2e47751c7f352469c429f9c963a1674c1",
+  "worker_sha256": "31bfbb18c29063fa58646d7e12d4723c8e84ea48e1d39c6b186b67e34482a742",
+  "driver_sha256": "ad0429259d8530a06701fab3d0e7df3fffa4a50f4af0b444afdae5d5dc5ad1fa",
+  "model": {
+    "model": "Qwen/Qwen3-ASR-0.6B",
+    "revision": "5eb144179a02acc5e5ba31e748d22b0cf3e303b0",
+    "status": "verified",
+    "files": [
+      {
+        "name": "README.md",
+        "expected_size": 57456,
+        "expected_sha256": null,
+        "sha256": "5058416891bc47a2051557765997e8c42f8eb78a0e33c3e775bd17d4b0ba4d50"
+      },
+      {
+        "name": "chat_template.json",
+        "expected_size": 1161,
+        "expected_sha256": null,
+        "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff"
+      },
+      {
+        "name": "config.json",
+        "expected_size": 6193,
+        "expected_sha256": null,
+        "sha256": "76d3ae4601ce939830b2517f4a6cadb86cc51316c3900af6b020b051c21a478c"
+      },
+      {
+        "name": "generation_config.json",
+        "expected_size": 142,
+        "expected_sha256": null,
+        "sha256": "1da527824d81e07118facff437e03f2e24a23311e3bdeb2368973fe77e5f275c"
+      },
+      {
+        "name": "merges.txt",
+        "expected_size": 1671853,
+        "expected_sha256": null,
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "name": "model.safetensors",
+        "expected_size": 1876091704,
+        "expected_sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea",
+        "sha256": "79d6cbd4c98c7bbffe9db2edac07f56cd6637d0d5944b27f6c2b8353840323ea"
+      },
+      {
+        "name": "preprocessor_config.json",
+        "expected_size": 330,
+        "expected_sha256": null,
+        "sha256": "45e120a4eda2c20c5d7f2ea9354e63536bf35e27aa573fb7cdf78017b378770d"
+      },
+      {
+        "name": "tokenizer_config.json",
+        "expected_size": 12487,
+        "expected_sha256": null,
+        "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+      },
+      {
+        "name": "vocab.json",
+        "expected_size": 2776833,
+        "expected_sha256": null,
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ]
+  },
+  "host": {
+    "timestamp_ns": 1033714289912,
+    "memory": {
+      "MemTotal": 15870799872,
+      "MemFree": 1503232000,
+      "MemAvailable": 9440153600,
+      "Buffers": 3907584,
+      "Cached": 8046604288,
+      "SwapCached": 0,
+      "Active": 3947991040,
+      "Inactive": 7648075776,
+      "Active(anon)": 3569606656,
+      "Inactive(anon)": 99844096,
+      "Active(file)": 378384384,
+      "Inactive(file)": 7548231680,
+      "Unevictable": 118784,
+      "Mlocked": 118784,
+      "SwapTotal": 8589930496,
+      "SwapFree": 8589930496,
+      "Zswap": 0,
+      "Zswapped": 0,
+      "Dirty": 1495040,
+      "Writeback": 0,
+      "AnonPages": 3546910720,
+      "Mapped": 1868902400,
+      "Shmem": 123981824,
+      "KReclaimable": 358064128,
+      "Slab": 668254208,
+      "SReclaimable": 279162880,
+      "SUnreclaim": 389091328,
+      "KernelStack": 36880384,
+      "PageTables": 95072256,
+      "SecPageTables": 5382144,
+      "NFS_Unstable": 0,
+      "Bounce": 0,
+      "WritebackTmp": 0,
+      "CommitLimit": 16525328384,
+      "Committed_AS": 28109463552,
+      "VmallocTotal": 35184372087808,
+      "VmallocUsed": 204623872,
+      "VmallocChunk": 0,
+      "Percpu": 41025536,
+      "HardwareCorrupted": 0,
+      "AnonHugePages": 0,
+      "ShmemHugePages": 0,
+      "ShmemPmdMapped": 0,
+      "FileHugePages": 0,
+      "FilePmdMapped": 0,
+      "CmaTotal": 0,
+      "CmaFree": 0,
+      "Unaccepted": 0,
+      "Balloon": 0,
+      "GPUActive": 654823424,
+      "GPUReclaim": 689131520,
+      "Hugepagesize": 2097152,
+      "Hugetlb": 0,
+      "DirectMap4k": 2655047680,
+      "DirectMap2M": 13641973760,
+      "DirectMap1G": 1073741824
+    },
+    "memory_pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 3910.0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 3865.0
+      }
+    },
+    "cpu_mean_frequency_khz": 1292216.84375,
+    "temperatures_c": {
+      "spd5118/temp1_input": 37.75,
+      "amdgpu/edge": 47.0,
+      "nvme/Sensor 2": 36.85,
+      "nvme/Composite": 40.85,
+      "nvme/Sensor 1": 40.85,
+      "acpitz/temp1_input": 48.0,
+      "k10temp/Tccd1": 39.875,
+      "k10temp/Tccd2": 38.875,
+      "k10temp/Tctl": 48.125,
+      "mt7921_phy0/temp1_input": 38.0
+    },
+    "swap_pages": {
+      "pswpin": 0,
+      "pswpout": 0
+    },
+    "cpu_total_ticks": 3311126,
+    "cpu_idle_ticks": 3250145,
+    "processes": []
+  }
+}

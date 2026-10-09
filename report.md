@@ -3,7 +3,7 @@
 ## Technical Evaluation, Streaming Architecture and Capacity Sizing
 
 **Assignment:** AIML CPP LEAD ASR Technical Assignment v2, sections 1–13.  
-**Report date:** 7 October 2026. **Primary evidence:** `results/resumable-matrix`, collected across interrupted/resumed runs.  
+**Report date:** 9 October 2026. **Primary evidence:** `results/resumable-matrix`; supplementary English direct/network tuning completed on 9 October 2026.
 **Runtime:** Qwen3-ASR-0.6B through the main C/C++ resumable worker path. **Status:** all twelve requested benchmark layouts completed; detailed outcomes are presented in the results sections.
 
 The evaluation covers English, Mandarin Chinese and Bahasa Indonesia using Qwen3-ASR on CPU. It reports implemented streaming behavior, reproducible measurements, architecture decisions, conditional fleet sizing and production limitations. Prefix decoding provides a baseline configuration for comparison with independently resumable streaming; the two configurations use different finalization policies and must be assessed separately.
@@ -14,7 +14,47 @@ The prototype streams paced PCM through a C++20 service to a CPU C inference run
 
 The new runtime shares model weights inside each worker while keeping each call's encoder-window cache, decoder state, token history and text separate. One worker executes one ready streaming step at a time and requeues that call. Completed encoder windows and decoder prefills are reused; a growing partial encoder window can still be recomputed. No tensor batching is implemented.
 
-The study contains **1,170 direct calls, all completed**, over **12 worker/session layouts × three languages**. Sixteen warmup calls are separate. Two mixed-language WebSocket suites offered **60 calls and completed 55**. The five failures occurred at two workers / sixteen total sessions and reported occupied worker slots; they also lacked the expected terminal failure event.
+### 1.1. English latency–accuracy tuning: direct versus network
+
+A focused sweep used **five distinct English WAVs**, one shared worker, one active call and three repetitions per setting. Each mode completed **75/75 calls**, giving 150 measured tuning calls in total. Direct mode submits PCM to the engine without WebSockets; network mode uses loopback C++ WebSocket clients. Both modes use the same inputs/references, evaluated executable identities, four-thread model settings and shuffled setting schedule. Full-audio final refinement is disabled.
+
+| Decode step ms | Chunk ms | Direct first text mean s | Network first text mean s | Direct EOF delay mean s | Network EOF delay mean s | WER in both modes % |
+|---:|---:|---:|---:|---:|---:|---:|
+| 2000 | 200 | 3.035 | 3.089 | 1.627 | 1.630 | 4.85 |
+| 1000 | 200 | 1.655 | 1.727 | 2.316 | 2.524 | 5.83 |
+| 2000 | 100 | 2.967 | 3.137 | 1.609 | 1.547 | 4.85 |
+| 1000 | 100 | 1.661 | 1.731 | 2.231 | 2.425 | 5.83 |
+| 500 | 100 | 1.038 | 1.101 | 7.651 | 8.042 | 12.62 |
+
+The 500 ms step gives the earliest nonempty text but higher WER and longer EOF delay. A 1,000 ms step provides earlier text with a smaller accuracy penalty; 2,000 ms gives the lowest WER among these settings. Changing 100/200 ms transport chunks has a modest, inconsistent effect compared with changing the decode step. First nonempty text is not stable or necessarily correct text. Direct/network runs were collected separately, so their timing gaps do not isolate WebSocket overhead from host-speed changes.
+
+#### Laptop power/performance configuration
+
+**Most earlier experiments used the laptop’s quiet/balanced configuration**, according to the operator. The original tables retain those measurements. An additional direct-mode sweep, **v4**, used the operator-reported **performance configuration** and completed **75/75 calls**. V4 matched the v2 WAVs/references, evaluated executable identities, four-thread model settings, worker/session layout and repetition schedule. Final transcripts and WER were unchanged.
+
+| Decode step ms | Chunk ms | Quiet/balanced baseline v2 step wall mean s | Performance v4 step wall mean s | Step-time reduction % | v4 first text mean s | v4 EOF delay mean s | WER % |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2000 | 200 | 1.247 | 0.674 | 45.9 | 2.543 | 0.826 | 4.85 |
+| 1000 | 200 | 1.021 | 0.582 | 43.0 | 1.361 | 0.783 | 5.83 |
+| 2000 | 100 | 1.211 | 0.670 | 44.6 | 2.537 | 0.825 | 4.85 |
+| 1000 | 100 | 1.013 | 0.581 | 42.6 | 1.378 | 0.787 | 5.83 |
+| 500 | 100 | 0.929 | 0.511 | 45.0 | 0.787 | 1.633 | 12.62 |
+
+The performance configuration reduced mean decode-step wall time by approximately **43–46%** relative to v2, without changing accuracy. At the full-study reference setting (2,000 ms decode / 200 ms chunks), step computation fell from **1.247 to 0.674 s**; first text improved from **3.035 to 2.543 s**, and EOF delay from **1.627 to 0.826 s**. At 500/100 ms, mean first text was **0.787 s**, but WER remained **12.62%**, compared with **4.85%** at the two-second settings. More CPU performance improves response time; it does not remove the short-step accuracy trade-off.
+
+Recorded whole-host average CPU frequency rose from approximately **1.59 to 2.22 GHz**. CPU Tctl mean/maximum rose from **54.7/57.1 °C** to **81.3/93.1 °C**. Frequency includes idle logical CPUs and does not isolate active model-core clocks. Profile labels are operator-reported; exact OS policy identifiers, charger state and a controlled background workload were not captured. The data strongly supports sensitivity to laptop performance configuration, but does not isolate power policy from all host effects. Energy consumption and performance-mode fleet capacity were not measured.
+
+The network sweep was not repeated in performance mode. The complete multilingual concurrency curves and conditional sizing remain based on their original collection conditions; v4 is not used to multiply those throughput figures or replace their results. Including the additional v4 run, this focused English tuning evidence comprises **225 completed calls** across three separate 75-call sweeps. V3 is not used in this comparison.
+
+[Performance-mode sweep](results/english-step-chunk-direct-20261009-v4/report.md) · [v2/v4 comparison](results/english-step-chunk-direct-20261009-v4/power_mode_comparison.md) · [Comparison data](results/english-step-chunk-direct-20261009-v4/power_mode_comparison.json).
+
+**Reference for the full multilingual benchmark below: direct mode, 200 ms PCM chunks and 2,000 ms decode steps.** This reference preserves the lower-error decode step and matches the configuration already used in the complete concurrency study. The focused sweep is subsequent supporting evidence; the full study was not rerun or retuned. Its ten-WAV-per-language accuracy population remains separate from this five-WAV English tuning population. No five-file WER is substituted for the full English score.
+
+See Appendix G for timing percentiles, per-WAV mode comparisons and evidence links.
+
+### 1.2. Full multilingual benchmark at the reference configuration
+
+The full multilingual study contains **1,170 direct calls, all completed**, over **12 worker/session layouts × three languages**. Sixteen warmup calls are separate. Two mixed-language WebSocket suites offered **60 calls and completed 55**. The five failures occurred at two workers / sixteen total sessions and reported occupied worker slots; they also lacked the expected terminal failure event.
 
 Single-worker, single-call first-text means were **2.678 s EN, 2.638 s ID and 2.546 s ZH**. Final quality was **10.24% English WER, 35.20% Indonesian WER and 12.43% Mandarin CER**. Every direct final transcript matched its same-recording single-call baseline, so increased concurrency did not alter final accuracy on this cohort.
 
@@ -33,6 +73,7 @@ The runtime is a working streaming POC. Indonesian quality, network admission/fa
 | Precision / CPU kernels | BF16 safetensors; FP32 intermediates / OpenBLAS; no measured integer quantization |
 | Native runtime | antirez/qwen-asr at 924694251d9e0f18e5d86bbd06aa3ab5f870002d; generated resumable extension |
 | Threads | 4 runtime/BLAS compute threads per worker; 8 configured for two workers; no CPU affinity |
+| Laptop profile | Most earlier tests: operator-reported quiet/balanced; supplementary v4 direct sweep: performance configuration (Section 1.1) |
 | Audio | 16 kHz mono PCM16; 200 ms chunks; approximately real-time pacing |
 | Decode settings | 2,000 ms steps; 32 maximum new tokens per step; zero initial chunks withheld; refine_final=false |
 | Configuration | configs/qwen_stream_shared.yaml; resolved per-call config.json and per-layout capabilities.json |
@@ -44,7 +85,7 @@ Qwen 0.6B was selected to make native CPU evaluation practical on this laptop wh
 
 Two sensible measured configurations are one and two workers, with different per-worker session occupancy. This is a process/scheduling comparison using the same model, precision and four-thread budget per worker. Model sizes, integer quantization, alternative models and thread counts were not benchmarked in this matrix.
 
-The final measured grid contains twelve layouts, recorded in the [effective experiment plan](results/resumable-matrix/curve.json). The [initial plan](results/resumable-matrix/plan.json) requested sixteen layouts; collection was reduced to twelve to retain one-worker concurrency 1–8 and two-worker total concurrency 2/4/8/16. [Resume history](results/resumable-matrix/resume_history) preserves earlier statuses, plans, driver identities and interrupted attempts. Completed layouts were retained; incomplete layouts were restarted in separate attempt directories and excluded from combined curves to avoid double weighting. Current CLI and worker binary SHA-256 values match the evaluated plan. Inputs, model acquisition identity, configuration and binary hashes are retained. The [reproduction package](results/resumable-matrix/reproducibility/README.md) includes a source archive assembled at report finalization, the exact evaluated executables and file-level integrity records. The source archive documents the implementation available at finalization; the evaluated executables are preserved separately rather than claiming a retrospectively captured original source state.
+The final measured grid contains twelve layouts, recorded in the [effective experiment plan](results/resumable-matrix/curve.json). The [initial plan](results/resumable-matrix/plan.json) requested sixteen layouts; collection was reduced to twelve to retain one-worker concurrency 1–8 and two-worker total concurrency 2/4/8/16. [Resume history](results/resumable-matrix/resume_history) preserves earlier statuses, plans, driver identities and interrupted attempts. Completed layouts were retained; incomplete layouts were restarted in separate attempt directories and excluded from combined curves to avoid double weighting. The preserved evaluated CLI and worker binary SHA-256 values match the experiment plan. Inputs, model acquisition identity, configuration and binary hashes are retained. The [reproduction package](results/resumable-matrix/reproducibility/README.md) includes a source archive assembled at report finalization, the exact evaluated executables and file-level integrity records. The source archive documents the implementation available at finalization; the evaluated executables are preserved separately rather than claiming a retrospectively captured original source state.
 
 Some environment metadata retains the legacy label `purpose: native single-call diagnostic`; engine, config and suite requests identify the actual resumable run. Host applications, clock speeds and thermals were not controlled. The abrupt speed change between one-worker six/seven-session points spans resumed collection and must not be interpreted as a beneficial seven-session algorithm.
 
@@ -151,6 +192,8 @@ Stable-word latency and vendor active-compute RTF are unavailable. Step counts a
 
 ## 6. Single-call baseline and cold/warm behavior
 
+The tables in this section use the full reference cohort: **direct mode, 200 ms chunks, 2,000 ms decode steps**, ten distinct WAVs per language and three repetitions. They are separate from the five-WAV tuning sweep in Section 1.1.
+
 | Language | Complete | First text mean / p50 / p95 / p99 s | EOF mean / p50 / p95 / p99 s | Final mean / p95 s | WER/CER % |
 | --- | --- | --- | --- | --- | --- |
 | en | 30/30 | 2.678 / 2.658 / 2.821 / 2.829 | 1.033 / 1.017 / 1.556 / 1.591 | 9.211 / 12.387 | 10.24 |
@@ -166,6 +209,8 @@ Stable-word latency and vendor active-compute RTF are unavailable. Step counts a
 Initial one-worker context-load metadata was **0.344 s**, reused across all its baseline calls. This is initialization metadata; memory-mapped weights, cached pages and first inference affect actual startup. Per-layout cold dry-run plans, idle telemetry and warmup records are retained, but no cache-controlled cold-start distribution was measured. Idle PSS was approximately **1.269–1.271 GiB** for one worker and **2.413 GiB** for two. Measured warm active peaks include per-call state and native scratch, so idle memory alone is insufficient for sizing.
 
 ## 7. Full direct concurrency results
+
+All direct layouts retain the same **200 ms PCM chunk / 2,000 ms decode-step reference**. Worker count and active-session occupancy vary; the tuning settings in Section 1.1 are not substituted into these curves.
 
 Every row completed all offered calls, reported zero measurement failures and passed the saved delivery/event contract checks. Pre-EOF text counts below expose overload that completion alone hides. Accuracy is identical across these direct layouts: EN 10.24% WER, ID 35.20% WER, ZH 12.43% CER. Detailed stream wall/queue/counter and additional timing distributions remain in the [generated report](results/resumable-matrix/report.md), [CSV](results/resumable-matrix/curve.csv) and [JSON](results/resumable-matrix/curve.json).
 
@@ -631,3 +676,52 @@ The browser demonstration used the same native C/C++ resumable path with two wor
 ![ZH streaming transcript and latency](results/resumable-ui-20261006/zh-stream-complete.png)
 
 [Browser demonstration record](results/resumable-ui-20261006/demo.json).
+
+## Appendix G. English Direct/Network Decode-Step and Chunk Sweep
+
+Both modes completed 75/75 measured calls and passed recorded delivery/event checks. Fifteen observations per setting are three repetitions of five unique WAVs. First/final/EOF timings below are server/controller boundaries; browser rendering is excluded. Primary WER is completed-call corpus edits/reference words; all calls completed. All references, WAV hashes and executable/config identities match between modes. The excluded `english-step-chunk-direct-20261009` attempt has status FAILED and contributes no observations; the complete `-v2` bundle is the direct study used here.
+
+| Mode | Decode step ms | Chunk ms | First mean / p50 / p95 / p99 s | EOF mean / p50 / p95 / p99 s | Final mean / p95 s | WER % |
+|---|---:|---:|---|---|---|---:|
+| direct | 2000 | 200 | 3.035 / 3.054 / 3.468 / 3.669 | 1.627 / 1.510 / 2.118 / 2.172 | 9.179 / 12.238 | 4.85 |
+| direct | 1000 | 200 | 1.655 / 1.647 / 1.809 / 1.823 | 2.316 / 2.363 / 3.871 / 4.321 | 9.869 / 14.011 | 5.83 |
+| direct | 2000 | 100 | 2.967 / 3.056 / 3.122 / 3.122 | 1.609 / 1.523 / 2.311 / 2.610 | 9.161 / 12.476 | 4.85 |
+| direct | 1000 | 100 | 1.661 / 1.653 / 1.831 / 1.844 | 2.231 / 2.420 / 3.516 / 3.518 | 9.783 / 13.657 | 5.83 |
+| direct | 500 | 100 | 1.038 / 1.027 / 1.129 / 1.135 | 7.651 / 8.242 / 12.074 / 12.751 | 15.203 / 22.270 | 12.62 |
+| network | 2000 | 200 | 3.089 / 3.154 / 3.385 / 3.524 | 1.630 / 1.461 / 2.308 / 2.597 | 9.299 / 12.573 | 4.85 |
+| network | 1000 | 200 | 1.727 / 1.716 / 1.864 / 1.868 | 2.524 / 2.627 / 4.214 / 4.232 | 10.186 / 14.436 | 5.83 |
+| network | 2000 | 100 | 3.137 / 3.173 / 3.568 / 4.112 | 1.547 / 1.442 / 2.017 / 2.063 | 9.265 / 12.323 | 4.85 |
+| network | 1000 | 100 | 1.731 / 1.763 / 1.873 / 1.878 | 2.425 / 2.647 / 4.049 / 4.088 | 10.131 / 14.344 | 5.83 |
+| network | 500 | 100 | 1.101 / 1.097 / 1.162 / 1.163 | 8.042 / 9.035 / 12.221 / 12.246 | 15.751 / 22.528 | 12.62 |
+
+### Direct: five-WAV individual means
+
+Cells: **WER % / first-text seconds / EOF-delay seconds**, averaged over three completed observations.
+
+| WAV recording | 2000/200 ms | 1000/200 ms | 2000/100 ms | 1000/100 ms | 500/100 ms |
+|---|---|---|---|---|---|
+| fleurs_en_us_validation_1523_142 | 0.00 / 2.782 / 1.686 | 0.00 / 1.567 / 2.370 | 0.00 / 2.777 / 1.897 | 0.00 / 1.588 / 2.551 | 15.79 / 1.121 / 10.380 |
+| fleurs_en_us_validation_1626_141 | 15.15 / 3.083 / 2.068 | 18.18 / 1.669 / 3.862 | 15.15 / 3.059 / 2.133 | 18.18 / 1.686 / 3.510 | 21.21 / 1.060 / 11.783 |
+| fleurs_en_us_validation_1654_60 | 0.00 / 3.212 / 1.989 | 0.00 / 1.692 / 2.716 | 0.00 / 3.115 / 1.806 | 0.00 / 1.656 / 2.451 | 0.00 / 1.005 / 8.399 |
+| fleurs_en_us_validation_1607_28 | 0.00 / 3.279 / 1.128 | 0.00 / 1.794 / 0.905 | 0.00 / 3.115 / 0.998 | 0.00 / 1.826 / 0.878 | 8.33 / 1.030 / 2.783 |
+| fleurs_en_us_validation_1521_51 | 0.00 / 2.821 / 1.262 | 0.00 / 1.555 / 1.728 | 0.00 / 2.768 / 1.209 | 0.00 / 1.551 / 1.766 | 13.33 / 0.975 / 4.911 |
+
+[Direct generated tables](results/english-step-chunk-direct-20261009-v2/report.md) · [Per-WAV CSV](results/english-step-chunk-direct-20261009-v2/per_wav.csv).
+
+### Network: five-WAV individual means
+
+Cells: **WER % / first-text seconds / EOF-delay seconds**, averaged over three completed observations.
+
+| WAV recording | 2000/200 ms | 1000/200 ms | 2000/100 ms | 1000/100 ms | 500/100 ms |
+|---|---|---|---|---|---|
+| fleurs_en_us_validation_1523_142 | 0.00 / 2.876 / 1.859 | 0.00 / 1.661 / 2.602 | 0.00 / 2.858 / 1.504 | 0.00 / 1.634 / 2.630 | 15.79 / 1.155 / 10.125 |
+| fleurs_en_us_validation_1626_141 | 15.15 / 3.297 / 2.130 | 18.18 / 1.727 / 4.174 | 15.15 / 3.176 / 2.016 | 18.18 / 1.765 / 4.029 | 21.21 / 1.134 / 12.163 |
+| fleurs_en_us_validation_1654_60 | 0.00 / 3.272 / 1.802 | 0.00 / 1.722 / 2.867 | 0.00 / 3.269 / 1.772 | 0.00 / 1.770 / 2.786 | 0.00 / 1.059 / 9.103 |
+| fleurs_en_us_validation_1607_28 | 0.00 / 3.148 / 1.085 | 0.00 / 1.863 / 0.904 | 0.00 / 3.532 / 1.186 | 0.00 / 1.870 / 0.915 | 8.33 / 1.112 / 3.644 |
+| fleurs_en_us_validation_1521_51 | 0.00 / 2.854 / 1.272 | 0.00 / 1.664 / 2.074 | 0.00 / 2.852 / 1.257 | 0.00 / 1.617 / 1.765 | 13.33 / 1.047 / 5.174 |
+
+[Network generated tables](results/english-step-chunk-20261009/report.md) · [Per-WAV CSV](results/english-step-chunk-20261009/per_wav.csv).
+
+**Compute versus elapsed time:** audio/wall is completed audio duration divided by complete suite elapsed time, including pacing and finalization. A decode-step wall duration is a different measurement. Smaller steps require more invocations and can increase accumulated decoding work; decode wall time is not constant across steps. When computation falls behind paced input, remaining steps are drained after EOF. This explains why earlier first text can coexist with longer EOF delay, without assuming model-internal active compute was profiled.
+
+**Interpretation:** the measured direct 500/100 ms setting gives 1.038 s mean first text, 7.651 s mean EOF delay and 12.62% WER. Direct 1000/100 ms gives 1.661 s, 2.231 s and 5.83%. Direct 2000/200 ms gives 3.035 s, 1.627 s and 4.85%. These are different latency/accuracy operating points, not a single universally fastest setting. The 2000/200 ms direct reference is retained for the full multilingual study. The five-WAV read-speech result is not a domain accuracy guarantee; p95/p99 are descriptive for this small sample.
